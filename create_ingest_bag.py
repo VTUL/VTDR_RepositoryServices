@@ -36,13 +36,9 @@ metadata_directory_path=f"{IngestAccessionNumber}_DownloadedFileMetadata"
 #-----Download dataset for private files using LD-Cool-P and save it as Ingest data json file
 fs=Figshare(token=token,private=True)
 FileDownload=retrieve.download_files(article_id, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
- 
 privatefigshare_url='https://api.figshare.com/v2/account/articles/'+str(article_id)
-
 #-----get article details for private files using LD-Cool-P and save it as Ingest data json file
-
 json_out_file=f"{data_directory_path}/{IngestAccessionNumber}_IngestedMetadata.json"
-
 json_response=fs.get_article_details(article_id,version=None)
 
 if not os.path.exists(json_out_file):
