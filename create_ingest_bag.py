@@ -16,7 +16,7 @@ import json
 #Enter article id: this is the last number in the "cite" on data.lib.vt.edu
 article_id="XYZ"
 # Enter Ingest Accession Number from the spreadsheet:
-IngestAccessionNumber= "1234" 
+IngestAccessionNumber= "I1234" 
 #Enter Requestor name
 Requestor="XYZ"
 #Enter corresponding author name
@@ -33,11 +33,11 @@ data_directory1=f"{IngestAccessionNumber}"
 data_directory2=f"{IngestAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DateIngested}"
 data_directory_path=os.path.join(data_directory1, data_directory2)
 metadata_directory_path=f"{IngestAccessionNumber}_DownloadedFileMetadata"
-#-----Download dataset for private files using LD-Cool-P and save it as Ingest data json file
+#-----Download dataset for private article under review using LD-Cool-P and save it as Ingest metadata in json file format
 fs=Figshare(token=token,private=True)
 FileDownload=retrieve.download_files(article_id, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 privatefigshare_url='https://api.figshare.com/v2/account/articles/'+str(article_id)
-#-----get article details for private files using LD-Cool-P and save it as Ingest data json file
+#-----Get article details for private article under review using LD-Cool-P and save it as Ingest metadata in json file format
 json_out_file=f"{data_directory_path}/{IngestAccessionNumber}_IngestedMetadata.json"
 json_response=fs.get_article_details(article_id,version=None)
 
@@ -51,7 +51,7 @@ else:
         with open(json_out_file, 'w') as f:
             json.dump(json_response,f,indent=4)
 
-#Call parts of modified UPACK_v2 code written by Luke. I. Menzies(lmenzies@uab.edu) to bag and tar files
+#Call parts of modified UPACK_v2 code written by Luke. I. Menzies(lmenzies@uab.edu) to bag and tar ingest record
 
 myobj=ObjFormatter#()
 tarfiledir=data_directory1
