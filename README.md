@@ -1,3 +1,5 @@
-The codes here show how Virginia Tech Data Services uses LD-Cool-P from University of Arizona: https://github.com/padmacarstens/LD-Cool-P to download files and get article details. 
+The codes here show how Virginia Tech Data Services uses LD-Cool-P from University of Arizona: https://github.com/padmacarstens/LD-Cool-P to download files and get article details from the Virginia Tech Data Repository (https://data.lib.vt.edu) running on the figshare for institutions platform.
 The code then creates folders to save the downloaded private files(to ingest bags)/ published files(to publication bags). 
-Lastly, the code runs UDCS Packer(U-Pack) written by Luke. I. Menzies(lmenzies@uab.edu) (modified by Padma Carstens to access parts of the application using @staticmethod)to create bags for Ingest records(private articles submitted for review) and Publication bags (public articles created after publishing the dataset).
+Lastly, the code runs UDCS Packer(U-Pack at https://github.com/limenVTech/UDCS_Packer) written by Luke. I. Menzies(lmenzies@uab.edu) (modified by Padma Carstens to access parts of the application using @staticmethod)to create bags for Ingest records(private articles submitted for review) using create_ingest_bag.py and components of Publication bags (public articles created after publishing the dataset) using create_publication_bag.py .
+
+Documentation on how to set up a Windows environment to use these codes is availabe at DirectionsForWindowsEnvironmentSetupForVTDRArchivalCode_20211005.docx
