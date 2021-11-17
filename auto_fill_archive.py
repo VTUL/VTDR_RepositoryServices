@@ -4,45 +4,49 @@ Created on Mon Oct 25 10:55:10 2021
 
 @author: padma
 """
-curator="Padma "
-import fontstyle
-IngestAccessionNumber= "I00180"
-PublishedAccessionNumber= "P00154"
-#Enter requestor name
-Requestor="BrownR"
-#Enter corresponding author name
-CorrespondingAuthor="BrownR"
-#Enter version
-Version="01"
-#Enter published date in YYYYMMDD format 
-DatePublished= "20211025"  
-#Enter DOI:
-DOI="abc"
-#Enter Title:
-Title="abc"
-authoremail="xyz@x.edu"
-college="abc"
-dept="abc"
-comment="abc"
-DateIngested="20210202"
+#Following code creates archival readme rtf file using information from the spreadsheet
 
+from spreadsheet import vtgsheet
+from datetime import date
+def create_archivalreadme(pubaccno,cur_name):
+  today = date.today()
 
-f = open('ArchivalPackage.rtf',"w")
-f.write("This Archival Information Package created by "+curator+"on "+DatePublished+"\n"+
+# dd/mm/YY
+  currentday = today.strftime("%Y%m%d")
+  curator=cur_name
+  PublishedAccessionNumber= pubaccno
+  vtsheet=vtgsheet(PublishedAccessionNumber)
+  IngestAccessionNumber= vtsheet['gsingestno']
+  Requestor=vtsheet['gsrequestr']
+  CorrespondingAuthor=vtsheet['gscorsauth']
+  Version=vtsheet['gsversnum']
+  DatePublished= vtsheet['gsdatepub']  
+  DOI=vtsheet['gsdoi']
+  Title=vtsheet['gstitle']
+  authoremail=vtsheet['gscorauthemail']
+  college=vtsheet['gscollg']
+  dept=vtsheet['gsdept']
+  comment=vtsheet['gscomnt']
+  datecomment=vtsheet['gsdatecomnt']
+  DateIngested="20210202"
+  import re
+  m = re.search(r'(?<=/)\w+', DOI)
+  f = open('ArchivalPackage.rtf',"w")
+  f.write("This Archival Information Package created by "+curator+"on "+currentday+"\n"+
         "Virginia Tech Curation Services\n"+
         "*****************************\n"+
         "Accession # for Ingest: "+ IngestAccessionNumber+"\n"+
         "Accession # for Publication: "+PublishedAccessionNumber+"\n"+
         "Requestor: "+Requestor+"\n"+
         "Corresponding Author: "+CorrespondingAuthor+"\n"+
-        "Version #: "+"\n"+
-        "Date Published: "+"\n"+
-        "DOI: "+DOI+"\n"+
+        "Version #: "+Version+"\n"+
+        "Date Published: "+DatePublished+"\n"+
+        "DOI: 10.7294/"+m.group(0)+"\n"+
         "Dataset Title: "+Title+"\n"+
         "Corresponding Author Email: "+authoremail+"\n"+
         "College: "+college+"\n"+
         "Department: "+dept+"\n"+
-        "Date of Most Recent Comment: "+DatePublished+"\n"+
+        "Date of Most Recent Comment: "+datecomment+"\n"+
         "Most Recent Comment: "+comment+"\n"+
         "Bag Containing Original Content: "+IngestAccessionNumber+"_"+Requestor+"_"+CorrespondingAuthor+"_"+"v"+Version+"_"+DateIngested+".tar"+"\n"
         "*****************************"+"\n"+
@@ -51,4 +55,6 @@ f.write("This Archival Information Package created by "+curator+"on "+DatePublis
         "VTCurationServicesActions (directory) contains"+"\n"+
         "	-e-mail correspondence, provenance log(s), a form for capturing metadata from the Virginia Tech research, and any other files associated with actions conducted by Virginia Tech "+"\n"+
         "Curation Services to augment the original files and metadata transferred to Virginia Tech Curation Services by a Virginia Tech researcher for their publication as a dataset")
-f.close()
+  f.close()
+
+  return 
