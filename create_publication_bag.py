@@ -9,26 +9,36 @@ import os
 from os.path import exists
 import json
 from ldcoolp.curation import retrieve
+from auto_fill_archive import create_archivalreadme
+from spreadsheet import vtgsheet
 
-#Enter article id for published articles:this is the also last number in the "cite" on data.lib.vt.edu 
-article_id=1234
-#Enter your token below
+#Enter published accession number 
+PublishedAccessionNumber= "P00156"
+#Enter your figshare token
 token='1234'
-#Enter published accession number from the spreadsheet
-PublishedAccessionNumber= "P123"
-#Enter requestor name
-Requestor="XYZ"
-#Enter corresponding author name
-CorrespondingAuthor="XYZ"
-#Enter version
-Version="01"
-#Enter published date in YYYYMMDD format 
-DatePublished= "20211025"  
+#Enter curator name
+curatorname="XYZ"
+
+#Using published accession number to get the details from the spreadsheet:
+vtsheet=vtgsheet(PublishedAccessionNumber)
+#Get article id 
+article_id=vtsheet['gsarticleid']
+#create archival readme file using auto_fill_archive.py
+reme=create_archivalreadme(pubaccno=PublishedAccessionNumber,cur_name=curatorname)
+#get requestor name
+Requestor=vtsheet['gsrequestr']
+#get corresponding author name
+CorrespondingAuthor=vtsheet['gscorsauth']
+#get version
+Version=vtsheet['gsversnum']
+#get published date in YYYYMMDD format 
+DatePublished= vtsheet['gsdatepub'] 
 
 #Create Publication folder to store dataset
 data_directory1=f"{PublishedAccessionNumber}_v{Version}"
 data_directory2=f"{PublishedAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DatePublished}"
 data_directory3=f"DisseminatedContent"
+arch_readme_path=os.path.join(data_directory1,data_directory2,"ArchivalPackage.rtf")
 data_directory_path=os.path.join(data_directory1, data_directory2, data_directory3)
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
 #-----Download dataset for published article using LD-Cool-P and save it as publication meta data in json file format
