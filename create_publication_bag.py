@@ -10,21 +10,35 @@ from os.path import exists
 import json
 from ldcoolp.curation import retrieve
 from auto_fill_archive import create_archivalreadme
-from spreadsheet import vtgsheet
+from spreadsheet import vtpubsheet
+#filename="secrets.txt"
+#fileObj=open(filename)
+#params={}
+#for line in fileObj:
+#    line=line.strip()
+#    key_value=line.split('=')
+#    params[key_value[0].strip()]=key_value[1].strip()
+#print(params)
+#pubno=params["PublishedAccessionNumber"]
+#tn=params["token"]
+#cname=params["curatorname"]
+#print(pubno,tn,cname)
 
 #Enter published accession number 
-PublishedAccessionNumber= "P00156"
+PublishedAccessionNumber= "P00119"
+#Enter the Version number
+VersionNumber="03"
 #Enter your figshare token
 token='1234'
 #Enter curator name
 curatorname="XYZ"
 
 #Using published accession number to get the details from the spreadsheet:
-vtsheet=vtgsheet(PublishedAccessionNumber)
+vtsheet=vtpubsheet(PublishedAccessionNumber,VersionNumber)
 #Get article id 
 article_id=vtsheet['gsarticleid']
 #create archival readme file using auto_fill_archive.py
-reme=create_archivalreadme(pubaccno=PublishedAccessionNumber,cur_name=curatorname)
+reme=create_archivalreadme(pubaccno=PublishedAccessionNumber,cur_name=curatorname,ver=VersionNumber)
 #get requestor name
 Requestor=vtsheet['gsrequestr']
 #get corresponding author name
