@@ -6,17 +6,25 @@ Created on Mon Oct 25 10:55:10 2021
 """
 #Following code creates archival readme rtf file using information from the spreadsheet
 
-from spreadsheet import vtgsheet
+from spreadsheet import vtpubsheet
+from spreadsheet import vtingsheet
 from datetime import date
-def create_archivalreadme(pubaccno,cur_name):
+import re
+def create_archivalreadme(pubaccno,cur_name,ver):
   today = date.today()
 
 # dd/mm/YY
   currentday = today.strftime("%Y%m%d")
   curator=cur_name
   PublishedAccessionNumber= pubaccno
-  vtsheet=vtgsheet(PublishedAccessionNumber)
+  VersionNumber=ver
+  vtsheet=vtpubsheet(PublishedAccessionNumber,VersionNumber)
+  
+  #vtisheet=vtingsheet(IngestAccessionNumber)
   IngestAccessionNumber= vtsheet['gsingestno']
+  ingnum=IngestAccessionNumber
+  vtisheet=vtingsheet(ingnum)
+  DateIngested=vtisheet['ingestdate']
   Requestor=vtsheet['gsrequestr']
   CorrespondingAuthor=vtsheet['gscorsauth']
   Version=vtsheet['gsversnum']
@@ -28,8 +36,6 @@ def create_archivalreadme(pubaccno,cur_name):
   dept=vtsheet['gsdept']
   comment=vtsheet['gscomnt']
   datecomment=vtsheet['gsdatecomnt']
-  DateIngested="20210202"
-  import re
   m = re.search(r'(?<=/)\w+', DOI)
   f = open('ArchivalPackage.rtf',"w")
   f.write("This Archival Information Package created by "+curator+"on "+currentday+"\n"+
