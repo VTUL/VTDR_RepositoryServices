@@ -11,34 +11,30 @@ import json
 from ldcoolp.curation import retrieve
 from auto_fill_archive import create_archivalreadme
 from spreadsheet import vtpubsheet
-#filename="secrets.txt"
-#fileObj=open(filename)
-#params={}
-#for line in fileObj:
-#    line=line.strip()
-#    key_value=line.split('=')
-#    params[key_value[0].strip()]=key_value[1].strip()
-#print(params)
-#pubno=params["PublishedAccessionNumber"]
-#tn=params["token"]
-#cname=params["curatorname"]
-#print(pubno,tn,cname)
+import shutil
+import os
+#Get the parameters from secrets.txt created in the curation folder
+filename="secrets.txt"
+fileObj=open(filename)
+params={}
+for line in fileObj:
+    line=line.strip()
+    key_value=line.split('=')
+    if len(key_value)==2:
+        params[key_value[0].strip()]=key_value[1].strip()
 
-#Enter published accession number 
-PublishedAccessionNumber= "P00119"
-#Enter the Version number
-VersionNumber="03"
-#Enter your figshare token
-token='1234'
-#Enter curator name
-curatorname="XYZ"
-
-#Using published accession number to get the details from the spreadsheet:
-vtsheet=vtpubsheet(PublishedAccessionNumber,VersionNumber)
+#Get the article id from secrets.txt 
+ArticleID=params["ArticleID"]
+#Get the Version number from secrets.txt
+VersionNumber=params["VersionNumber"]
+#Get your figshare token from secrets.txt
+token=params["token"]
+#Get curator name from secrets.txt
+CuratorName=params["CuratorName"]
+#get the details from the spreadsheet:
+vtsheet=vtpubsheet(ArticleID,VersionNumber)
 #Get article id 
 article_id=vtsheet['gsarticleid']
-#create archival readme file using auto_fill_archive.py
-reme=create_archivalreadme(pubaccno=PublishedAccessionNumber,cur_name=curatorname,ver=VersionNumber)
 #get requestor name
 Requestor=vtsheet['gsrequestr']
 #get corresponding author name
@@ -49,11 +45,26 @@ Version=vtsheet['gsversnum']
 DatePublished= vtsheet['gsdatepub'] 
 
 #Create Publication folder to store dataset
+PublishedAccessionNumber= vtsheet['gspubnum']
+
+#Get current directory:
+directory_path=os.getcwd()  
+
+#create archival readme file using auto_fill_archive.py
+reme=create_archivalreadme(ArticleID,VersionNumber,CuratorName)  
+#source=os.path.join(directory_path,'ArchivalPackage.rtf')
 data_directory1=f"{PublishedAccessionNumber}_v{Version}"
+
 data_directory2=f"{PublishedAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DatePublished}"
+
 data_directory3=f"DisseminatedContent"
-arch_readme_path=os.path.join(data_directory1,data_directory2,"ArchivalPackage.rtf")
+#arch_readme_path=os.path.join(data_directory1,data_directory2,"ArchivalPackage.rtf")
+#shutil.move(['ArchivalPackage.rtf'],data_directory1)
+
 data_directory_path=os.path.join(data_directory1, data_directory2, data_directory3)
+#file_name=os.path.join(data_directory1,data_directory2,'ArchivalPackage.rtf')
+#dest=shutil.move(source,file_name)
+#move the file metadata to a different directory:
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
 #-----Download dataset for published article using LD-Cool-P and save it as publication meta data in json file format
 publicfigshare_url='https://api.figshare.com/v2/articles/'+str(article_id)
@@ -61,6 +72,7 @@ from figshare.figshare import Figshare
 fs=Figshare(token=token,private=False)
 FileDownload=retrieve.download_files(article_id, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 #-----get article details for published article using LD-Cool-P and save it as published metadata in json file format
+#Get the metadata in json format:
 json_out_file1=f"{data_directory_path}/{PublishedAccessionNumber}_DisseminatedMetadata.json"
 json_response1=fs.get_article_details(article_id,version=None)
 
@@ -74,7 +86,7 @@ else:
         print("Overwriting!")
         with open(json_out_file1, 'w') as f:
             json.dump(json_response1,f,indent=4)
-     
+   
 #----------------------create VTCurationServicesActions folder to save provenance log and email correspondence
                 
 data_directory4=f"VTCurationServicesActions"     

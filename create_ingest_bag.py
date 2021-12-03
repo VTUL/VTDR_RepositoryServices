@@ -7,8 +7,6 @@ Created on Wed Oct  6 12:39:04 2021
 
 import os
 from os.path import exists
-#from time import thread_time_ns
-#from typing import type_check_only
 from figshare.figshare import Figshare
 from ldcoolp.curation.UPack_v2 import ObjFormatter
 from ldcoolp.curation import retrieve
@@ -17,17 +15,29 @@ from spreadsheet import vtingsheet
 from datetime import date
 import filecmp
 from datetime import datetime
-from cryptography.fernet import Fernet
 
-#def ingestbag(IngestAcessionNumber,ingestrecrd_creating_number)
-IngestAccessionNumber='I00183'
-#Enter your token
-token='1234'
-# Specify if this is the first run or the second check run
-ingestrecrd_creating_number=2
+filename="secrets.txt"
+fileObj=open(filename)
+params={}
+for line in fileObj:
+    line=line.strip()
+    key_value=line.split('=')
+    if len(key_value)==2:
+        params[key_value[0].strip()]=key_value[1].strip()
 
-#Get information from the spreadsheet
-ingsheet=vtingsheet(IngestAccessionNumber)
+
+#Get ArticleID from secrets.txt:
+ArticleID=params["ArticleID"]
+#Get the Version number from secrets.txt:
+VersionNumber=params["VersionNumber"]
+#Get figshare token from secrets.txt:
+token=params["token"]
+
+# Get the ingest record creation number from secrets.txt:(Is this the first time creating ingest record or nth time to check against the originial bag?)
+ingestrecord_creation_number=int(params["ingestrecord_creation_number"])
+
+#Get information from the spreadsheet for the corresponding ArticleID and Version Number:
+ingsheet=vtingsheet(ArticleID,VersionNumber)
 #Get article id
 article_id=ingsheet['ingarticleid']
 # get Ingest Accession Number 
@@ -47,10 +57,10 @@ date_current=today.strftime("%Y%m%d")
 now=datetime.now()
 time_current=now.strftime("%H_%M_%S")
 #For the first run follow the IXXXX->IXXXX_author_requestor_version_dateingested-> to download data, for all the other runs compare with the first run dataset
-if ingestrecrd_creating_number == 1:
+if ingestrecord_creation_number == 1:
     #Create Ingest folder to store dataset
     data_directory1=f"{IngestAccessionNumber}"
-elif ingestrecrd_creating_number > 1:
+elif ingestrecord_creation_number > 1:
     data_directory1=f"{IngestAccessionNumber}_{date_current}_{time_current}"
 data_directory2=f"{IngestAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DateIngested}"
 data_directory_path=os.path.join(data_directory1, data_directory2)
@@ -76,13 +86,12 @@ else:
             json.dump(json_response,f,indent=4)
 
 
-if ingestrecrd_creating_number == 2:
+if ingestrecord_creation_number == 2:
  data_directory_check=f"{IngestAccessionNumber}"
  data_directory_path_check=os.path.join(data_directory_check, data_directory2, "data")
  
  #for IngestAcessionNumber_IngestedMetadata.json in os.listdir(data_directory_path_check):
  file1_path = os.path.join(data_directory_path_check, f"{IngestAccessionNumber}_IngestedMetadata.json")
-    #name, ext = os.path.splitext(file_name)
  file2_path = os.path.join(data_directory_path, f"{IngestAccessionNumber}_IngestedMetadata.json")
  result=filecmp.cmp(file1_path,file2_path)
  #Print true or false if the files match/dont match
