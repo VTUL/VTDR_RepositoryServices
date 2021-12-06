@@ -50,8 +50,7 @@ PublishedAccessionNumber= vtsheet['gspubnum']
 #Get current directory:
 directory_path=os.getcwd()  
 
-#create archival readme file using auto_fill_archive.py
-reme=create_archivalreadme(ArticleID,VersionNumber,CuratorName)  
+ 
 #source=os.path.join(directory_path,'ArchivalPackage.rtf')
 data_directory1=f"{PublishedAccessionNumber}_v{Version}"
 
@@ -66,6 +65,7 @@ data_directory_path=os.path.join(data_directory1, data_directory2, data_director
 #dest=shutil.move(source,file_name)
 #move the file metadata to a different directory:
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
+
 #-----Download dataset for published article using LD-Cool-P and save it as publication meta data in json file format
 publicfigshare_url='https://api.figshare.com/v2/articles/'+str(article_id)
 from figshare.figshare import Figshare
@@ -87,6 +87,9 @@ else:
         with open(json_out_file1, 'w') as f:
             json.dump(json_response1,f,indent=4)
    
+archival_directory=os.path.join(data_directory1,data_directory2)
+#create archival readme file using auto_fill_archive.py
+reme=create_archivalreadme(ArticleID,VersionNumber,CuratorName,archival_directory) 
 #----------------------create VTCurationServicesActions folder to save provenance log and email correspondence
                 
 data_directory4=f"VTCurationServicesActions"     
