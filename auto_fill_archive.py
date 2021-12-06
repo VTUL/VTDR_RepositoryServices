@@ -11,16 +11,19 @@ from spreadsheet import vtpubsheet
 from spreadsheet import vtingsheet
 from datetime import date
 import re
+import os
 #def create_archivalreadme(pubaccno,cur_name,ver,pdate):
-def create_archivalreadme(ArticleID,VersionNumber,CuratorName):
+def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_directory: str = '',):
   today = date.today()
 
 # dd/mm/YY
   currentday = today.strftime("%Y%m%d")
   curator=CuratorName
- 
+  out_file_prefix = f"ArchivalPackage.rtf"
   #VersionNumber=ver
- 
+  root_directory=os.getcwd()
+  archival_path=os.path.join(root_directory, archival_directory)
+  out_file_prefix1 = f"{archival_path}/{out_file_prefix}"
   vtsheet=vtpubsheet(ArticleID,VersionNumber)
  # DatePublished=vtsheet['gspubdate']
   #vtisheet=vtingsheet(IngestAccessionNumber)
@@ -42,7 +45,8 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName):
   datecomment=vtsheet['gsdatecomnt']
   IngestVerNum="01"#Ingest records are always version 01
   m = re.search(r'(?<=/)\w+', DOI)
-  f = open('ArchivalPackage.rtf',"w")
+  #f = open('ArchivalPackage.rtf',"w")
+  f = open(out_file_prefix1,"w")
   f.write(" "+"\n"+
         "This Archival Information Package created by "+curator+" on "+currentday+"\n"+
         "Virginia Tech Curation Services\n"+
