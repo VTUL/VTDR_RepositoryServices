@@ -2,7 +2,7 @@
 """
 Created on Mon Oct 25 10:55:10 2021
 
-@author: padma
+@author: padma carstens
 """
 #Following code creates archival readme rtf file using information from the spreadsheet
 
@@ -12,9 +12,7 @@ from spreadsheet import vtingsheet
 from datetime import date
 import re
 import os
-#from PyRTF import *
-#def create_archivalreadme(pubaccno,cur_name,ver,pdate):
-def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_directory: str = '',):
+def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName, archival_directory: str = '',):
   today = date.today()
 
 # dd/mm/YY
@@ -25,13 +23,14 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_director
   root_directory=os.getcwd()
   archival_path=os.path.join(root_directory, archival_directory)
   out_file_prefix1 = f"{archival_path}/{out_file_prefix}"
-  vtsheet=vtpubsheet(ArticleID,VersionNumber)
+  vtsheet=vtpubsheet(ArticleID,PublishedVersionNumber)
  # DatePublished=vtsheet['gspubdate']
   #vtisheet=vtingsheet(IngestAccessionNumber)
+  #vtisheet=vtingsheet(ArticleID,VersionNumber)
   PublishedAccessionNumber= vtsheet['gspubnum']
   IngestAccessionNumber= vtsheet['gsingestno']
   ingnum=IngestAccessionNumber
-  vtisheet=vtingsheet(ArticleID,VersionNumber)
+  vtisheet=vtingsheet(ArticleID,IngestVersionNumber)
   DateIngested=vtisheet['ingestdate']
   Requestor=vtsheet['gsrequestr']
   CorrespondingAuthor=vtsheet['gscorsauth']
@@ -44,13 +43,8 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_director
   dept=vtsheet['gsdept']
   comment=vtsheet['gscomnt']
   datecomment=vtsheet['gsdatecomnt']
-  IngestVerNum="01"#Ingest records are always version 01
+  IngestVerNum=IngestVersionNumber#Ingest records are always version 01
   m = re.search(r'(?<=/)\w+', DOI)
-  #f = open('ArchivalPackage.rtf',"w")
-  #hyperlink_format.format(link='https://doi.org/10.7294/'+m.group(0))
-  hyperlink_format='https://doi.org/10.7294/'+m.group(0)
-  #link_text(link=hyperlink_format)
-  link_text=hyperlink_format.format
   f = open(out_file_prefix1,"w")
   f.write(" "+"\n"+
         "This Archival Information Package created by "+curator+" on "+currentday+"\n"+
@@ -60,7 +54,7 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_director
         "Accession# for Publication: "+PublishedAccessionNumber+"\n"+
         "Requestor: "+Requestor+"\n"+
         "Corresponding Author: "+CorrespondingAuthor+"\n"+
-        "Version#: "+VersionNumber+"\n"+
+        "Version#: "+PublishedVersionNumber+"\n"+
         "Date Published: "+DatePublished+"\n"+
         "DOI: https://doi.org/10.7294/"+m.group(0)+"\n"
         "Dataset Title: "+Title+"\n"+
