@@ -25,14 +25,16 @@ for line in fileObj:
 
 #Get the article id from secrets.txt 
 ArticleID=params["ArticleID"]
-#Get the Version number from secrets.txt
-VersionNumber=params["VersionNumber"]
+#Get the Published Version number from secrets.txt
+PublishedVersionNumber=params["PublishedVersionNumber"]
+#Get the Ingest Version number from secrets.txt
+IngestVersionNumber=params["IngestVersionNumber"]
 #Get your figshare token from secrets.txt
 token=params["token"]
 #Get curator name from secrets.txt
 CuratorName=params["CuratorName"]
 #get the details from the spreadsheet:
-vtsheet=vtpubsheet(ArticleID,VersionNumber)
+vtsheet=vtpubsheet(ArticleID,PublishedVersionNumber)
 #Get article id 
 article_id=vtsheet['gsarticleid']
 #get requestor name
@@ -82,14 +84,14 @@ if not os.path.exists(json_out_file1):
         json.dump(json_response1,f,indent=4)
 else:
     print(f"File exists: {json_out_file1}")
-    if overwrite:
-        print("Overwriting!")
-        with open(json_out_file1, 'w') as f:
-            json.dump(json_response1,f,indent=4)
+#    if overwrite:
+#        print("Overwriting!")
+#        with open(json_out_file1, 'w') as f:
+#            json.dump(json_response1,f,indent=4)
    
 archival_directory=os.path.join(data_directory1,data_directory2)
 #create archival readme file using auto_fill_archive.py
-reme=create_archivalreadme(ArticleID,VersionNumber,CuratorName,archival_directory) 
+reme=create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName,archival_directory) 
 #----------------------create VTCurationServicesActions folder to save provenance log and email correspondence
                 
 data_directory4=f"VTCurationServicesActions"     
