@@ -29,7 +29,6 @@ def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,C
   #vtisheet=vtingsheet(ArticleID,VersionNumber)
   PublishedAccessionNumber= vtsheet['gspubnum']
   IngestAccessionNumber= vtsheet['gsingestno']
-  ingnum=IngestAccessionNumber
   vtisheet=vtingsheet(ArticleID,IngestVersionNumber)
   DateIngested=vtisheet['ingestdate']
   Requestor=vtsheet['gsrequestr']
