@@ -12,6 +12,7 @@ from spreadsheet import vtingsheet
 from datetime import date
 import re
 import os
+#from PyRTF import *
 #def create_archivalreadme(pubaccno,cur_name,ver,pdate):
 def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_directory: str = '',):
   today = date.today()
@@ -19,7 +20,7 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_director
 # dd/mm/YY
   currentday = today.strftime("%Y%m%d")
   curator=CuratorName
-  out_file_prefix = f"ArchivalPackage.rtf"
+  out_file_prefix = f"ArchivalPackageREADME.txt"
   #VersionNumber=ver
   root_directory=os.getcwd()
   archival_path=os.path.join(root_directory, archival_directory)
@@ -46,18 +47,22 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_director
   IngestVerNum="01"#Ingest records are always version 01
   m = re.search(r'(?<=/)\w+', DOI)
   #f = open('ArchivalPackage.rtf',"w")
+  #hyperlink_format.format(link='https://doi.org/10.7294/'+m.group(0))
+  hyperlink_format='https://doi.org/10.7294/'+m.group(0)
+  #link_text(link=hyperlink_format)
+  link_text=hyperlink_format.format
   f = open(out_file_prefix1,"w")
   f.write(" "+"\n"+
         "This Archival Information Package created by "+curator+" on "+currentday+"\n"+
-        "Virginia Tech Curation Services\n"+
-        "*****************************\n"+
+        "Virginia Tech Curation Services"+"\n"+
+        "*****************************"+"\n"+
         "Accession# for Ingest: "+ IngestAccessionNumber+"\n"+
         "Accession# for Publication: "+PublishedAccessionNumber+"\n"+
         "Requestor: "+Requestor+"\n"+
         "Corresponding Author: "+CorrespondingAuthor+"\n"+
         "Version#: "+VersionNumber+"\n"+
         "Date Published: "+DatePublished+"\n"+
-        "DOI: 10.7294/"+m.group(0)+"\n"+
+        "DOI: https://doi.org/10.7294/"+m.group(0)+"\n"
         "Dataset Title: "+Title+"\n"+
         "Corresponding Author Email: "+authoremail+"\n"+
         "College: "+college+"\n"+
@@ -74,3 +79,4 @@ def create_archivalreadme(ArticleID,VersionNumber,CuratorName, archival_director
   f.close()
 
   return 
+#"DOI: https://doi.org/10.7294/"+m.group(0)+link_text+"\n"+

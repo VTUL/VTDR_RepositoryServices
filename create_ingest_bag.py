@@ -87,15 +87,22 @@ else:
 
 
 if ingestrecord_creation_number == 2:
+ rootd=os.getcwd()
  data_directory_check=f"{IngestAccessionNumber}"
  data_directory_path_check=os.path.join(data_directory_check, data_directory2, "data")
- 
- #for IngestAcessionNumber_IngestedMetadata.json in os.listdir(data_directory_path_check):
- file1_path = os.path.join(data_directory_path_check, f"{IngestAccessionNumber}_IngestedMetadata.json")
- file2_path = os.path.join(data_directory_path, f"{IngestAccessionNumber}_IngestedMetadata.json")
- result=filecmp.cmp(file1_path,file2_path)
- #Print true or false if the files match/dont match
- print("Do the files match: ",result)
+ compath=os.path.join(rootd,data_directory_check,data_directory2,"data")
+ compath1=os.path.join(rootd,data_directory1,data_directory2)
+ list=os.listdir(compath)
+ no=len(list)
+ print("Number of files in the original bag: ",no)
+ list1=os.listdir(compath1)
+ no1=len(list1)
+ print("Number of files in the current new ingest bag: ",no1)
+ dc = filecmp.dircmp(compath, compath1)
+ print(f"output \n *** Printing detaile report: \n ")
+ print(dc.report())
+ print(f"\n")
+ print(dc.report_full_closure())
 
 #Call parts of modified UPACK_v2 code written by Luke. I. Menzies(lmenzies@uab.edu) to bag and tar ingest record
 
