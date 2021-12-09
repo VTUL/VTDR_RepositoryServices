@@ -52,20 +52,13 @@ PublishedAccessionNumber= vtsheet['gspubnum']
 #Get current directory:
 directory_path=os.getcwd()  
 
- 
-#source=os.path.join(directory_path,'ArchivalPackage.rtf')
 data_directory1=f"{PublishedAccessionNumber}_v{Version}"
 
 data_directory2=f"{PublishedAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DatePublished}"
 
 data_directory3=f"DisseminatedContent"
-#arch_readme_path=os.path.join(data_directory1,data_directory2,"ArchivalPackage.rtf")
-#shutil.move(['ArchivalPackage.rtf'],data_directory1)
 
 data_directory_path=os.path.join(data_directory1, data_directory2, data_directory3)
-#file_name=os.path.join(data_directory1,data_directory2,'ArchivalPackage.rtf')
-#dest=shutil.move(source,file_name)
-#move the file metadata to a different directory:
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
 
 #-----Download dataset for published article using LD-Cool-P and save it as publication meta data in json file format
@@ -74,7 +67,6 @@ from figshare.figshare import Figshare
 fs=Figshare(token=token,private=False)
 FileDownload=retrieve.download_files(article_id, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 #-----get article details for published article using LD-Cool-P and save it as published metadata in json file format
-#Get the metadata in json format:
 json_out_file1=f"{data_directory_path}/{PublishedAccessionNumber}_DisseminatedMetadata.json"
 json_response1=fs.get_article_details(article_id,version=None)
 
@@ -84,11 +76,7 @@ if not os.path.exists(json_out_file1):
         json.dump(json_response1,f,indent=4)
 else:
     print(f"File exists: {json_out_file1}")
-#    if overwrite:
-#        print("Overwriting!")
-#        with open(json_out_file1, 'w') as f:
-#            json.dump(json_response1,f,indent=4)
-   
+
 archival_directory=os.path.join(data_directory1,data_directory2)
 #create archival readme file using auto_fill_archive.py
 reme=create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName,archival_directory) 
