@@ -28,16 +28,22 @@ for line in fileObj:
 
 #Get ArticleID from secrets.txt:
 ArticleID=params["ArticleID"]
-#Get the Version number from secrets.txt:
-VersionNumber=params["VersionNumber"]
-#Get figshare token from secrets.txt:
+#Get the Published Version number from secrets.txt
+PublishedVersionNumber=params["PublishedVersionNumber"]
+#Get the Ingest Version number from secrets.txt
+IngestVersionNumber=params["IngestVersionNumber"]
+#Get your figshare token from secrets.txt
 token=params["token"]
-
-# Get the ingest record creation number from secrets.txt:(Is this the first time creating ingest record or nth time to check against the originial bag?)
+#Get curator name from secrets.txt
+CuratorName=params["CuratorName"]
+#Enter the ingest record creation number:
 ingestrecord_creation_number=int(params["ingestrecord_creation_number"])
 
+# Get the ingest record creation number from secrets.txt:(Is this the first time creating ingest record or nth time to check against the originial bag?)
+#ingestrecord_creation_number=int(params["ingestrecord_creation_number"])
+
 #Get information from the spreadsheet for the corresponding ArticleID and Version Number:
-ingsheet=vtingsheet(ArticleID,VersionNumber)
+ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 #Get article id
 article_id=ingsheet['ingarticleid']
 # get Ingest Accession Number 
