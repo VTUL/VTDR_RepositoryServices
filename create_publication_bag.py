@@ -48,13 +48,15 @@ DatePublished= vtsheet['gsdatepub']
 
 #Create Publication folder to store dataset
 PublishedAccessionNumber= vtsheet['gspubnum']
+RequestorLFI=vtsheet['gsreqlastfi']
+CorrespondingAuthorLFI=vtsheet['gscorrlastfi']
 
 #Get current directory:
 directory_path=os.getcwd()  
 
 data_directory1=f"{PublishedAccessionNumber}_v{Version}"
 
-data_directory2=f"{PublishedAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DatePublished}"
+data_directory2=f"{PublishedAccessionNumber}_{RequestorLFI}_{CorrespondingAuthorLFI}_v{Version}_{DatePublished}"
 
 data_directory3=f"DisseminatedContent"
 

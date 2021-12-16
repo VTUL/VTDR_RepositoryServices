@@ -15,7 +15,6 @@ import os
 from PyRTF import *
 def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName, archival_directory: str = '',):
   today = date.today()
-
 # dd/mm/YY
   currentday = today.strftime("%Y%m%d")
   curator=CuratorName

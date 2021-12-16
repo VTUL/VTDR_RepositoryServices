@@ -36,12 +36,8 @@ IngestVersionNumber=params["IngestVersionNumber"]
 token=params["token"]
 #Get curator name from secrets.txt
 CuratorName=params["CuratorName"]
-#Enter the ingest record creation number:
+#Enter the ingest record creation number: (Is this the first time creating ingest record or nth time to check against the originial bag?)
 ingestrecord_creation_number=int(params["ingestrecord_creation_number"])
-
-# Get the ingest record creation number from secrets.txt:(Is this the first time creating ingest record or nth time to check against the originial bag?)
-#ingestrecord_creation_number=int(params["ingestrecord_creation_number"])
-
 #Get information from the spreadsheet for the corresponding ArticleID and Version Number:
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 #Get article id
