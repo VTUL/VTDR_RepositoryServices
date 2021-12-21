@@ -8,7 +8,7 @@ Created on Wed Oct  6 12:39:04 2021
 import os
 from os.path import exists
 from figshare.figshare import Figshare
-from ldcoolp.curation.UPack_v2 import ObjFormatter
+from UPack_v2 import ObjFormatter
 from ldcoolp.curation import retrieve
 import json
 from spreadsheet import vtingsheet
@@ -82,10 +82,10 @@ if not os.path.exists(json_out_file):
         json.dump(json_response,f,indent=4)
 else:
     print(f"File exists: {json_out_file}")
-    if overwrite:
-        print("Overwriting!")
-        with open(json_out_file, 'w') as f:
-            json.dump(json_response,f,indent=4)
+#    if overwrite:
+#        print("Overwriting!")
+#        with open(json_out_file, 'w') as f:
+#            json.dump(json_response,f,indent=4)
 
 
 if ingestrecord_creation_number == 2:
