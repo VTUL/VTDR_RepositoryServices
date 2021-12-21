@@ -53,7 +53,9 @@ import tkinter as tk
 import uuid
 from os import getcwd, listdir, mkdir, path, remove, rename, stat, walk
 from tkinter import messagebox, Button, Entry, Label, Checkbutton, Frame, Toplevel, OptionMenu, Text, Scrollbar
-from tkinter.filedialog import askdirectory, askopenfilename, StringVar, IntVar
+from tkinter.filedialog import askdirectory, askopenfilename
+from tkinter import *
+#, StringVar, IntVar
 
 import bagit
 from PIL import Image, ImageTk

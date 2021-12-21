@@ -3,7 +3,7 @@
 Created on Tue Oct 26 14:05:20 2021
 
 @author: padma carstens
-""""
+"""
 import gspread
 import re
 from oauth2client.service_account import ServiceAccountCredentials
