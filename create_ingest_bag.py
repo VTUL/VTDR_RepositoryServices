@@ -48,6 +48,10 @@ IngestAccessionNumber=ingsheet['ingestno']
 Requestor=ingsheet['ingrequestr']
 #get corresponding author name
 CorrespondingAuthor=ingsheet['ingrequestr']
+#Get LastnameFirstnameinitial of requestor and corresponding author:
+Requestorlfi=ingsheet['ingreqlastfirsti']
+CorrespondingAuthorlfi=ingsheet['ingcorlastfirsti']
+
 #get version number
 Version=ingsheet['ingversion']
 #get date ingested in YYYYMMDD format
@@ -64,7 +68,7 @@ if ingestrecord_creation_number == 1:
     data_directory1=f"{IngestAccessionNumber}"
 elif ingestrecord_creation_number > 1:
     data_directory1=f"{IngestAccessionNumber}_{date_current}_{time_current}"
-data_directory2=f"{IngestAccessionNumber}_{Requestor}_{CorrespondingAuthor}_v{Version}_{DateIngested}"
+data_directory2=f"{IngestAccessionNumber}_{Requestorlfi}_{CorrespondingAuthorlfi}_v{Version}_{DateIngested}"
 data_directory_path=os.path.join(data_directory1, data_directory2)
 metadata_directory_path=f"{IngestAccessionNumber}_DownloadedFileMetadata"
 
