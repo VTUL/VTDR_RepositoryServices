@@ -72,7 +72,7 @@ def vtingsheet(ArticleID,IngestVersionNumber):
  ingest_no=ingestnums[rownum]
  ing_reqlastfi=ireq_lastfirstini[rownum]
  ing_corlastfi=icorr_lastfirstini[rownum]
- isheetinfo=[rownum+1,ing_requestor,ing_version,ing_date,ing_title,ing_comment,ing_articleid]
+ isheetinfo=[rownum+1,ing_requestor,ing_version,ing_date,ing_title,ing_comment,ing_articleid,ing_reqlastfi]
  print("Information from the Ingest sheet: ",isheetinfo)
  dictingsheet=dict({'ingrownum': rownum+1,'ingestno':ingest_no,'ingrequestr':ing_requestor,'ingversion':ing_version,'ingestdate':ing_date,'ingtitle':ingsheet_title,'ingcomment':ing_comment,'ingarticleid': ing_articleid,'ingreqlastfirsti':ing_reqlastfi,'ingcorlastfirsti':ing_corlastfi})
  return dictingsheet
