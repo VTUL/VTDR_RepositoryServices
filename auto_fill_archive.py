@@ -29,6 +29,8 @@ def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,C
   DateIngested=vtisheet['ingestdate']
   Requestor=vtsheet['gsrequestr']
   CorrespondingAuthor=vtsheet['gscorsauth']
+  RequestorLFI=vtisheet['ingreqlastfirsti']
+  CorrespondingAuthorLFI=vtisheet['ingcorlastfirsti']
   DatePublished= vtsheet['gsdatepub']  
   DOI=vtsheet['gsdoi']
   Title=vtsheet['gstitle']
@@ -41,7 +43,7 @@ def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,C
   m = re.search(r'(?<=/)\w+', DOI)
   doilink= "https://doi.org/10.7294/"+m.group(0)
   f = open(out_file_prefix1,"w")
-  f.write("{\\rtf1\\ansi This Archival Information Package created by "+curator+ "on "+currentday+"\\line"+
+  f.write("{\\rtf1\\ansi This Archival Information Package created by "+curator+ " on "+currentday+"\\line"+
         " Virginia Tech Curation Services \\line"+"\n"+
         "***************************** \\line"+"\n"+
         "Accession# for Ingest: "+ IngestAccessionNumber+"\\line\n"+
@@ -57,7 +59,7 @@ def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,C
         "Department: "+dept+"\\line\n"+
         "Date of Most Recent Comment: "+datecomment+"\\line\n"+
         "Most Recent Comment: "+comment+"\\line\n"+
-        "Bag Containing Original Content: "+IngestAccessionNumber+"_"+Requestor+"_"+CorrespondingAuthor+"_"+"v"+IngestVerNum+"_"+DateIngested+".tar"+"\\line\n"
+        "Bag Containing Original Content: "+IngestAccessionNumber+"_"+RequestorLFI+"_"+CorrespondingAuthorLFI+"_"+"v"+IngestVerNum+"_"+DateIngested+".tar"+"\\line\n"
         "*****************************"+"\\line\n"+
         "DisseminationContent (directory) contains"+"\\line\n"+
         "	-content and metadata made accessible through the Virginia Tech Data Repository; more information about this repository can be found at http://doi.org/10.17616/R3JF54 "+"\\line\n"+
