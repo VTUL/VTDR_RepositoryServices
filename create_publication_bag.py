@@ -63,7 +63,7 @@ data_directory3=f"DisseminatedContent"
 data_directory_path=os.path.join(data_directory1, data_directory2, data_directory3)
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
 
-#-----Download dataset for published article using LD-Cool-P and save it as publication meta data in json file format
+#-----Download dataset for published article using LD-Cool-P UAL and save it as publication meta data in json file format
 publicfigshare_url='https://api.figshare.com/v2/articles/'+str(article_id)
 from figshare.figshare import Figshare
 fs=Figshare(token=token,private=False)

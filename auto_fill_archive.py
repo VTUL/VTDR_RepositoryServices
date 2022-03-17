@@ -4,7 +4,7 @@ Created on Mon Oct 25 10:55:10 2021
 
 @author: padma carstens
 """
-#Following code creates archival readme rtf file using information from the spreadsheet
+#Following code creates archival readme rtf file using information from the VTDR spreadsheet
 
 #from create_publication_bag import PublicationDate
 from spreadsheet import vtpubsheet
