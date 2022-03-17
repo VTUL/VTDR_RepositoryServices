@@ -15,6 +15,7 @@ from spreadsheet import vtingsheet
 from datetime import date
 import filecmp
 from datetime import datetime
+#from fill_readme import create_readme
 
 filename="secrets.txt"
 fileObj=open(filename)
@@ -35,6 +36,7 @@ IngestVersionNumber=params["IngestVersionNumber"]
 #Get your figshare token from secrets.txt
 token=params["token"]
 #Get curator name from secrets.txt
+#readme_auto=create_readme(ArticleID,token)
 CuratorName=params["CuratorName"]
 #Enter the ingest record creation number: (Is this the first time creating ingest record or nth time to check against the originial bag?)
 ingestrecord_creation_number=int(params["ingestrecord_creation_number"])

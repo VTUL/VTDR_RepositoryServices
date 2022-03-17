@@ -47,6 +47,8 @@ def vtingsheet(ArticleID,IngestVersionNumber):
  ingsheet_date=ingsheet.col_values(5)
  # Get the column values for Title:
  ingsheet_title=ingsheet.col_values(6)
+ #Get the corresponding author email address:
+ ingsheet_cemail=ingsheet.col_values(7)
  #Get the column values for comment:
  ingsheet_comment=ingsheet.col_values(8)
  #Get the column values for article ID
@@ -67,6 +69,7 @@ def vtingsheet(ArticleID,IngestVersionNumber):
  ing_version=ingsheet_version[rownum]
  ing_date=ingsheet_date[rownum]
  ing_title=ingsheet_title[rownum]
+ ing_cemail=ingsheet_cemail[rownum]
  ing_comment=ingsheet_comment[rownum]
  ing_articleid=ingsheet_article[rownum] 
  ingest_no=ingestnums[rownum]
@@ -74,19 +77,19 @@ def vtingsheet(ArticleID,IngestVersionNumber):
  ing_corlastfi=icorr_lastfirstini[rownum]
  isheetinfo=[rownum+1,ing_requestor,ing_version,ing_date,ing_title,ing_comment,ing_articleid,ing_reqlastfi]
  print("Information from the Ingest sheet: ",isheetinfo)
- dictingsheet=dict({'ingrownum': rownum+1,'ingestno':ingest_no,'ingrequestr':ing_requestor,'ingversion':ing_version,'ingestdate':ing_date,'ingtitle':ingsheet_title,'ingcomment':ing_comment,'ingarticleid': ing_articleid,'ingreqlastfirsti':ing_reqlastfi,'ingcorlastfirsti':ing_corlastfi})
+ dictingsheet=dict({'ingrownum': rownum+1,'ingestno':ingest_no,'ingrequestr':ing_requestor,'ingversion':ing_version,'ingestdate':ing_date,'ingtitle':ingsheet_title,'ingcemail':ing_cemail,'ingcomment':ing_comment,'ingarticleid': ing_articleid,'ingreqlastfirsti':ing_reqlastfi,'ingcorlastfirsti':ing_corlastfi})
  return dictingsheet
 
 
 #Following gets information from the spreadsheet version 7 "Published" sheet using the article id and version
-def vtpubsheet(articleid,vernum):
+def vtpubsheet(ArticleID,PublishedVersionNumber):
 # use creds to create a client to interact with the Google Drive API
   scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
   creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
   client = gspread.authorize(creds)
-#Open the spreadsheet sheet1: "Published"
+  #Open the spreadsheet sheet1: "Published"
   pubsheet = client.open("20211214_VTDR_PublishedDatasets_Log_V7").worksheet('Published')
-#Get the column values for Ingest Number:
+  #Get the column values for Ingest Number:
   ingest_num=pubsheet.col_values(1)
   #Get the column values for Published Accession number:
   pubacc_num=pubsheet.col_values(2)
@@ -94,7 +97,7 @@ def vtpubsheet(articleid,vernum):
   requestor=pubsheet.col_values(3)
   #Get the column values for Corresponding Author:
   corres_author=pubsheet.col_values(4)
-#Use string split to get lastnamefirstnameinitial for folder creation for requestor and corresponding author:
+  #Use string split to get lastnamefirstnameinitial for folder creation for requestor and corresponding author:
   req_lastfirstini=['Requestor_lastname_firstnameinitial']
   corr_lastfirstini=['CorrespondingAuthor_lastname_firstnameinitial']
   for x in range(1,len(requestor)):
@@ -138,11 +141,13 @@ def vtpubsheet(articleid,vernum):
   #Get the column values for most recent commen
   most_recent_comment=pubsheet.col_values(13)
   #find the row in the spreadsheet that corresponds to the given articleid:
-  row_aidmatch=[i for i, e in enumerate(artid) if e == articleid]
+  row_aidmatch=[i for i, e in enumerate(artid) if e == ArticleID]
   #find the row in the spreadsheet that corresponds to the given version number:
-  row_vermatch=[i for i, e in enumerate(version) if e == vernum]
+  row_vermatch=[i for i, e in enumerate(version) if e == PublishedVersionNumber]
   #find the row in the spreadsheet that corresponds to the given articleid and version number
   rownum=np.intersect1d(row_aidmatch,row_vermatch)
+  if (len(rownum)>1):
+    print("two or more rows with the same publication for the same version")
   #the row number on the spreadsheet is rownum+1 due to array indexing from 0
   #convert numpy array to integer
   rownum=int(rownum)
