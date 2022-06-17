@@ -125,7 +125,6 @@ def create_readme(ArticleID,token):
   f = open(out_file_prefix1,'w')
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
         "{\\b Author(s):} "+str(author)+"\\line\n"+
-        "{\\b Corresponding Author Email Address:} "+str(corremail)+"\\line\n"+
         "{\\b Categories:} "+str(Categoriesinfo)+"\\line\n"+
         "{\\b Group:} "+str(Group)+"\\line\n"+
         "{\\b Item Type:} "+str(ItemType)+"\\line\n"+
@@ -138,7 +137,7 @@ def create_readme(ArticleID,token):
         "{\\b License:} "+str(License)+"\\line\n"+
         "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
         "{\\b Language:} "+str(Language)+"\\line\n"+
-        "{\\b Location:} "+str(Location)+
+        "{\\b Location:} "+str(Location)+"\\line\n"+
         "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
         "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
         str(FilesFolders)+ "}")
