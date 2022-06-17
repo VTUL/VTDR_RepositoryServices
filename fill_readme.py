@@ -37,7 +37,9 @@ CuratorName=params["CuratorName"]
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 
 def create_readme(ArticleID,token):
+  #If creating this AFTER published then change private to False below
   fs=Figshare(token=token,private=True)
+  #fs=Figshare(token=token,private=False)
   details=fs.get_article_details(ArticleID,version=None)
   title=details["title"]
   authr=[]
@@ -88,6 +90,10 @@ def create_readme(ArticleID,token):
   if ResourceDOI is None:
     ResourceDOI="Will be added after manuscript is accepted"
   OtherRef=details['references']
+
+  #Convert Other Ref to string:
+  OtherRef=''.join(OtherRef)
+
   if OtherRef is None:
     OtherRef="Not Provided"
   #License="CC-0 1.0 Universal (CC0 1.0) Public Domain Dedication"
@@ -103,7 +109,10 @@ def create_readme(ArticleID,token):
   Location= details['custom_fields'][2]['value']
   if Location is None:
     Location="Not provided"
-  
+  CorresAuthEmail=details['custom_fields'][3]['value']
+  FilesFolders=details['custom_fields'][4]['value']
+  soup1=BeautifulSoup(FilesFolders,features="html.parser")
+  FilesFolders=soup1.get_text()
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
   readme_path=os.path.join(root_directory, "README_FILES")
@@ -111,25 +120,28 @@ def create_readme(ArticleID,token):
   isExist=os.path.exists(readme_path) #True or False
   if not isExist:
     os.mkdir(readme_path)
-    print("The new directory README_FILES is created")
+    #print("The new directory README_FILES is created")
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w')
-  f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+title+"\\line\n"+
-        "{\\b Author(s):} "+author+"\\line\n"+
-        "{\\b Corresponding Author Email Address:} "+corremail+"\\line\n"+
-        "{\\b Categories:} "+Categoriesinfo+"\\line\n"+
-        "{\\b Group:} "+Group+"\\line\n"+
-        "{\\b Item Type:} "+ItemType+"\\line\n"+
-        "{\\b Keywords:} "+keywords+"\\line\n"+
-        "{\\b Description:} "+Description+"\\line\n"
-        "{\\b Funding:} "+Funding+"\\line\n"+
-        "{\\b Resource Title:} "+ResourceTitle+"\\line\n"+
-        "{\\b Resource DOI:} "+ResourceDOI+"\\line\n"+
-        "{\\b Other References:} "+"\\line\n"+
-        "{\\b License:} "+License+"\\line\n"+
-        "{\\b Publisher:} "+Publisher+"\\line\n"+
-        "{\\b Language:} "+Language+"\\line\n"+
-        "{\\b Location:} "+Location+"}")
+  f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
+        "{\\b Author(s):} "+str(author)+"\\line\n"+
+        "{\\b Corresponding Author Email Address:} "+str(corremail)+"\\line\n"+
+        "{\\b Categories:} "+str(Categoriesinfo)+"\\line\n"+
+        "{\\b Group:} "+str(Group)+"\\line\n"+
+        "{\\b Item Type:} "+str(ItemType)+"\\line\n"+
+        "{\\b Keywords:} "+str(keywords)+"\\line\n"+
+        "{\\b Description:} "+str(Description)+"\\line\n"
+        "{\\b Funding:} "+str(Funding)+"\\line\n"+
+        "{\\b Resource Title:} "+str(ResourceTitle)+"\\line\n"+
+        "{\\b Resource DOI:} "+str(ResourceDOI)+"\\line\n"+
+        "{\\b Other References:} "+str(OtherRef)+"\\line\n"+
+        "{\\b License:} "+str(License)+"\\line\n"+
+        "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
+        "{\\b Language:} "+str(Language)+"\\line\n"+
+        "{\\b Location:} "+str(Location)+
+        "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
+        "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
+        str(FilesFolders)+ "}")
   f.close()
 
   return 

@@ -10,7 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import numpy as np
 
 #Following gets data from the spreadsheet version 7 "Ingest" using the ingest number
-def vtingsheet(ArticleID,IngestVersionNumber):
+def aptrust_vtingsheet():
  scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
  creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
  client = gspread.authorize(creds)
@@ -40,7 +40,6 @@ def vtingsheet(ArticleID,IngestVersionNumber):
    corr_firstnameini=corr_firstname[0].upper()
    corr_lastfirstini1=corr_lastname+corr_firstnameini
    icorr_lastfirstini.append(corr_lastfirstini1)
-    
  #Get the column values for Version:
  ingsheet_version=ingsheet.col_values(4)
 #Get the column values for Ingest Date:
@@ -53,39 +52,16 @@ def vtingsheet(ArticleID,IngestVersionNumber):
  ingsheet_comment=ingsheet.col_values(8)
  #Get the column values for article ID
  ingsheet_article=ingsheet.col_values(9)
-#Find the row/rows in the spreadsheet that correspond to the given articleid 
- row_aidmatch=[i for i, e in enumerate(ingsheet_article) if e == ArticleID]
- #Find the row/rows in the spreadsheet that correspond to the given version
- row_vermatch=[i for i, e in enumerate(ingsheet_version) if e == IngestVersionNumber]
- #Find the row in the spreadsheet that corresponds to the given article ID and version number
- #CHANGE THIS TO DOI SUFFIX COLLUMN INTERSECT UNITL WE COMBINE INGEST AND PUBLICATION
- rownum=np.intersect1d(row_aidmatch,row_vermatch)
- #the row number on the spreadsheet is rownum+1 due to array indexing from 0
- #convert numpy array to integer
+#Get the doi suffixes if article is published
+ ingsheet_doi=ingsheet.col_values(10)
+ dictingsheet=dict({'iRequestor': ingsheet_requestor,'iCorAuth':icorres_author,'iVersion':ingsheet_version,'iDate':ingsheet_date,'iTitle':ingsheet_title,'iCAemail':ingsheet_cemail,'iComment':ingsheet_comment,'iArticleid': ingsheet_article,'iIngestnum':ingestnums,'iReqLnameFini':ireq_lastfirstini,'iCorLnameFini': icorr_lastfirstini,'iDOIsuffix' : ingsheet_doi})
 
  
- rownum=int(rownum)
- print("Ingest sheet rownumber: ",rownum+1)
-
-#Get the Requestion, Version, IngestDate, Title, Comment, ArticleID, IngestNumber that correspond the rownumber found above   
- ing_requestor=ingsheet_requestor[rownum]
- ing_version=ingsheet_version[rownum]
- ing_date=ingsheet_date[rownum]
- ing_title=ingsheet_title[rownum]
- ing_cemail=ingsheet_cemail[rownum]
- ing_comment=ingsheet_comment[rownum]
- ing_articleid=ingsheet_article[rownum] 
- ingest_no=ingestnums[rownum]
- ing_reqlastfi=ireq_lastfirstini[rownum]
- ing_corlastfi=icorr_lastfirstini[rownum]
- isheetinfo=[rownum+1,ing_requestor,ing_version,ing_date,ing_title,ing_comment,ing_articleid,ing_reqlastfi]
- print("Information from the Ingest sheet: ",isheetinfo)
- dictingsheet=dict({'ingrownum': rownum+1,'ingestno':ingest_no,'ingrequestr':ing_requestor,'ingversion':ing_version,'ingestdate':ing_date,'ingtitle':ingsheet_title,'ingcemail':ing_cemail,'ingcomment':ing_comment,'ingarticleid': ing_articleid,'ingreqlastfirsti':ing_reqlastfi,'ingcorlastfirsti':ing_corlastfi})
  return dictingsheet
 
 
 #Following gets information from the spreadsheet version 7 "Published" sheet using the article id and version
-def vtpubsheet(ArticleID,PublishedVersionNumber):
+def aptrust_vtpubsheet():
 # use creds to create a client to interact with the Google Drive API
   scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
   creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
@@ -126,11 +102,11 @@ def vtpubsheet(ArticleID,PublishedVersionNumber):
   #Get the column values for DOI:
   doi=pubsheet.col_values(7)
   #split article id from doi:
-  artid=['DOI']
+  doisuffix=['DOI']
   for l in range(1,len(doi)):
     d=doi[l]
     v= d.split('/')[1]
-    artid.append(v)
+    doisuffix.append(v)
   #Get the column values for title:
   title=pubsheet.col_values(8)
   #Get the column values for corresponding author email id:
@@ -143,36 +119,37 @@ def vtpubsheet(ArticleID,PublishedVersionNumber):
   date_most_recent_comment=pubsheet.col_values(12)
   #Get the column values for most recent commen
   most_recent_comment=pubsheet.col_values(13)
-  #find the row in the spreadsheet that corresponds to the given articleid:
-  row_aidmatch=[i for i, e in enumerate(artid) if e == ArticleID]
-  #find the row in the spreadsheet that corresponds to the given version number:
-  row_vermatch=[i for i, e in enumerate(version) if e == PublishedVersionNumber]
-  #find the row in the spreadsheet that corresponds to the given articleid and version number
-  rownum=np.intersect1d(row_aidmatch,row_vermatch)
-  if (len(rownum)>1):
-    print("two or more rows with the same publication for the same version")
-  #the row number on the spreadsheet is rownum+1 due to array indexing from 0
-  #convert numpy array to integer
-  rownum=int(rownum)
-  print("Published sheet rownumber: ",rownum)
-  #get the Ingest number, Published Accession number, Requestion, Corresponding author, version number, date published, title, corresponding author email, college, department, date of most recent comment, most recent comment, article id from row that the article id and version correspond to from the spreadsheet
-  psheet_ingestno=ingest_num[rownum]
-  psheet_pubno=pubacc_num[rownum]
-  psheet_reques=requestor[rownum]
-  psheet_corrsaut=corres_author[rownum]
-  psheet_vers=version[rownum]
-  psheet_datepub=date_pub[rownum]
-  psheet_doipub=doi[rownum]
-  psheet_titlepub=title[rownum]
-  psheet_corremail=corres_authemail[rownum]
-  psheet_coll=college[rownum]
-  psheet_departmnt=dept[rownum]
-  psheet_datecomm=date_most_recent_comment[rownum]
-  psheet_mostreccomm=most_recent_comment[rownum]
-  psheet_articleid=artid[rownum]
-  psheet_reqlastfi=req_lastfirstini[rownum]
-  psheet_corlastfi=corr_lastfirstini[rownum]
-  psheetinfo=[rownum,psheet_articleid,psheet_ingestno,psheet_pubno,psheet_reques,psheet_corrsaut,psheet_vers,psheet_datepub,psheet_doipub,psheet_titlepub,psheet_corremail,psheet_coll,psheet_departmnt,psheet_datecomm,psheet_mostreccomm] 
-  print("Information form the Published Sheet:",psheetinfo)
-  dictgsvt=dict({'gsrownum':rownum+1,'gsarticleid':psheet_articleid,'gsingestno':psheet_ingestno,'gspubnum':psheet_pubno,'gsrequestr':psheet_reques,'gscorsauth':psheet_corrsaut,'gsversnum':psheet_vers,'gsdatepub':psheet_datepub,'gsdoi':psheet_doipub,'gstitle':psheet_titlepub,'gscorauthemail':psheet_corremail,'gscollg':psheet_coll,'gsdept':psheet_departmnt,'gsdatecomnt':psheet_datecomm,'gscomnt':psheet_mostreccomm,'gsreqlastfi':psheet_reqlastfi,'gscorrlastfi':psheet_corlastfi,'DOIsuffix':psheet_articleid})
-  return dictgsvt
+
+
+  dictpubsheet=dict({'pDOIsuffix':doisuffix,'pIngestnum':ingest_num,'pPubnum':pubacc_num,'pRequestor':requestor,'pCorAuth':corres_author,'pVersion':version,'pDate':date_pub,'pDoi':doi,'pTitle':title,'pCAemail':corres_authemail,'pCollege':college,'pDept':dept,'pDateComnt':date_most_recent_comment,'pComment':most_recent_comment,'pReqLnameFini': req_lastfirstini,'pCorLnameFini':corr_lastfirstini})
+  return dictpubsheet
+
+
+#Fill article id information from figshare batch download for articles published before migration to figshare 
+def aptrust_vtFigDownld():
+# use creds to create a client to interact with the Google Drive API
+  scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+  creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+  client = gspread.authorize(creds)
+  #Open the spreadsheet sheet1: "Published"
+  Figsheet = client.open("20211214_VTDR_PublishedDatasets_Log_V7").worksheet('FigshareBatchDownload')
+  #Get the column values for Ingest Number:
+  fArticleID=Figsheet.col_values(1)
+  
+  #Get the column values for DOI:
+  fdoi=Figsheet.col_values(14)
+  #split article id from doi:
+  fdoisuffix=['DOI']
+  for l in range(1,len(fdoi)):
+    d=fdoi[l]
+    v= d.split('/')[1]
+    fdoisuffix.append(v)
+  #Get the column values for title:
+  ftitle=Figsheet.col_values(5)
+  #Get the column values for corresponding author email id:
+  fpubdate=Figsheet.col_values(29)
+
+#aptrust_vtFigDownld():
+  dictfigsheet=dict({'fArticleID': fArticleID,'fDOIsuffix':fdoisuffix,'fPubDate':fpubdate,'fDoisuffix':fdoisuffix,'ftitle':ftitle})
+  return dictfigsheet
+
