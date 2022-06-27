@@ -58,7 +58,7 @@ sourcedir1="F:/VTechbags"
 count=0
 IngOrPub ='P'
 ###Example of range for the for loop below: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
-for i in range(220,221):
+for i in range(225,226):
   if IngOrPub=='P':
     aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
     aptrustBagName_tar=f"{aptrustBagName}.tar"

@@ -34,26 +34,14 @@ import bagit
 
 #Create a log sheet
 #************CHANGE(1) FOR EVERY 10 BAG RUN***************************
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P31_to_P40.xls')
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P32.xls')
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P51_to_P60.xls')
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P50.xls')
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P61_to_P70.xls')
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P62.xls')
-#sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P64.xls')
-sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/APTrustTransferInformationSheet_%Y%m%d_%H%M_P71_to_P80.xls')
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P101_to_P110.xls')
 wb=Workbook(sheetname)
 
 #************CHANGE(2) FOR EVERY 10 BAG RUN***************************
-#sheet1=wb.add_sheet("APTrustTransferSheet_P31_P40")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P32")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P41_P50")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P50")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P51_P60")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P61_P70")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P62")
-#sheet1=wb.add_sheet("APTrustTransferSheet_P64")
-sheet1=wb.add_sheet("APTrustTransferSheet_P71_P80")
+
+sheet1=wb.add_sheet("APTrustTransferSheet_P101_P110")
+
+
 sheet1.write(0, 0, 'Bagname made by UPACK')
 sheet1.write(0, 1, 'Bagname made by DART')
 sheet1.write(0, 2, 'ValidationTest of bag made by UPACK')
@@ -73,14 +61,10 @@ sheet1.write(0,15,'Exceptions with the bag made by UPACK')
 sheet1.write(0,16,'Comments')
 #Create a log file
 #************CHANGE(3) FOR EVERY !) BAG RUN ***************************
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P31_to_P40.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P32.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P61_to_P70.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P50.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/logfile_%H_%M_%d_%m_%Y.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P62.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P64.log')
-LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/APTrustTransferLogfile_%Y%m%d_%H%M_P71_to_P80.log')
+
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P101_to_P110.log')
+
+
 ext=".tar"
 i1=1
 
@@ -125,20 +109,9 @@ count=0
 #indexing for i below for P11-P20: 11, 22 i=21 gets the bag P00020 which is row 22
 #indexing for i for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
 #indexing for i for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
-#for i in range(21,30):
-#for i in range(22,32):  
-#for i in range(32,42):  
-#Doing P33 again since it didnt get uploaded to repo
-#for i in range(33,34):  
-#for i in range(42,53): 
-#for i in range(52,53):
-#for i in range(53,63): 
-#for i in range(57,58):  
-#for i in range(30,32):   
-#for i in range(63,74):
-#for i in range(64,65):  #i=64 gets row 65 P62
-#for i in range(67,68): 
-for i in range(74,85):   
+ 
+for i in range(110,121):
+  wb.save(sheetname)
   logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
   IngOrPub='P' #0 for ingest 1 for pub
   print("Row number on spreadsheet is " , i+1)
@@ -146,7 +119,7 @@ for i in range(74,85):
   HeadDir="F:\\"
   print("ingorpub",IngOrPub)
 
-###EXCEPTIONS-------------------------------------------------------------------------------------
+###EXCEPTIONS/COMMENTS-------------------------------------------------------------------------------------
   if i==125:
     pDate[i]="20210201"
 
@@ -215,8 +188,71 @@ for i in range(74,85):
     logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
     logging.info("Exception: Bag has different versions on spreadsheet and bag name. P00067 is bagged with the version 02 but the version on spreadsheet is v01. To accomodate for this: Changing version on spreadsheet to v02 and using v02 on bag made by DART, since this bag was published before migration, its published article appears with an extension of V2 on figshare ")    
 
+  if i==77 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00073 has 3 bags with 3different versions, 2 authors were added between version 01 and version 02, dataset name was changed from v02 to v03, only transferring v03 to APTrust since the changes between different versions are not significant   \n")
+    sheet1.write(i1,16,"Publication bag P00073 has 3 bags with 3different versions, 2 authors were added between version 01 and version 02, dataset name was changed from v02 to v03, only transferring v03 to APTrust since the changes between different versions are not significant   ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00073 has 3 bags with 3different versions, 2 authors were added between version 01 and version 02, dataset name was changed from v02 to v03, only transferring v03 to APTrust since the changes between different versions are not significant     ")
 
-#END OF EXCEPTION**********************************************************************************************
+
+  if i==83 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00079 is bagged again on date 20220617 after removing ~README.rtf, and comparing manifest-md5.txt of old bag with new bag to make sure contents remain the same after rebagging. This was done since bag validation failed originally due to presence of ~README.rtf   \n")
+    sheet1.write(i1,16,"Publication bag P00079 is bagged again on 20220617 after removing ~README.rtf, and comparing manifest-md5.txt of old bag with new bag to make sure contents remain the same after rebagging. This was done since bag validation failed originally due to presence of ~README.rtf ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00079 is bagged again on 20220617 after removing ~README.rtf, and comparing manifest-md5.txt of old bag with new bag to make sure contents remain the same after rebagging. This was done since bag validation failed originally due to presence of ~README.rtf   ") 
+
+  if i==84 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00080 is bagged on DART using publication date on Figshare: 20200221 since publication date on bag,publication date on published sheet and publication date on figshare don't match  \n")
+    sheet1.write(i1,16,"Publication bag P00080 is bagged on DART using publication date on Figshare: 2020221 since publication date on bag,publication date on published sheet and publication date on figshare don't match ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00080 is bagged on DART using publication date on Figshare: 20200221 since publication date on bag,publication date on published sheet and publication date on figshare don't match")    
+
+  if i==86 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00082 is bagged on DART using publication date on Figshare: 20200227 since publication date on bag and publication date on figshare don't match  \n")
+    sheet1.write(i1,16,"Publication bag P00082 is bagged on DART using publication date on Figshare: 2020227 since publication date on bag and publication date on figshare don't match ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00082 is bagged on DART using publication date on Figshare: 20200227 since publication date on bag and publication date on figshare don't match")
+
+  if i==89 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception: Bag has different versions on spreadsheet and bag name. P00085 is bagged with the version 02 but the version on spreadsheet is v01. To accomodate for this: Changing version on DART bag to v01, since this bag was published as version 01 \n")
+    sheet1.write(i1,15,"Exception: Bag has different versions on spreadsheet and bag name. P00085 is bagged with the version 02 but the version on spreadsheet is v01. To accomodate for this: Changing version on DART bag to v01, since this bag was published as version 01 ")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception: Bag has different versions on spreadsheet and bag name. P00085 is bagged with the version 02 but the version on spreadsheet is v01. To accomodate for this: Changing version on DART bag to v01, since this bag was published as version 01")  
+
+
+  if i==96 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Comment: Payload path is different compared with other payload paths, for this bag it is:P00090_ConsolvoS_ConsolvoS_03_20210329\\data\\payload instead of P00090_ConsolvoS_ConsolvoS_03_20210329\\data\\P00090_ConsolvoS_ConsolvoS_03_20210329\\payload.  \n")
+    sheet1.write(i1,16,"Comment: Payload path is different compared with other payload paths, for this bag it is:P00090_ConsolvoS_ConsolvoS_03_20210329\\data\\payload instead of P00090_ConsolvoS_ConsolvoS_03_20210329\\data\\P00090_ConsolvoS_ConsolvoS_03_20210329\\payload. ")
+    logging.info("************************THIS PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Comment: Payload path is different compared with other payload paths, for this bag it is:P00090_ConsolvoS_ConsolvoS_03_20210329\\data\\payload instead of P00090_ConsolvoS_ConsolvoS_03_20210329\\data\\P00090_ConsolvoS_ConsolvoS_03_20210329\\payload.")   
+
+  if i==97 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("EXCEPTION: P00091 has 2 versions and is a large size bag ~36GB, only transferring version 02  \n")
+    sheet1.write(i1,15,"Exception: P00091 has 2 versions and is a large size bag ~36GB, only transferring version 02")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception: P00091 has 2 versions and is a large size bag ~36GB, only transferring version 02")   
+
+  if i==103 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00095 is bagged on DART using publication date on Figshare: 20200708 since publication date on bag and publication date on spreadsheet don't match  \n")
+    sheet1.write(i1,16,"Publication bag P00095 is bagged on DART using publication date on Figshare: 20200708 since publication date on bag and publication date on spreadsheet don't match ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00095 is bagged on DART using publication date on Figshare: 20200708 since publication date on bag and publication date on spreadsheet don't match ")    
+
+  if i==120 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P000109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match  \n")
+    sheet1.write(i1,16,"Publication bag P000109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P000109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match ")   
+#END OF EXCEPTIONS**********************************************************************************************
 
 #Start processing I is for ingest, P is for publication bag:
 
@@ -240,6 +276,27 @@ for i in range(74,85):
   #Bag P00064 published date in bag name is not the same as that on figshare
   if IngOrPub=='P'and i == 67:
     SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20190619.tar"
+
+  if IngOrPub=='P'and i == 84:
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20200128.tar"
+
+  if IngOrPub=='P'and i == 86:
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20200317.tar"
+
+  if IngOrPub=='P'and i == 89:
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v02_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 97:
+    pVersion[i]="02"
+    pDate[i]="20210405"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 103:
+    pDate[i]="20200708"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if i==120 and IngOrPub=='P':
+    pDate[i]="20201028"
   
   print("**********NOW PROCESSING ",pPubAccessionNumber[i],"**********")
   logging.info("**************************NOW PROCESSING %s ****************" % pPubAccessionNumber[i])
@@ -264,7 +321,7 @@ for i in range(74,85):
     else:
       print("Bag in tar format exists without v in version either ",bagpath)
       logging.info("Bag in tar format exists without v in version either %s " % bagpath)
-      sheet1.write(i1,15,"Exception: Bag name is missing v in it, where v stands for version")
+      sheet1.write(i1+1,15,"Exception: Bag name is missing v in it, where v stands for version")
 
   print("Bagname with path is : ", bagpath)
   logging.info("Bagname with path is %s " % bagpath)
@@ -285,11 +342,14 @@ for i in range(74,85):
     sheet1.write(i1,3,bag_size_gb)
     directory_path="F:\\"  
        
+    destpath='F:\\'
+    #if i != 96 :   
     #Extract/Untar bag on sandisk:
     mytar=tarfile.open(bagpath,"r")
-    destpath='F:\\'
+    #destpath='F:\\'
     mytar.extractall(destpath)
     mytar.close()
+    
     extractedbag=SubDir3.replace('.tar','')
     print("Extracted bag ",extractedbag)
     logging.info(" Extracted bag on SanDisk is %s " % extractedbag)
@@ -304,7 +364,10 @@ for i in range(74,85):
         sheet1.write(i1,2,"Bag is valid")
         #for ingest there is not additional 3rd path
         #source_folder=os.path.join(extractedbagpath,"data",extractedbag)
-        source_folder=os.path.join(destpath, extractedbag,"data",extractedbag)
+        if i == 96 :
+          source_folder=os.path.join(destpath,extractedbag,"data")
+        else:
+          source_folder=os.path.join(destpath, extractedbag,"data",extractedbag)
         print("payload is at : ",source_folder)
         payload=os.listdir(source_folder)
 
@@ -314,10 +377,8 @@ for i in range(74,85):
 
         #Exception/Actions for Publication bags:  
         if extractedbag[0]=='P':
-          #Bagging name conventions for Publication bags for APTrust transfer
-          aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
-          aptrustBagName_tar=f"{aptrustBagName}.tar"          
-            ##Exception for corresponding author labelled with no LFI for pub bag P00005
+         #Bagging name conventions for Publication bags for APTrust transfer
+         ##Exception for corresponding author labelled with no LFI for pub bag P00005
           if i==5:
             pCorrespondingAuthorLFI[i]="BeaucheneC"
           if i==32:
@@ -327,6 +388,14 @@ for i in range(74,85):
             pDate[i]='20190530'
           if i==67:
             pDate[i]="20190611"# for bag P0064
+          if i==85:
+            pDate[i]="20200221"# for bag P0064
+          if i==86:
+            pDate[i]="20200227"# for bag P0064  
+          if i==89:
+            pVersion[i]="01"# for bag P0064  
+          aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
+          aptrustBagName_tar=f"{aptrustBagName}.tar"  
    
         #Bagging name conventions for Ingest bags for APTrust transfer:
         if extractedbag[0]=='I':
@@ -339,8 +408,8 @@ for i in range(74,85):
         sheet1.write(i1,1,aptrustBagName_tar)
       #-----------------------------------------------------------------------  
       #************CHANGE (5) Change for every 10 loop run***************************
-        job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-        #job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+        #job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+        job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
         for f in payload:
           job.add_file(source_folder+"\\"+f)
           print("Added following file to bag in DART: ",f)

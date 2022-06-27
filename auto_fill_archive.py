@@ -59,7 +59,7 @@ def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,C
         "Department: "+dept+"\\line\n"+
         "Date of Most Recent Comment: "+datecomment+"\\line\n"+
         "Most Recent Comment: "+comment+"\\line\n"+
-        "Bag Containing Original Content: "+IngestAccessionNumber+"_"+RequestorLFI+"_"+CorrespondingAuthorLFI+"_"+"v"+IngestVerNum+"_"+DateIngested+".tar"+"\\line\n"
+        "Bag Containing Original Content: "+"VTDR_"+IngestAccessionNumber+"_"+RequestorLFI+"_"+CorrespondingAuthorLFI+"_"+"v"+IngestVerNum+"_"+DateIngested+".tar"+"\\line\n"
         "*****************************"+"\\line\n"+
         "DisseminationContent (directory) contains"+"\\line\n"+
         "	-content and metadata made accessible through the Virginia Tech Data Repository; more information about this repository can be found at http://doi.org/10.17616/R3JF54 "+"\\line\n"+

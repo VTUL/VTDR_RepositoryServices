@@ -67,7 +67,7 @@ date_current=today.strftime("%Y%m%d")
 now=datetime.now()
 time_current=now.strftime("%H_%M_%S")
 
-data_directory_path=f"VTDR_{IngestAccessionNumber}_AID_{article_id}_{CorrespondingAuthorlfi}_v{Version}_{DateIngested}"
+data_directory_path=f"VTDR_{IngestAccessionNumber}_{Requestorlfi}_{CorrespondingAuthorlfi}_v{Version}_{DateIngested}"
 
 metadata_directory_path=f"{IngestAccessionNumber}_DownloadedFileMetadata"
 
@@ -91,8 +91,9 @@ else:
 
 payload=os.listdir(data_directory_path)
 aptrustBagName=data_directory_path
-job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+#
+job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
 for f in payload:
     job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)

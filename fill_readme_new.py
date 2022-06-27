@@ -110,15 +110,14 @@ def create_readme(ArticleID,token):
   Location= details['custom_fields'][2]['value']
   if Location is None:
     Location="Not provided"
-  categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"
-  #CorresAuthEmail=details['custom_fields'][3]['value']
-  #FilesFolders=details['custom_fields'][4]['value']
-  #soup1=BeautifulSoup(FilesFolders,features="html.parser")
-  #FilesFolders=soup1.get_text()
+  categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"  
+  CorresAuthEmail=details['custom_fields'][3]['value']
+  FilesFolders=details['custom_fields'][4]['value']
+  soup1=BeautifulSoup(FilesFolders,features="html.parser")
+  FilesFolders=soup1.get_text()
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
-  readmefolder=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/README_FILES_%H_%M_%d_%m_%Y_'+str(authr[0]))
-  readme_path=os.path.join(root_directory, readmefolder)#"README_FILES_%Y%m%d_%H%M")
+  readme_path=os.path.join(root_directory, "README_FILES_%Y%m%d_%H%M_")
   #Check if README_FILES exists or not
   isExist=os.path.exists(readme_path) #True or False
   if not isExist:
@@ -128,8 +127,7 @@ def create_readme(ArticleID,token):
   f = open(out_file_prefix1,'w')
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
         "{\\b Author(s):} "+str(author)+"\\line\n"+
-        "{\\b Corresponding Author Email Address:} "+"\\line\n"+
-        "{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+categorieslink+"\""+"}{\\fldrslt{\\ul\\cf1 "+"Categories: }}}"+Categoriesinfo+"\\line\n"+
+        "{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+categorieslink+"\""+"}{\\fldrslt{\\ul\\cf1 "+"Categories: }}}"+Categoriesinfo+"\\line\n"+        
         "{\\b Group:} "+str(Group)+"\\line\n"+
         "{\\b Item Type:} "+str(ItemType)+"\\line\n"+
         "{\\b Keywords:} "+str(keywords)+"\\line\n"+
@@ -142,8 +140,9 @@ def create_readme(ArticleID,token):
         "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
         "{\\b Language:} "+str(Language)+"\\line\n"+
         "{\\b Location:} "+str(Location)+"\\line\n"+
+        "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
         "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
-        "}")
+        str(FilesFolders)+ "}")
   f.close()
 
   return 
