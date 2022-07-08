@@ -67,13 +67,22 @@ date_current=today.strftime("%Y%m%d")
 now=datetime.now()
 time_current=now.strftime("%H_%M_%S")
 
+#For large files store on sandisk
+#directory1="F:\\"
+#directory2=f"VTDR_{IngestAccessionNumber}_{Requestorlfi}_{CorrespondingAuthorlfi}_v{Version}_{DateIngested}"
+#data_directory_path=os.path.join(directory1,directory2)
+
+
+#------------------
 data_directory_path=f"VTDR_{IngestAccessionNumber}_{Requestorlfi}_{CorrespondingAuthorlfi}_v{Version}_{DateIngested}"
 
 metadata_directory_path=f"{IngestAccessionNumber}_DownloadedFileMetadata"
-
+fversion=None
 #-----Download dataset for private article under review using LD-Cool-P and save it as Ingest metadata in json file format
-fs=Figshare(token=token,private=True)
-FileDownload=retrieve.download_files(article_id, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
+#fversion=int(IngestVersionNumber[1])
+fs=Figshare(token=token,private=True,version=fversion)
+
+FileDownload=retrieve.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 #privatefigshare_url='https://api.figshare.com/v2/account/articles/'+str(article_id)
 privatefigshare_url='https://api.figshare.com/v'+str(Version[1])+'/account/articles/'+str(article_id)
 #-----Get article details for private article under review using LD-Cool-P and save it as Ingest metadata in json file format
@@ -91,9 +100,9 @@ else:
 
 payload=os.listdir(data_directory_path)
 aptrustBagName=data_directory_path
-#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
 #
-job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
 for f in payload:
     job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)

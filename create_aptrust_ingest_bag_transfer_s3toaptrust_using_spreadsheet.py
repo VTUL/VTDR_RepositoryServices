@@ -34,13 +34,14 @@ import bagit
 
 #Create a log sheet
 #************CHANGE(1) FOR EVERY 10 BAG RUN***************************
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P101_to_P110.xls')
+#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P101_to_P110.xls')
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P119_to_P198.xls')
 wb=Workbook(sheetname)
 
 #************CHANGE(2) FOR EVERY 10 BAG RUN***************************
 
-sheet1=wb.add_sheet("APTrustTransferSheet_P101_P110")
-
+#sheet1=wb.add_sheet("APTrustTransferSheet_P101_P110")
+sheet1=wb.add_sheet("APTrustTransferSheet_P119_P173")#this name has a character limit
 
 sheet1.write(0, 0, 'Bagname made by UPACK')
 sheet1.write(0, 1, 'Bagname made by DART')
@@ -62,7 +63,8 @@ sheet1.write(0,16,'Comments')
 #Create a log file
 #************CHANGE(3) FOR EVERY !) BAG RUN ***************************
 
-LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P101_to_P110.log')
+#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P101_to_P110.log')
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P119_to_P173.log')
 
 
 ext=".tar"
@@ -110,7 +112,9 @@ count=0
 #indexing for i for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
 #indexing for i for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
  
-for i in range(110,121):
+#for i in range(119,201):
+#for i in range(124,201):
+for i in range(133,201):  
   wb.save(sheetname)
   logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
   IngOrPub='P' #0 for ingest 1 for pub
@@ -120,8 +124,7 @@ for i in range(110,121):
   print("ingorpub",IngOrPub)
 
 ###EXCEPTIONS/COMMENTS-------------------------------------------------------------------------------------
-  if i==125:
-    pDate[i]="20210201"
+
 
   ##Exception for corresponding author labelled with no LFI for pub bag P00005
   if i==5 and IngOrPub=='P':
@@ -133,7 +136,7 @@ for i in range(110,121):
     logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
     logging.info("Exception: The corresponding author appears as Beauchene instead of BeaucheneC in the bag name \n")
     logging.info("To accomodate this exception the corresponding author name is changed to Beauchene to fetch the bag made by UPACK \nWhen re-making the bag using DART the corresponding author is defaulted to BeaucheneC")    
-
+  
   if i==32 and IngOrPub=='P':
     pCorrespondingAuthorLFI[i]="Bilici"
     print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
@@ -143,7 +146,7 @@ for i in range(110,121):
     logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
     logging.info("Exception: The corresponding author appears as Bilici instead of BiliciC in the bag name \n")
     logging.info("To accomodate this exception the corresponding author name is changed to Bilici to fetch the bag made by UPACK \nWhen re-making the bag using DART the corresponding author is defaulted to BiliciC")  
-
+   
   if i==52 and IngOrPub=='P':
     print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
     print("Exception: The version naming v02 does not appear in this bag \n")
@@ -248,10 +251,103 @@ for i in range(110,121):
 
   if i==120 and IngOrPub=='P':
     print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
-    print("Publication bag P000109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match  \n")
-    sheet1.write(i1,16,"Publication bag P000109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match ")
+    print("Publication bag P00109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match  \n")
+    sheet1.write(i1,16,"Publication bag P00109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match ")
     logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
-    logging.info("Publication bag P000109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match ")   
+    logging.info("Publication bag P00109 is bagged on DART using publication date on Figshare: 20201028 since publication date on bag and publication date on spreadsheet don't match ")   
+
+  if i==115 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00105 is bagged on DART using publication date : 20201022 nd publication date on spreadsheet is 20201021, changed the spreadsheet date to reflect the bag date since v2 bag was made again and corresponds to addition of resource title and doi and not v2 publication on figshare  \n")
+    sheet1.write(i1,16,"Publication bag P00105 is bagged on DART using publication date : 20201022 nd publication date on spreadsheet is 20201021, changed the spreadsheet date to reflect the bag date since v2 bag was made again and corresponds to addition of resource title and doi and not v2 publication on figshare ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00105 is bagged on DART using publication date : 20201022 nd publication date on spreadsheet is 20201021, changed the spreadsheet date to reflect the bag date since v2 bag was made again and corresponds to addition of resource title and doi and not v2 publication on figshare ")
+
+
+  if i==116 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception: P00106 is bagged again. Folder inside P00106 was mislabelled P00123_requestor_author_version_pdate. The payload inside P00123 corresponded to P00106. After remaking the bag the md5 checksums were verified with the original bag. \n")
+    sheet1.write(i1,15,"Exception: P00106 is bagged again. Folder inside P00106 was mislabelled P00123_requestor_author_version_pdate. The payload inside P00123 corresponded to P00106. After remaking the bag the md5 checksums were verified with the original bag. ")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception:Exception: P00106 is bagged again. Folder inside P00106 was mislabelled P00123_requestor_author_version_pdate. The payload inside P00123 corresponded to P00106. After remaking the bag the md5 checksums were verified with the original bag. ")
+
+  if i==119 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00108 v2 is only available on google drive, not on s3, using google drive bag for APTrust transfer  \n")
+    sheet1.write(i1,16,"Publication bag P00108 v2 is only available on google drive, not on s3, using google drive bag for APTrust transfer ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00108 v2 is only available on google drive, not on s3, using google drive bag for APTrust transfer ") 
+
+  if i==113 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00104 is a large bag ~70GB, v2 is only available on google drive, not on s3,only transferring google drive bag v2 to APTrust \n")
+    sheet1.write(i1,16,"Publication bag P00104 v2 is only available on google drive, not on s3, using google drive bag for APTrust transfer ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00104 v2 is only available on google drive, not on s3, using google drive bag for APTrust transfer ") 
+
+  if i==130 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00119v1 is bagged on DART using publication date : 20210419 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210420  \n")
+    sheet1.write(i1,16,"Publication bag P00119v1 is bagged on DART using publication date : 20210419 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210420  ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00119v1 is bagged on DART using publication date : 20210419 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210420  ")
+
+
+  if i==131 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00119v2 is bagged on DART using publication date : 20210419 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210512  \n")
+    sheet1.write(i1,16,"Publication bag P00119v2 is bagged on DART using publication date : 20210419 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210512  ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00119v2 is bagged on DART using publication date : 20210419 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210512  ")
+
+  if i==112 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception: P00103 has two underscores before version number and v is missing in version number. \n")
+    sheet1.write(i1,15,"Exception: P00103 has two underscores before version number and v is missing in version number. ")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception: P00103 has two underscores before version number and v is missing in version number. ")
+     
+  if i==145 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00131 is bagged on DART using publication date : 20210831 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210830  \n")
+    sheet1.write(i1,16,"Publication bag P00131 is bagged on DART using publication date : 20210831 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210830  ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00131 is bagged on DART using publication date : 20210831 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210830  ")
+
+  if i==146 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00132 is bagged on DART using publication date : 20210831 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210830  \n")
+    sheet1.write(i1,16,"Publication bag P00132 is bagged on DART using publication date : 20210831 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210830  ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00132 is bagged on DART using publication date : 20210831 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210830  ")
+
+  if i==150 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00135 is bagged on DART using publication date : 20210908 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210909  \n")
+    sheet1.write(i1,16,"Publication bag P00135 is bagged on DART using publication date : 20210908 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210909 ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00135 is bagged on DART using publication date : 20210908 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210909  ")
+
+  if i==154 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00137 is bagged on DART using publication date : 20210922 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210923  \n")
+    sheet1.write(i1,16,"Publication bag P00137 is bagged on DART using publication date : 20210922 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210923 ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00137 is bagged on DART using publication date : 20210922 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20210923  ")
+
+  if i==177 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00154 is bagged on DART using publication date : 20211022 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20211025  \n")
+    sheet1.write(i1,16,"Publication bag P00154 is bagged on DART using publication date : 20211022 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20211025  ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00154 is bagged on DART using publication date : 20211022 which is the publication date on spreadsheet and figshare, date on original bag using UPACK 20211025  ")
+
+  if i==130 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag \n")
+    sheet1.write(i1+2,15,"Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag  ")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag ")    
 #END OF EXCEPTIONS**********************************************************************************************
 
 #Start processing I is for ingest, P is for publication bag:
@@ -296,12 +392,49 @@ for i in range(110,121):
     SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
 
   if i==120 and IngOrPub=='P':
-    pDate[i]="20201028"
-  
+    pDate[i]="20201117"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if i==112 and IngOrPub=='P':
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}__{pVersion[i]}_{pDate[i]}.tar"    
+
+  if i==113 and IngOrPub=='P':
+    pDate[i]="20210406"
+    pVersion[i]="02"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 130:
+    pDate[i]="20210420"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 131:
+    pDate[i]="20210512"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 145:
+    pDate[i]="20210830"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 146:
+    pDate[i]="20210830"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+
+  if IngOrPub=='P'and i == 150:
+    pDate[i]="20210909"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+  if IngOrPub=='P'and i == 154:
+    pDate[i]="20210923"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
+  if IngOrPub=='P'and i == 177:
+    pDate[i]="20211025"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar" 
+
+   
+
   print("**********NOW PROCESSING ",pPubAccessionNumber[i],"**********")
   logging.info("**************************NOW PROCESSING %s ****************" % pPubAccessionNumber[i])
 
-#Check if bag exists in original format, if not then check if it exists without a v in the bag name:  
+ #Check if bag exists in original format, if not then check if it exists without a v in the bag name:  
   SubDir3=SubDir3.strip()
   bagpath=os.path.join(HeadDir,SubDir3)
   print("SubDirm ",SubDir3)
@@ -316,11 +449,11 @@ for i in range(110,121):
     print("Looking for Bag in tar format without v in version: ", SubDir3)
     logging.info("Looking for Bag in tar format without v in version: %s " % SubDir3)
     if not os.path.exists(bagpath):
-      print("Bag in tar format does not exist without v in version either ",bagpath)
-      logging.info("Bag in tar format does not exist without v in version either %s " % bagpath)
+      print("Bag in tar format does not exist without v in version ",bagpath)
+      logging.info("Bag in tar format does not exist without v in version %s " % bagpath)
     else:
-      print("Bag in tar format exists without v in version either ",bagpath)
-      logging.info("Bag in tar format exists without v in version either %s " % bagpath)
+      print("Bag in tar format exists without v in version  ",bagpath)
+      logging.info("Bag in tar format exists without v in version  %s " % bagpath)
       sheet1.write(i1+1,15,"Exception: Bag name is missing v in it, where v stands for version")
 
   print("Bagname with path is : ", bagpath)
@@ -364,8 +497,10 @@ for i in range(110,121):
         sheet1.write(i1,2,"Bag is valid")
         #for ingest there is not additional 3rd path
         #source_folder=os.path.join(extractedbagpath,"data",extractedbag)
-        if i == 96 :
+        if i == 96 or i == 113 or i == 119 or i == 131 or i == 134:
           source_folder=os.path.join(destpath,extractedbag,"data")
+        elif i == 130:
+          source_folder=os.path.join(destpath,extractedbag,"data","tmpygov0jei")  
         else:
           source_folder=os.path.join(destpath, extractedbag,"data",extractedbag)
         print("payload is at : ",source_folder)
@@ -394,6 +529,30 @@ for i in range(110,121):
             pDate[i]="20200227"# for bag P0064  
           if i==89:
             pVersion[i]="01"# for bag P0064  
+          if i==120:
+            pDate[i]="20201028"# for bag P0064    
+
+          if i==120:
+            pDate[i]="20201028"# for bag P0064    
+
+          if i == 130:
+            pDate[i]="20210419"
+
+          if i == 131:
+            pDate[i]="20210419"      
+
+          if i == 145:
+            pDate[i]="20210831"   
+          if i == 146:
+            pDate[i]="20210831"   
+
+          if i == 150:
+            pDate[i]="20210908"  
+          if i == 154:
+            pDate[i]="20210922"  
+          if i == 177:
+            pDate[i]="20211022"  
+
           aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
           aptrustBagName_tar=f"{aptrustBagName}.tar"  
    
