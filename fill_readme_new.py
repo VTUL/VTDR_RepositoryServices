@@ -97,6 +97,7 @@ def create_readme(ArticleID,token):
   x=x.replace("\n","\\line\n")
  #open in both notepad and word to see how this works
   x=x.replace("●","\\line\\bullet")
+  x=x.replace("•","\\line\\bullet")
   string_name=x
   for element in range(0,len(string_name)):
    if element=='â':
