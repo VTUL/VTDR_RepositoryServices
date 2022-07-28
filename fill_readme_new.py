@@ -43,10 +43,8 @@ ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 def create_readme(ArticleID,token):
   #If creating this AFTER published then change private to False below
   fs=Figshare(token=token,private=True)
-  #fs=Figshare(token=token,private=False)
   #NO VERSIONING IN INGEST!!
   details=fs.get_article_details(ArticleID,version=None)
-  #details=fs.get_article_details(ArticleID,version=intIngestVersionNumber)
   title=details["title"]
   authr=[]
   for i in range(len(details["authors"])):
@@ -59,11 +57,8 @@ def create_readme(ArticleID,token):
    cats=details["categories"][i]['title']
    cat.append(cats)
   Categoriesinfo=s.join(cat)
-  #corremail="Not yet available"
   corremail=ingsheet['ingcemail']
-  #NO VERSIONING IN INGEST
   groupidnames=fs.get_groupid_names(version=None)
-  #groupidnames=fs.get_groupid_names(version=intIngestVersionNumber)
   groupids=[]
   groupname=[]  
   for i in range(len(groupidnames)):
@@ -81,56 +76,32 @@ def create_readme(ArticleID,token):
   #One way of doing this:
   #x=re.sub('<[^<]+?>', '', Description)
   #In this code we are using BeautifulSoup
-
   #Description=(details['description']).strip('"<p>""</p>""<br>""<b>""<div>""</div>"')
   Description=details['description']
   soup=BeautifulSoup(Description,features="html.parser")
   Description=soup.get_text()
-  #Description=soup.text
   #Description=soup.body.find('div', attrs={'class':'container'}).text
   #Description=Description.replace('\n',' ')
   #Description=Description.replace('\n',' ').replace('<b>',' ').replace
   Funding=details['funding']
   ResourceTitle=details['resource_title']
   ResourceDOI=details['resource_doi']
- # OtherRef=details['references']
-
-  #Convert Other Ref to string:
-  #OtherRef=''.join(OtherRef)
-
-  #License="CC-0 1.0 Universal (CC0 1.0) Public Domain Dedication"
   License=details["license"]['name']
-  #Publisher="University Libraries, Virginia Tech"
-  #Language="English"
   Publisher=details['custom_fields'][0]['value']
-  #Language=details['custom_fields'][1]['value']
-  #Location= details['custom_fields'][2]['value']
   Location= details['custom_fields'][1]['value']
   categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"  
-  #CorresAuthEmail=details['custom_fields'][3]['value']
   CorresAuthEmail=details['custom_fields'][2]['value']
-  #FilesFolders=details['custom_fields'][4]['value']
   FilesFolders=details['custom_fields'][3]['value']
-  #soup1=BeautifulSoup(FilesFolders,features="html.parser")
   soup=BeautifulSoup(FilesFolders,features="html.parser")
   x=soup.text
-  #both the following work, replace \n with what rtf would consider a new line as which is \\line\n
-  #x=x.replace("\n","                                                                ")
   x=x.replace("\n","\\line\n")
-  #t=x.replace("\\n","\line")
- # t=x.replace("â—","\\bullet")
  #open in both notepad and word to see how this works
   x=x.replace("●","\\line\\bullet")
-  #bu=x.replace("\t","\bullet("))
   string_name=x
-  #for (var i = 1; i < charArry.length; i++):
   for element in range(0,len(string_name)):
    if element=='â':
     print("YES")
   CorresAuthor=details['custom_fields'][4]['value']
-  #FilesFolders=soup1.get_text()
-  #FilesFolders=soup1#.get_text()
- # FilesFolders=soup1.text()
   if title is None or title=="":
     title=""
   if author is None or author=="":
@@ -170,8 +141,6 @@ def create_readme(ArticleID,token):
     
   if Publisher is None or Publisher=='':
     Publisher="University Libraries, Virginia Tech"
-  #if Language is None or Language=='':
-  #  Language="English"
   if Location is None or Location=='':
     Location=""
   if FilesFolders is None or FilesFolders=='':
@@ -181,16 +150,11 @@ def create_readme(ArticleID,token):
   root_directory=os.getcwd()
   readmefolder=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/README_FILES_%H_%M_%d_%m_%Y_'+str(authr[0]))
   readme_path=os.path.join(root_directory, readmefolder)  
-  #readme_path=os.path.join(root_directory, "README_FILES_%Y%m%d_%H%M_")
-  #Check if README_FILES exists or not
-  #isExist=os.path.exists(readme_path) #True or False
-  #if not isExist:
   os.mkdir(readme_path)
   print("The new directory "+readmefolder+" is created")
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w',encoding="utf-8")
 
-  ##DO SPLIT THE TEXT WHERE \n and do x[0]= before \n and x[1] after \n 
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
         "{\\b Author(s):} "+str(author)+"\\line\n"+
         "{\\b Categories:} "+Categoriesinfo+"\\line\n"+        
