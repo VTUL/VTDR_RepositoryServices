@@ -6,6 +6,9 @@ Created on Mon Oct 25 10:55:10 2021
 """
 #Following code creates README rtf file using information from Figshare article
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
 from tkinter.messagebox import NO
 from figshare.figshare import Figshare
 from spreadsheet import vtingsheet
@@ -16,28 +19,21 @@ from PyRTF import *
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-#Get the parameters from secrets.txt created in the curation folder
-filename="secrets.txt"
-fileObj=open(filename)
-params={}
-for line in fileObj:
-    line=line.strip()
-    key_value=line.split('=')
-    if len(key_value)==2:
-        params[key_value[0].strip()]=key_value[1].strip()
-
-#Get the article id from secrets.txt 
-ArticleID=params["ArticleID"]
-#Get the Published Version number from secrets.txt
-PublishedVersionNumber=params["PublishedVersionNumber"]
+#importing the load_dotenv from the python-dotenv module
+#Get the article id 
+ArticleID=os.getenv("ArticleID")
+#Get the Published Version number 
+PublishedVersionNumber=os.getenv("PublishedVersionNumber")
 intPublishedVersionNumber=int(PublishedVersionNumber[1])
-#Get the Ingest Version number from secrets.txt
-IngestVersionNumber=params["IngestVersionNumber"]
+#Get the Ingest Version number 
+IngestVersionNumber=os.getenv("IngestVersionNumber")
 intIngestVersionNumber=int(IngestVersionNumber[1])
-#Get your figshare token from secrets.txt
-token=params["token"]
-#Get curator name from secrets.txt
-CuratorName=params["CuratorName"]
+#Get your figshare token 
+token=os.getenv("token")
+#Get curator name 
+CuratorName=os.getenv("CuratorName")
+README_DIR=os.getenv("")
+categorieslink=os.getenv("categoreslink")
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 
 def create_readme(ArticleID,token):
@@ -89,7 +85,7 @@ def create_readme(ArticleID,token):
   License=details["license"]['name']
   Publisher=details['custom_fields'][0]['value']
   Location= details['custom_fields'][1]['value']
-  categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"  
+  #categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"  
   CorresAuthEmail=details['custom_fields'][2]['value']
   FilesFolders=details['custom_fields'][3]['value']
   soup=BeautifulSoup(FilesFolders,features="html.parser")
@@ -99,9 +95,9 @@ def create_readme(ArticleID,token):
   x=x.replace("●","\\line\\bullet")
   x=x.replace("•","\\line\\bullet")
   string_name=x
-  for element in range(0,len(string_name)):
-   if element=='â':
-    print("YES")
+  #for element in range(0,len(string_name)):
+  # if element=='â':
+  #  print("YES")
   CorresAuthor=details['custom_fields'][4]['value']
   if title is None or title=="":
     title=""
@@ -149,7 +145,8 @@ def create_readme(ArticleID,token):
         
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
-  readmefolder=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/README_FILES_%H_%M_%d_%m_%Y_'+str(authr[0]))
+  README_Dir=os.getenv("README_Dir")
+  readmefolder=datetime.now().strftime(README_Dir+'_%H_%M_%d_%m_%Y_'+str(authr[0]))
   readme_path=os.path.join(root_directory, readmefolder)  
   os.mkdir(readme_path)
   print("The new directory "+readmefolder+" is created")
