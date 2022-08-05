@@ -5,7 +5,9 @@ Created on Mon Oct 25 10:55:10 2021
 @author: padma carstens
 """
 #Following code creates archival readme rtf file using information from the VTDR spreadsheet
+#from auto_fill_archive import create_archivalreadme
 
+#create_archivalreadme("20161580","01","01","Padma Carstens",'C:/Users/padma/anaconda3/envs/curation/')
 #from create_publication_bag import PublicationDate
 from spreadsheet import vtpubsheet
 from spreadsheet import vtingsheet
@@ -69,3 +71,5 @@ def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,C
   f.close()
 
   return 
+
+#create_archivalreadme("20161580","01","01","Padma Carstens",'C:/Users/padma/anaconda3/envs/curation/')

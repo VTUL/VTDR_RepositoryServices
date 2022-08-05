@@ -59,7 +59,7 @@ count=0
 IngOrPub ='P'
 ###Example of range for the for loop below: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
 #for i in range(226,227):
-PubBagRowNum=230# sheet row number of publication bag
+PubBagRowNum=234# sheet row number of publication bag
 i=PubBagRowNum-1
 if IngOrPub=='P':
   aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
@@ -73,8 +73,8 @@ PubFolderPath='C:/Users/padma/anaconda3/envs/curation'
 PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
 #************CHANGE THIS TO PICK Demo/Repo***************************
-#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
 for f in payload:
   job.add_file(aptrustBagName+"\\"+f)
   print("Added following file to bag in DART: ",f)
@@ -105,7 +105,7 @@ else:
 #----------------Copy non disseminated content to a different location:-------------------------
   
 if IngOrPub=='P':    
-  destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
+  destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent/"
   data_directory=f"NonDisseminatedContent_VTDR_{pPubAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
   destndir=os.path.join(destn_path,data_directory)
   count=0
@@ -143,5 +143,6 @@ for root, dirs, files in os.walk(PubFolder):
               shutil.copy(oldpath,newpath)
           elif not os.path.exists(newpath):
               print("Directory is already created: ", destndir, " But the file: ", filename ," does not exist in this directory so copying it ")
+              shutil.copy(oldpath,newpath)
           else:
               print("Directory is already created: ", destndir," file already exists so not copying file: ",filename)

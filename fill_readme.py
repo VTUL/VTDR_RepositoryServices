@@ -94,7 +94,12 @@ def create_readme(ArticleID,token):
 
   #Convert Other Ref to string:
   OtherRef=''.join(OtherRef)
-
+  
+  if title is None:
+    title="-"
+  if author is None:
+    author="-"
+   
   if OtherRef is None:
     OtherRef="Not Provided"
   #License="CC-0 1.0 Universal (CC0 1.0) Public Domain Dedication"
@@ -120,10 +125,11 @@ def create_readme(ArticleID,token):
   readmefolder=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/README_FILES_%H_%M_%d_%m_%Y_'+str(authr[0]))
   readme_path=os.path.join(root_directory, readmefolder)#"README_FILES_%Y%m%d_%H%M")
   #Check if README_FILES exists or not
-  isExist=os.path.exists(readme_path) #True or False
-  if not isExist:
-    os.mkdir(readme_path)
+  #isExist=os.path.exists(readme_path) #True or False
+  #if not isExist:
+  #  os.mkdir(readme_path)
     #print("The new directory README_FILES is created")
+  os.mkdir(readme_path)
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w')
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+

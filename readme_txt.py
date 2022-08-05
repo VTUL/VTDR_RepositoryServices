@@ -4,50 +4,35 @@ Created on Mon Oct 25 10:55:10 2021
 
 @author: padma carstens
 """
-#Following code creates README rtf file using information from Figshare article
+#Following code creates README text file using information from Figshare article
 
-#import configload
-import configparser
-#config=configload.read_config()
-config=configparser.ConfigParser()
-config.read('configurations.ini')
-print(config.sections())
-import os
-#from dotenv import load_dotenv
-#load_dotenv()
 from tkinter.messagebox import NO
-#from figshare.figshare import Figshare
-import figshare
-from figshare import Figshare
+from figshare.figshare import Figshare
 from spreadsheet import vtingsheet
 from datetime import date
 import re
 import os
-from PyRTF import *
+#from PyRTF import *
 from bs4 import BeautifulSoup
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 #importing the load_dotenv from the python-dotenv module
-#Get the article id 
-#ArticleID=os.getenv("ArticleID")
-ArticleID=config['FigshareSettings']['figshareArticleID']
-#Get the Published Version number 
-#PublishedVersionNumber=os.getenv("PublishedVersionNumber")
-PublishedVersionNumber=config["FigshareSettings"]["PublishedVersionNumber"]
-intPublishedVersionNumber=int(PublishedVersionNumber[1])
 
+#Get the article id 
+ArticleID=os.getenv["ArticleID"]
+#Get the Published Version number 
+PublishedVersionNumber=os.getenv["PublishedVersionNumber"]
+intPublishedVersionNumber=int(PublishedVersionNumber[1])
 #Get the Ingest Version number 
-#IngestVersionNumber=os.getenv("IngestVersionNumber")
-IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
+IngestVersionNumber=os.getenv["IngestVersionNumber"]
 intIngestVersionNumber=int(IngestVersionNumber[1])
 #Get your figshare token 
-#token=os.getenv("token")
-token=config['FigshareSettings']['token']
+token=os.getenv["token"]
 #Get curator name 
-#CuratorName=os.getenv("CuratorName")
-CuratorName=config['CurationSettings']['CuratorName']
-#README_Dir=os.getenv("README_Dir")
-README_Dir=config['PathSettings']['README_Dir']
+CuratorName=os.getenv["CuratorName"]
+README_Dir=os.getenv("README_Dir")
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 
 def create_readme(ArticleID,token):
@@ -104,10 +89,10 @@ def create_readme(ArticleID,token):
   FilesFolders=details['custom_fields'][3]['value']
   soup=BeautifulSoup(FilesFolders,features="html.parser")
   x=soup.text
-  x=x.replace("\n","\\line\n")
+  #x=x.replace("\n","\\line\n")
  #open in both notepad and word to see how this works
-  x=x.replace("●","\\line\\bullet")
-  x=x.replace("•","\\line\\bullet")
+  #x=x.replace("●","\\line\\bullet")
+  #x=x.replace("•","\\line\\bullet")
   #string_name=x
   #for element in range(0,len(string_name)):
   # if element=='â':
@@ -136,17 +121,18 @@ def create_readme(ArticleID,token):
 
   if ResourceDOI is None or ResourceDOI=='':
     ResourceDOI="Will be added after manuscript is accepted"
-  else:
-    ResourceDOI="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+"https://doi.org/"+ResourceDOI+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(ResourceDOI)+" }}}"
+  #else:
+   # ResourceDOI="\*\\fldinst HYPERLINK "+"\""+"https://doi.org/"+ResourceDOI+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(ResourceDOI)+" }}}"
   if License is None or License=='':
     License="CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
   OtherRef=[]  
   if OtherRef is None or OtherRef=='':
     OtherRef=""
   else:
+   # OtherRef=details["references"]
    for i in range(len(details["references"])):
      orefs=details["references"][i]
-     OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}"
+     OtherRefs=str(orefs)#+" }}}"
      OtherRef.append(OtherRefs)
   OtherRef=s.join(OtherRef)
     
@@ -157,9 +143,9 @@ def create_readme(ArticleID,token):
   if FilesFolders is None or FilesFolders=='':
     FilesFolders=""
         
-  out_file_prefix = f"README.rtf"
+  out_file_prefix = f"README.txt"
   root_directory=os.getcwd()
-  
+  #readmefolder=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/README_FILES_%H_%M_%d_%m_%Y_'+str(authr[0]))
   readmefolder=datetime.now().strftime(README_Dir+'_%H_%M_%d_%m_%Y_'+str(authr[0]))
   readme_path=os.path.join(root_directory, readmefolder)  
   os.mkdir(readme_path)
@@ -167,27 +153,42 @@ def create_readme(ArticleID,token):
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w',encoding="utf-8")
 
-  f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
-        "{\\b Author(s):} "+str(author)+"\\line\n"+
-        "{\\b Categories:} "+Categoriesinfo+"\\line\n"+        
-        "{\\b Group:} "+str(Group)+"\\line\n"+
-        "{\\b Item Type:} "+str(ItemType)+"\\line\n"+
-        "{\\b Keywords:} "+str(keywords)+"\\line\n"+
-        "{\\b Description:} "+str(Description)+"\\line\n"
-        "{\\b Funding:} "+str(Funding)+"\\line\n"+
-        "{\\b Resource Title:} "+str(ResourceTitle)+"\\line\n"+
-        "{\\b Resource DOI:} "+str(ResourceDOI)+"\\line\n"+
-        "{\\b Other References:} "+str(OtherRef)+"\\line\n"+
-        "{\\b License:} "+str(License)+"\\line\n"+
-        "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
-        "{\\b Location:} "+str(Location)+"\\line\n"+
-        "{\\b Corresponding Author Name:} "+str(CorresAuthor)+"\\line\n"+
-        "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
-        "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
-        x+ "\\line\n"+
-        
-        "}")
+  f.write(" Title of Dataset: "+str(title)+"\n"+
+        " Author(s): "+str(author)+"\n"+
+        " Categories: "+Categoriesinfo+"\n"+        
+        " Group: "+str(Group)+"\n"+
+        " Item Type: "+str(ItemType)+"\n"+
+        " Keywords: "+str(keywords)+"\n"+
+        " Description: "+str(Description)+"\n"
+        " Funding: "+str(Funding)+"\n"+
+        " Resource Title: "+str(ResourceTitle)+"\n"+
+        " Resource DOI: "+str(ResourceDOI)+"\n"+
+        " Other References: "+str(OtherRef)+"\n"+
+        " License: "+str(License)+"\n"+
+        " Publisher: "+str(Publisher)+"\n"+
+        " Location: "+str(Location)+"\n"+
+        " Corresponding Author Name: "+str(CorresAuthor)+"\n"+
+        " Corresponding Author E-mail Address: "+str(CorresAuthEmail)+"\n"+
+        " Files/Folders in Dataset and Description of Files"+"\n"+
+        x)
   f.close()
 
   return 
 readme_auto=create_readme(ArticleID,token)
+
+import re
+
+def info(self):
+    #text_browser = self.dockwidget.text_browser
+    file_path = 'C:/Users/padma/anaconda3/envs/curation/README_FILES_09_06_29_07_2022_Padma Carstens/README.txt'
+    f = open(file_path, 'r', encoding="utf-8")
+    text = f.read()
+    urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
+
+    for x in urls:
+        if x in text:
+            text = text.replace(x, x.replace('http', '<a href="http').replace(')', '">') + x + '</a>')
+
+    #textBrowser.setHtml(text)
+    #textBrowser.setOpenExternalLinks(True)
+    #self.dockwidget.show()
