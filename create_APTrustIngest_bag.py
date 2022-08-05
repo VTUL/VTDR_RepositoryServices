@@ -100,9 +100,9 @@ else:
 
 payload=os.listdir(data_directory_path)
 aptrustBagName=data_directory_path
-job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
 #
-#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
 for f in payload:
     job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)

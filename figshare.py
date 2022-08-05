@@ -5,6 +5,8 @@ from requests.exceptions import HTTPError
 import os
 from urllib.request import urlretrieve
 
+from dotenv import load_dotenv
+load_dotenv()
 
 def issue_request(method, url, headers, data=None, binary=False,
                   params=None):

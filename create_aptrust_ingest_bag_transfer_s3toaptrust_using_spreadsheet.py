@@ -34,15 +34,14 @@ import bagit
 
 #Create a log sheet
 #************CHANGE(1) FOR EVERY 10 BAG RUN***************************
-#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P101_to_P110.xls')
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P119_to_P198.xls')
+
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P98_8of8.xls')
 wb=Workbook(sheetname)
 
 #************CHANGE(2) FOR EVERY 10 BAG RUN***************************
 
-#sheet1=wb.add_sheet("APTrustTransferSheet_P101_P110")
-sheet1=wb.add_sheet("APTrustTransferSheet_P119_P173")#this name has a character limit
-
+sheet1=wb.add_sheet("APTrustTransferSheet_P98_8of8")#this name has a character limit
+#sheet1=wb.add_sheet("APTrustTransferSheet_P119v3")#this name has a character limit
 sheet1.write(0, 0, 'Bagname made by UPACK')
 sheet1.write(0, 1, 'Bagname made by DART')
 sheet1.write(0, 2, 'ValidationTest of bag made by UPACK')
@@ -63,10 +62,7 @@ sheet1.write(0,16,'Comments')
 #Create a log file
 #************CHANGE(3) FOR EVERY !) BAG RUN ***************************
 
-#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P101_to_P110.log')
-LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P119_to_P173.log')
-
-
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P98_8of8.log')
 ext=".tar"
 i1=1
 
@@ -111,10 +107,8 @@ count=0
 #indexing for i below for P11-P20: 11, 22 i=21 gets the bag P00020 which is row 22
 #indexing for i for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
 #indexing for i for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
- 
-#for i in range(119,201):
-#for i in range(124,201):
-for i in range(133,201):  
+
+for i in range(107,108):     
   wb.save(sheetname)
   logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
   IngOrPub='P' #0 for ingest 1 for pub
@@ -347,7 +341,80 @@ for i in range(133,201):
     print("Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag \n")
     sheet1.write(i1+2,15,"Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag  ")
     logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
-    logging.info("Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag ")    
+    logging.info("Exception: Bag P00119 v1 in tar format has a different folder structure P00119_MasroorE_MasroorE_01_20210420 has data folder inside, but inside data folder is tmpygov0jei folder inside which lies the payload. Checked the checksums of this UPACK bag against figshare and all match except README.rtf, the unedited README is on figshare while the edited one is in the bag ")   
+
+  if i==132 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:Version 4 is saved as publication bag version 3 since version 2 bags correspond to version 1 created by Hannah on the same day 20210419; UPDATE 20220708: The bag was corrupted. The original contents of the folder: “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220708 after downloading the content from the published item on figshare, curator downloaded email correspondence and provenance log from P00119v04 and modifying it. Curator verified md5 checksums of payload of this new bag with the original bag on s3. New bag replaced the old bag on s3 and google drive-Padma")
+    sheet1.write(i1+2,15,"Exception:Version 4 is saved as publication bag version 3 since version 2 bags correspond to version 1 created by Hannah on the same day 20210419; UPDATE 20220708: The bag was corrupted. The original contents of the folder: “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220708 after downloading the content from the published item on figshare, curator downloaded email correspondence and provenance log from P00119v04 and modifying it. Curator verified md5 checksums of payload of this new bag with the original bag on s3. New bag replaced the old bag on s3 and google drive-Padma")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception:Version 4 is saved as publication bag version 3 since version 2 bags correspond to version 1 created by Hannah on the same day 20210419; UPDATE 20220708: The bag was corrupted. The original contents of the folder: “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220708 after downloading the content from the published item on figshare, curator downloaded email correspondence and provenance log from P00119v04 and modifying it. Curator verified md5 checksums of payload of this new bag with the original bag on s3. New bag replaced the old bag on s3 and google drive-Padma")   
+
+  if i==147 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:UPDATE 20220711: Bag was corrupted, the folders ""DisseminatedContent"" and ""VTCurationServicesActions"" could not be opened, Padma had a copy of the extracted bag on her laptop from when she made it back in 20211118. Padma restored the contents of this bag and rebagged them. md5 checksums of this newly created bag were compared with the old bag and that on Figshare and they matched. Padma replaced this new bag with the old bag on s3 and google drive and transferred this new bag to APTrust. ")
+    sheet1.write(i1+2,15,"Exception:UPDATE 20220711: Bag was corrupted, the folders ""DisseminatedContent"" and ""VTCurationServicesActions"" could not be opened, Padma had a copy of the extracted bag on her laptop from when she made it back in 20211118. Padma restored the contents of this bag and rebagged them. md5 checksums of this newly created bag were compared with the old bag and that on Figshare and they matched. Padma replaced this new bag with the old bag on s3 and google drive and transferred this new bag to APTrust. ")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception:UPDATE 20220711: Bag was corrupted, the folders ""DisseminatedContent"" and ""VTCurationServicesActions"" could not be opened, Padma had a copy of the extracted bag on her laptop from when she made it back in 20211118. Padma restored the contents of this bag and rebagged them. md5 checksums of this newly created bag were compared with the old bag and that on Figshare and they matched. Padma replaced this new bag with the old bag on s3 and google drive and transferred this new bag to APTrust. ")      
+ 
+  if i==154 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:manifest.csv files created by UPACK on S3 and google drive are different; looks like UPACK was run independently for each bag. This file is extraneous, and the payload for each bag is the same, time stamp on s3 20211022  12:31 pm, timestamp on google drive 20211022 10:03am. We are using the bag on s3 for APTrust transfer")
+    sheet1.write(i1+2,15,"Exception:manifest.csv files created by UPACK on S3 and google drive are different; looks like UPACK was run independently for each bag. This file is extraneous, and the payload for each bag is the same, time stamp on s3 20211022  12:31 pm, timestamp on google drive 20211022 10:03am. We are using the bag on s3 for APTrust transfer")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception:manifest.csv files created by UPACK on S3 and google drive are different; looks like UPACK was run independently for each bag. This file is extraneous, and the payload for each bag is the same, time stamp on s3 20211022  12:31 pm, timestamp on google drive 20211022 10:03am. We are using the bag on s3 for APTrust transfer")
+ 
+  if i==179 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:Bag validation failed for bags in both drives. Failed due to changes made to archival package code to make doi appear as a link, changes were made after the bag was made by going inside the tarred bag using 7 zip application. ArchivalPackageREADME.rtf has different DOI's in both the places. In s3 it is https://doi.org/10.7294/16832692, in google drive it is doi: 10.7294/16832692. UPDATE: Bag was made again on 20220706 after checking md5 checksums of payload on the newly made bag against that of the original bag and figshare item. Bag was not valid since changes to archival readme were made (to show up doi as a hyperlink) by going inside the bag in tar format using 7-zip. md5 checksums of payload verified with the original bag on s3Old bags were deleted from s3 and google drive and replaced with the new one. -Padma")
+    sheet1.write(i1+2,15,"Bag validation failed for bags in both drives. Failed due to changes made to archival package code to make doi appear as a link, changes were made after the bag was made by going inside the tarred bag using 7 zip application. ArchivalPackageREADME.rtf has different DOI's in both the places. In s3 it is https://doi.org/10.7294/16832692, in google drive it is doi: 10.7294/16832692. UPDATE: Bag was made again on 20220706 after checking md5 checksums of payload on the newly made bag against that of the original bag and figshare item. Bag was not valid since changes to archival readme were made (to show up doi as a hyperlink) by going inside the bag in tar format using 7-zip. md5 checksums of payload verified with the original bag on s3Old bags were deleted from s3 and google drive and replaced with the new one. -Padma")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Bag validation failed for bags in both drives. Failed due to changes made to archival package code to make doi appear as a link, changes were made after the bag was made by going inside the tarred bag using 7 zip application. ArchivalPackageREADME.rtf has different DOI's in both the places. In s3 it is https://doi.org/10.7294/16832692, in google drive it is doi: 10.7294/16832692. UPDATE: Bag was made again on 20220706 after checking md5 checksums of payload on the newly made bag against that of the original bag and figshare item. Bag was not valid since changes to archival readme were made (to show up doi as a hyperlink) by going inside the bag in tar format using 7-zip. md5 checksums of payload verified with the original bag on s3Old bags were deleted from s3 and google drive and replaced with the new one. -Padma")
+
+  if i==183 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:Bag validation Failed due to changes made to archival package code to make doi appear as a link in.ArchivalPackageREADME.rtf. This file has different DOI's in both the places. In s3 it is https://doi.org/10.7294/17092283, in google drive it is https://10.7294/17092283 UPDATE: The bag was corrupted since changes were made to the bag in tar format by going inside the bag using 7-zip app. This was done in order to use a hyperlink for the doi field in archival readme. The original contents of the 2 folders: “DisseminatedContent” and “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220706 after downloading the content from the published item on figshare, curator downloaded email correspondence again from the email interaction and created provenance log using information in the email exchange.md5 checksums of payload verified with the original bag on s3.New bag replaced the old bag on s3 and google drive. md5 of ingested metadata is different only when it comes to thumbnail since figshare seems to have added a link to thumb nail which shows up now in ingested metadata, keeping the ingestedmetadata.json created on 20220707 since thumb tag is the only difference between the json of the new bag and original bag -Padma")
+    sheet1.write(i1+2,15,"Bag validation Failed due to changes made to archival package code to make doi appear as a link in.ArchivalPackageREADME.rtf. This file has different DOI's in both the places. In s3 it is https://doi.org/10.7294/17092283, in google drive it is https://10.7294/17092283 UPDATE: The bag was corrupted since changes were made to the bag in tar format by going inside the bag using 7-zip app. This was done in order to use a hyperlink for the doi field in archival readme. The original contents of the 2 folders: “DisseminatedContent” and “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220706 after downloading the content from the published item on figshare, curator downloaded email correspondence again from the email interaction and created provenance log using information in the email exchange.md5 checksums of payload verified with the original bag on s3.New bag replaced the old bag on s3 and google drive. md5 of ingested metadata is different only when it comes to thumbnail since figshare seems to have added a link to thumb nail which shows up now in ingested metadata, keeping the ingestedmetadata.json created on 20220707 since thumb tag is the only difference between the json of the new bag and original bag -Padma")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Bag validation Failed due to changes made to archival package code to make doi appear as a link in.ArchivalPackageREADME.rtf. This file has different DOI's in both the places. In s3 it is https://doi.org/10.7294/17092283, in google drive it is https://10.7294/17092283 UPDATE: The bag was corrupted since changes were made to the bag in tar format by going inside the bag using 7-zip app. This was done in order to use a hyperlink for the doi field in archival readme. The original contents of the 2 folders: “DisseminatedContent” and “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220706 after downloading the content from the published item on figshare, curator downloaded email correspondence again from the email interaction and created provenance log using information in the email exchange.md5 checksums of payload verified with the original bag on s3.New bag replaced the old bag on s3 and google drive. md5 of ingested metadata is different only when it comes to thumbnail since figshare seems to have added a link to thumb nail which shows up now in ingested metadata, keeping the ingestedmetadata.json created on 20220707 since thumb tag is the only difference between the json of the new bag and original bag -Padma")
+
+
+  if i==184 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:Bag validation Failed due to changes made to archival package file to make doi appear as a link,  UPDATE: The bag was corrupted since changes were made to the bag in tar format by going inside the bag using 7-zip app. This was done in order to insert a hyperlink for the doi field in archival readme (created by the script). The original contents of the 2 folders: “DisseminatedContent” and “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220707 after downloading the content from the published item on figshare, curator downloaded email correspondence again from the email interaction and created provenance log using information in the email exchange, md5 checksums of payload verified with the original bag on s3. New bag replaced the old bag on s3 and google drive. .-Padma")
+    sheet1.write(i1+2,15,"Bag validation Failed due to changes made to archival package file to make doi appear as a link,  UPDATE: The bag was corrupted since changes were made to the bag in tar format by going inside the bag using 7-zip app. This was done in order to insert a hyperlink for the doi field in archival readme (created by the script). The original contents of the 2 folders: “DisseminatedContent” and “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220707 after downloading the content from the published item on figshare, curator downloaded email correspondence again from the email interaction and created provenance log using information in the email exchange, md5 checksums of payload verified with the original bag on s3. New bag replaced the old bag on s3 and google drive. .-Padma")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Bag validation Failed due to changes made to archival package file to make doi appear as a link,  UPDATE: The bag was corrupted since changes were made to the bag in tar format by going inside the bag using 7-zip app. This was done in order to insert a hyperlink for the doi field in archival readme (created by the script). The original contents of the 2 folders: “DisseminatedContent” and “VTCurationServicesActions” couldn’t be retrieved. Curator remade the bags on 20220707 after downloading the content from the published item on figshare, curator downloaded email correspondence again from the email interaction and created provenance log using information in the email exchange, md5 checksums of payload verified with the original bag on s3. New bag replaced the old bag on s3 and google drive. .-Padma")    
+
+  if i==185 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:Bag validation Failed: Payload oxum in bag-info.txt is different in both places, it is 2990675.10 in google drive and 2990679.10 in s3, other than that everything else matches up, contents look fine and open up and md5 checksums match up. Moving the bag on s3 to APTrust")
+    sheet1.write(i1+2,15,"Bag validation Failed: Payload oxum in bag-info.txt is different in both places, it is 2990675.10 in google drive and 2990679.10 in s3, other than that everything else matches up, contents look fine and open up and md5 checksums match up. Moving the bag on s3 to APTrust")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Bag validation Failed: Payload oxum in bag-info.txt is different in both places, it is 2990675.10 in google drive and 2990679.10 in s3, other than that everything else matches up, contents look fine and open up and md5 checksums match up. Moving the bag on s3 to APTrust")   
+      
+
+  if i==177 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:For P00154 the publication date on the extracted bag 20211028 is different from the date on the bag in tar format 20211025, the bag is valid with the date 20211028 as it appears on the extracted bag when checked independently, so overwritting the extracted bag date to 20211028 in order to pick the extracted bag for processing, however the publication date 20211022 as it appears on figshare is used while creating the bag on DART and for APTrust transfer")
+    sheet1.write(i1+2,15,"For P00154 the publication date on the extracted bag 20211028 is different from the date on the bag in tar format 20211025, the bag is valid with the date 20211028 as it appears on the extracted bag when checked independently, so overwritting the extracted bag date to 20211028 in order to pick the extracted bag for processing, however the publication date 20211022 as it appears on figshare is used while creating the bag on DART and for APTrust transfer")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("For P00154 the publication date on the extracted bag 20211028 is different from the date on the bag in tar format 20211025, the bag is valid with the date 20211028 as it appears on the extracted bag when checked independently, so overwritting the extracted bag date to 20211028 in order to pick the extracted bag for processing, however the publication date 20211022 as it appears on figshare is used while creating the bag on DART and for APTrust transfer")    
+
+
+  if i==194 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception: P00167 was not valid, reason unknown, remade the bag with the same payload, checked md5 text file in the newly made bag with the original bag, everything matched, replaced the newly made bag on 20220712 with the old bag on s3, google drive and san disk. Transferred the new bag to APTrust")
+    sheet1.write(i1+2,15,"Exception: P00167 was not valid, reason unknown, remade the bag with the same payload, checked md5 text file in the newly made bag with the original bag, everything matched, replaced the newly made bag on 20220712 with the old bag on s3, google drive and san disk. Transferred the new bag to APTrust")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception: P00167 was not valid, reason unknown, remade the bag with the same payload, checked md5 text file in the newly made bag with the original bag, everything matched, replaced the newly made bag on 20220712 with the old bag on s3, google drive and san disk. Transferred the new bag to APTrust")      
+
+  if i==107 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    print("Publication bag P00098 v2 is a large bag ~369GB only available on google drive, not on s3, divided into 8 parts, each part ranging anywhere from 32GB-61GB  \n")
+    sheet1.write(i1,16,"Publication bag P00098 v2 is a large bag ~369GB only available on google drive, not on s3, divided into 8 parts, each part ranging anywhere from 32GB-61GB  ")
+    logging.info("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+    logging.info("Publication bag P00098 v2 is a large bag ~369GB only available on google drive, not on s3, divided into 8 parts, each part ranging anywhere from 32GB-61GB  ")        
 #END OF EXCEPTIONS**********************************************************************************************
 
 #Start processing I is for ingest, P is for publication bag:
@@ -429,7 +496,10 @@ for i in range(133,201):
     pDate[i]="20211025"
     SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar" 
 
-   
+  if IngOrPub=='P'and i == 107:
+    pDate[i]="20210521"
+
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_{pVersion[i]}(8of8)_{pDate[i]}.tar" 
 
   print("**********NOW PROCESSING ",pPubAccessionNumber[i],"**********")
   logging.info("**************************NOW PROCESSING %s ****************" % pPubAccessionNumber[i])
@@ -486,7 +556,9 @@ for i in range(133,201):
     extractedbag=SubDir3.replace('.tar','')
     print("Extracted bag ",extractedbag)
     logging.info(" Extracted bag on SanDisk is %s " % extractedbag)
-
+    #For P00154 the publication date on the extracted bag 20211028 is different from the date on the bag in tar format 20211025, the bag is valid with the date 20211028 as it appears on the extracted bag when checked independently, so overwritting the extracted bag date to 20211028 in order to pick the extracted bag for processing, however the publication date 20211022 as it appears on figshare is used while creating the bag on DART and for APTrust transfer
+    if i == 177 :
+      extractedbag="P00154_BrownR_BrownR_v01_20211028"
     extractedbagpath=os.path.join(destpath,extractedbag)
     bag = bagit.Bag(extractedbagpath)
 
@@ -497,7 +569,7 @@ for i in range(133,201):
         sheet1.write(i1,2,"Bag is valid")
         #for ingest there is not additional 3rd path
         #source_folder=os.path.join(extractedbagpath,"data",extractedbag)
-        if i == 96 or i == 113 or i == 119 or i == 131 or i == 134:
+        if i == 96 or i == 113 or i == 119 or i == 131 or i == 134 or i == 135 or i ==136 or i==137 or i == 107:
           source_folder=os.path.join(destpath,extractedbag,"data")
         elif i == 130:
           source_folder=os.path.join(destpath,extractedbag,"data","tmpygov0jei")  
@@ -552,8 +624,15 @@ for i in range(133,201):
             pDate[i]="20210922"  
           if i == 177:
             pDate[i]="20211022"  
+          if i ==107:
+            pDate[i]="20210409"
 
-          aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
+          if i ==107 :
+
+            aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_8of8_{pDate[i]}"
+          if i !=107 :
+            aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
+          
           aptrustBagName_tar=f"{aptrustBagName}.tar"  
    
         #Bagging name conventions for Ingest bags for APTrust transfer:
@@ -748,6 +827,7 @@ for i in range(133,201):
     else:
       print("Bag is not valid")
       logging.info("Bag is not valid")
+      sheet1.write(i1,2,"Bag is not valid")
       print("****************BAG VALIDATION FAILED FOR BAG ",extractedbagpath," SO BAG NOT MIGRATED to APTRUST****************")
       logging.info("****************BAG VALIDATION FAILED FOR BAG %s SO BAG NOT MIGRATED to APTRUST****************" % extractedbagpath)
   else:
