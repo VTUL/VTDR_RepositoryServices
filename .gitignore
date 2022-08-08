@@ -1,0 +1,7 @@
+**/*.env
+*.env
+configurations.ini
+*.ini
+**/*.ini
+.env
+.ini

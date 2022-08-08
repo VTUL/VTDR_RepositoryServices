@@ -6,15 +6,10 @@ Created on Mon Oct 25 10:55:10 2021
 """
 #Following code creates README rtf file using information from Figshare article
 
-#import configload
-import configparser
-#config=configload.read_config()
-config=configparser.ConfigParser()
-config.read('configurations.ini')
-print(config.sections())
+
 import os
-#from dotenv import load_dotenv
-#load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 from tkinter.messagebox import NO
 #from figshare.figshare import Figshare
 import figshare
@@ -29,26 +24,18 @@ from datetime import datetime
 
 #importing the load_dotenv from the python-dotenv module
 #Get the article id 
-#ArticleID=os.getenv("ArticleID")
-ArticleID=config['FigshareSettings']['figshareArticleID']
+ArticleID=os.getenv("ArticleID")
 #Get the Published Version number 
-#PublishedVersionNumber=os.getenv("PublishedVersionNumber")
-PublishedVersionNumber=config["FigshareSettings"]["PublishedVersionNumber"]
+PublishedVersionNumber=os.getenv("PublishedVersionNumber")
 intPublishedVersionNumber=int(PublishedVersionNumber[1])
-
 #Get the Ingest Version number 
-#IngestVersionNumber=os.getenv("IngestVersionNumber")
-IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
+IngestVersionNumber=os.getenv("IngestVersionNumber")
 intIngestVersionNumber=int(IngestVersionNumber[1])
 #Get your figshare token 
-#token=os.getenv("token")
-token=config['FigshareSettings']['token']
-print("token ",token)
+token=os.getenv("token")
 #Get curator name 
-#CuratorName=os.getenv("CuratorName")
-CuratorName=config['CurationSettings']['CuratorName']
-#README_Dir=os.getenv("README_Dir")
-README_Dir=config['PathSettings']['README_Dir']
+CuratorName=os.getenv("CuratorName")
+README_Dir=os.getenv("README_Dir")
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 
 def create_readme(ArticleID,token):
