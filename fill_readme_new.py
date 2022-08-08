@@ -43,6 +43,7 @@ intIngestVersionNumber=int(IngestVersionNumber[1])
 #Get your figshare token 
 #token=os.getenv("token")
 token=config['FigshareSettings']['token']
+print("token ",token)
 #Get curator name 
 #CuratorName=os.getenv("CuratorName")
 CuratorName=config['CurationSettings']['CuratorName']
