@@ -3,12 +3,17 @@
 import json
 import sys
 from subprocess import Popen, PIPE
+#Get the parameters from configurations.ini to retrieve folder path settings
+import configparser
+config=configparser.ConfigParser()
+config.read('configurations.ini')
 
 class Job:
 
     # Be sure to set this appropriately for your system.
     # The command 'npm start' is for DART development use only.
-    dart_command = "/Users/padma/AppData/Local/Programs/DART/DART.exe"
+    #dart_command = "/Users/padma/AppData/Local/Programs/DART/DART.exe"
+    dart_command=config['dart_PathSettings']['dart_exe_path']
     def __init__(self, workflow_name, package_name):
         self.workflow_name = workflow_name
         self.package_name = package_name

@@ -180,7 +180,7 @@ import re
 
 def info(self):
     #text_browser = self.dockwidget.text_browser
-    file_path = 'C:/Users/padma/anaconda3/envs/curation/README_FILES_09_06_29_07_2022_Padma Carstens/README.txt'
+    file_path = os.getenv("readmetxt_filepath")
     f = open(file_path, 'r', encoding="utf-8")
     text = f.read()
     urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
