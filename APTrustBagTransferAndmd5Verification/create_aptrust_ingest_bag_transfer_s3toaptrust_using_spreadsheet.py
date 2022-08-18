@@ -1,4 +1,4 @@
-#This code is used for transferring content from S3(stored locally on sandisk) to APTrust using DART. 
+#This code is used for transferring publication bags to APTrust using DART tool. The bags are stored on SanDisk. The md5 checksums of the bags stored on san disk are verified against the bags on google drive using md5Comparison_BagsOnS3SanDiskVsGoogleDrive.py.
 
 #******************************TOTAL 5 CHANGES
 """
@@ -15,8 +15,17 @@ from turtle import begin_fill
 from ldcoolp.curation import retrieve
 import spreadsheet_aptrust_transfer
 #from auto_fill_archive import create_archivalreadme
-from spreadsheet_aptrust_transfer import aptrust_vtingsheet
-from spreadsheet_aptrust_transfer import aptrust_vtpubsheet
+#from spreadsheet_aptrust_transfer import aptrust_vtingsheet
+#from spreadsheet_aptrust_transfer import aptrust_vtpubsheet
+import sys
+sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/VTechDataRepo/Figshare-APTrust')
+#import FigshareAPTrustWorkflow
+#from Figshare-APTrust.Read_VTDR_Spreadsheet import vtingsheet
+#from Figshare-APTrust.Read_VTDR_Spreadsheet import vtpubsheet
+#import Read_VTDR_Spreadsheet
+from Read_VTDR_Spreadsheet import vtingsheet
+from Read_VTDR_Spreadsheet import vtpubsheet
+
 import shutil
 import tarfile
 from tarfile import TarFile
@@ -31,16 +40,25 @@ from xlutils.copy import copy
 import filecomparetestmod
 from filecomparetestmod import comparemd5txt
 import bagit
+from dotenv import load_dotenv
+load_dotenv()
 
 #Create a log sheet
 #************CHANGE(1) FOR EVERY 10 BAG RUN***************************
 
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P98_8of8.xls')
+#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P181.xls')
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P188.xls')
+#PathLogSheetAPTrustTransferXLS=os.getenv("PathLogSheetAPTrustTransferXLS")
+#sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P98_8of8.xls')
+#sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P181.xls')
 wb=Workbook(sheetname)
 
 #************CHANGE(2) FOR EVERY 10 BAG RUN***************************
 
-sheet1=wb.add_sheet("APTrustTransferSheet_P98_8of8")#this name has a character limit
+#sheet1=wb.add_sheet("APTrustTransferSheet_P98_8of8")#this name has a character limit
+#sheet1=wb.add_sheet("APTrustTransferSheet_P181")#this name has a character limit
+sheet1=wb.add_sheet("APTrustTransferSheet_P188")#this name has a character limit
+
 #sheet1=wb.add_sheet("APTrustTransferSheet_P119v3")#this name has a character limit
 sheet1.write(0, 0, 'Bagname made by UPACK')
 sheet1.write(0, 1, 'Bagname made by DART')
@@ -62,7 +80,9 @@ sheet1.write(0,16,'Comments')
 #Create a log file
 #************CHANGE(3) FOR EVERY !) BAG RUN ***************************
 
-LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P98_8of8.log')
+#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P98_8of8.log')
+#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P181.log')
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P188.log')
 ext=".tar"
 i1=1
 
@@ -70,7 +90,8 @@ i1=1
 
 #Fetch information from Ingest sheet
 
-ivtsheet=aptrust_vtingsheet()
+#ivtsheet=aptrust_vtingsheet()
+ivtsheet=vtingsheet(ArticleID=None,IngestVersionNumber=None)
 #Get article id 
 iArticleid=ivtsheet['iArticleid']
 iDOIsuffix=ivtsheet['iDOIsuffix']
@@ -89,7 +110,8 @@ iRequestorLFI=ivtsheet['iReqLnameFini']
 iCorrespondingAuthorLFI=ivtsheet['iCorLnameFini']
 
 #Fetch information from published sheet
-Pvtsheet=aptrust_vtpubsheet()
+#Pvtsheet=aptrust_vtpubsheet()
+Pvtsheet=vtpubsheet(ArticleID=None,PublishedVersionNumber=None)
 pPubAccessionNumber= Pvtsheet['pPubnum']
 pIngAccessionNumber=Pvtsheet['pIngestnum']
 pRequestorLFI=Pvtsheet['pReqLnameFini']
@@ -108,7 +130,8 @@ count=0
 #indexing for i for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
 #indexing for i for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
 
-for i in range(107,108):     
+#for i in range(210,211):    
+for i in range(217,218):    
   wb.save(sheetname)
   logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
   IngOrPub='P' #0 for ingest 1 for pub
@@ -409,6 +432,14 @@ for i in range(107,108):
     logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
     logging.info("Exception: P00167 was not valid, reason unknown, remade the bag with the same payload, checked md5 text file in the newly made bag with the original bag, everything matched, replaced the newly made bag on 20220712 with the old bag on s3, google drive and san disk. Transferred the new bag to APTrust")      
 
+
+  if i==210 and IngOrPub=='P':
+    print("************************THE FOLLOWING PUBLICATION BAG HAS AN EXCEPTION***************************")
+    print("Exception:Version 3 of P00181 is archived as publication bag version 1 since minor changes were made from version 1 to version 3")
+    sheet1.write(i1+2,15,"Exception:Version 3 of P00181 is archived as publication bag version 1 since minor changes were made from version 1 to version 3")
+    logging.info("************************THIS PUBLICATION BAG HAS AN EXCEPTION***************************")
+    logging.info("Exception:Version 3 of P00181 is archived as publication bag version 1 since minor changes were made from version 1 to version 3")   
+
   if i==107 and IngOrPub=='P':
     print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
     print("Publication bag P00098 v2 is a large bag ~369GB only available on google drive, not on s3, divided into 8 parts, each part ranging anywhere from 32GB-61GB  \n")
@@ -496,9 +527,12 @@ for i in range(107,108):
     pDate[i]="20211025"
     SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar" 
 
+  if IngOrPub=='P'and i == 210:
+    pVersion[i]="01"
+    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"   
+
   if IngOrPub=='P'and i == 107:
     pDate[i]="20210521"
-
     SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_{pVersion[i]}(8of8)_{pDate[i]}.tar" 
 
   print("**********NOW PROCESSING ",pPubAccessionNumber[i],"**********")
@@ -626,10 +660,10 @@ for i in range(107,108):
             pDate[i]="20211022"  
           if i ==107:
             pDate[i]="20210409"
-
+          #Only bag P198:
           if i ==107 :
-
             aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_8of8_{pDate[i]}"
+          #For all the other bags 
           if i !=107 :
             aptrustBagName=f"VTDR_{pPubAccessionNumber[i]}_{pIngAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
           
@@ -687,14 +721,16 @@ for i in range(107,108):
 
         #Get size of bag in tar format made by DART, then untar the bag made by dart stored as a local copy
 
-        dartpath = "C:/Users/padma/.dart/bags/"
+        #dartpath = "C:/Users/padma/.dart/bags/"
+        dartpath = os.getenv("dartpath")
         dartBagPath=os.path.join(dartpath,aptrustBagName_tar)
         dartBagSize=os.path.getsize(dartBagPath)
         dartBagSizeGB=dartBagSize/(10**9)
         sheet1.write(i1,4,dartBagSizeGB)
         #Extract/Untar bag made by DART:
         openDartTar=tarfile.open(dartBagPath,"r")
-        destnpath="C:/Users/padma/.dart/bags/"
+        #destnpath="C:/Users/padma/.dart/bags/"
+        destnpath=os.getenv("DartDestnpath")
         openDartTar.extractall(destnpath)
         openDartTar.close()
         dartextractedbag=os.path.join(dartpath,aptrustBagName)#SubDir3.replace('.tar','')
@@ -762,7 +798,8 @@ for i in range(107,108):
   #----------------Copy non disseminated content to a different location for Publication bag:-------------------------
   
         if extractedbag[0]=='P':
-          destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
+          #destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
+          destn_path=os.getenv("NonDisseminatedPath")
           data_directory=f"NonDisseminatedContent_VTDR_{pPubAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
           destndir=os.path.join(destn_path,data_directory)
           count=0
