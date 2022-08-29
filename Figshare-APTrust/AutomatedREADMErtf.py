@@ -11,7 +11,7 @@ import os
 from tkinter.messagebox import NO
 #from figshare.figshare import Figshare
 import figshare
-from figshare import Figshare
+from figshare.figshare import Figshare
 from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
 import re
@@ -40,9 +40,9 @@ intIngestVersionNumber=int(IngestVersionNumber[1])
 #Get your figshare token 
 token=config['FigshareSettings']['token']
 #Get curator name 
-CuratorName=config['CurationSettings']['CuratorName']
+CuratorName=config['FigshareSettings']['CuratorName']
 #Get the directory in which to store README file
-README_Dir=config['PathSettings']['README_Dir']
+README_Dir=config['AutomatedREADMEPathSettings']['README_Dir']
 #Get information from Ingest Sheet, access google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7 and get information about the article using article ID and version number.
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 
