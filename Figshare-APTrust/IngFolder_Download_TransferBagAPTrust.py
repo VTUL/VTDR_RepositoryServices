@@ -116,7 +116,7 @@ aptrustBagName=IngFolderName
 
 #job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
 #
-job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+job = Job("APTrust Production Workflow and S3 deposition for Virginia Tech",aptrustBagName)
 for f in payload:
     job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)
