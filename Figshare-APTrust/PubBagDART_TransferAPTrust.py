@@ -73,8 +73,8 @@ PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
 PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
-job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
 #Open the publication folder and add all the files to the DART app to bag them
 for f in payload:
   job.add_file(aptrustBagName+"\\"+f)
@@ -102,7 +102,7 @@ else:
 #----------------Copy non disseminated content to a NonDisseminatedContent folder:-------------------------
 
 destn_path=config['PubBagDartAptrust_PathSettings']['NonDisseminatedContentPath']
-data_directory=f"NonDisseminatedContent_000000000000090000000000      VTDR_{pPubAccessionNumber}_DOI_{pDOIsuffix}_{pCorrespondingAuthorLFI}_v{pVersion}_{pDate}"
+data_directory=f"NonDisseminatedContent_VTDR_{pPubAccessionNumber}_DOI_{pDOIsuffix}_{pCorrespondingAuthorLFI}_v{pVersion}_{pDate}"
 destndir=os.path.join(destn_path,data_directory)
 count=0
 

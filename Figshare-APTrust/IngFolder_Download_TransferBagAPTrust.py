@@ -13,6 +13,11 @@ Purpose:
 """
 import os
 from os.path import exists
+import sys
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
 #import figshare
 from figshare.figshare import Figshare
 from ldcoolp.curation import retrieve
@@ -41,7 +46,7 @@ IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
 #Get your figshare token 
 token=config['FigshareSettings']['token']
 #Get curator name 
-CuratorName=config['CurationSettings']['CuratorName']
+CuratorName=config['FigshareSettings']['CuratorName']
 
 
 #Get the row information of the article in review/ingested article from the Ingest sheet using the corresponding ArticleID and Version Number:
@@ -109,9 +114,9 @@ payload=os.listdir(data_directory_path)
 aptrustBagName=IngFolderName
 #Create APTrust Demo/Production workflow in the DART app before running this script, this workflow created should also includes the credentials for the preferred storage i.e. aptrust repo/demo or VT s3
 
-job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
 #
-#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
 for f in payload:
     job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)
