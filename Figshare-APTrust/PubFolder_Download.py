@@ -41,7 +41,7 @@ IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
 #Get your figshare token 
 token=config['FigshareSettings']['token']
 #Get curator name 
-CuratorName=config['CurationSettings']['CuratorName']
+CuratorName=config['FigshareSettings']['CuratorName']
 
 #Get the row information of the published article from the Published sheet using the corresponding ArticleID and Version Number:
 vtsheet=vtpubsheet(ArticleID,PublishedVersionNumber)
