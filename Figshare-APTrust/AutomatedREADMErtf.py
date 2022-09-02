@@ -71,6 +71,7 @@ def create_readme(ArticleID,token):
    authr.append(authrs)
   s=", "
   author=s.join(authr)
+
   #Get the categories list
   cat=[]
   for i in range(len(details["categories"])):
@@ -114,8 +115,9 @@ def create_readme(ArticleID,token):
   Publisher=details['custom_fields'][0]['value']
   Location= details['custom_fields'][1]['value']
   #categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"  
-  CorresAuthEmail=details['custom_fields'][2]['value']
-  FilesFolders=details['custom_fields'][3]['value']
+  CorresAuthName=details['custom_fields'][2]['value']
+  CorresAuthEmail=details['custom_fields'][3]['value']
+  FilesFolders=details['custom_fields'][4]['value']
   #Remove html tags in files/folders
   soup=BeautifulSoup(FilesFolders,features="html.parser")
   x=soup.text
@@ -123,8 +125,9 @@ def create_readme(ArticleID,token):
  #Replace bullets with rtf coding for bullets of different sizes
   x=x.replace("●","\\line\\bullet")
   x=x.replace("•","\\line\\bullet")
+  x=x.replace(" – "," - ")
 
-  CorresAuthor=details['custom_fields'][4]['value']
+  #CorresAuthor=details['custom_fields'][4]['value']
 
   #Leave the metadata field empty/default value if the metadata fields are not filled in by the author
   if title is None or title=="":
@@ -198,7 +201,7 @@ def create_readme(ArticleID,token):
         "{\\b License:} "+str(License)+"\\line\n"+
         "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
         "{\\b Location:} "+str(Location)+"\\line\n"+
-        "{\\b Corresponding Author Name:} "+str(CorresAuthor)+"\\line\n"+
+        "{\\b Corresponding Author Name:} "+str(CorresAuthName)+"\\line\n"+
         "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
         "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
         x+ "\\line\n"+
