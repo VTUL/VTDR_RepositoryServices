@@ -116,7 +116,9 @@ aptrustBagName=IngFolderName
 
 #job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
 #
-job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+#
+job = Job("VT Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
 for f in payload:
     job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)
@@ -133,10 +135,10 @@ job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
 exit_code = job.run()
 if exit_code == 0:
     print("Job completed")
-    print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST****************")
+    print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
 
 else:
     print("Job failed. Check the DART log for details.")
-    print("**************************BAG MIGRATION TO APTRUST FAILED****************")
+    print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
 
      
