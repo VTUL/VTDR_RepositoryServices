@@ -1,6 +1,4 @@
 import configparser
-
-
 """
 Created on Wed Oct  6 12:39:04 2021
 
@@ -8,15 +6,15 @@ Created on Wed Oct  6 12:39:04 2021
 """
 
 """
-Curator fills in the following: 
+Curator fills in the following parameters/paths: 
 
-Figshare Article ID: This is the number found towards the end of the DOI link, click the red "Cite" button on the item under review/to be published 
- Publication Version Number to be downloaded
- VTDR token
-  Curator Name
-   Curation Directory where Ingest/Publication folder will be created
-    Directory where Non disseminated content will be stored
-     Path
+FigshareArticleID: This is the number found towards the end of the DOI link, click the red "Cite" button on the item under review/to be published 
+PubVerNum: Publication Version Number to be downloaded, found at the end of "Cite"
+VTDRToken: VTDR token created under applications
+CurName: Name of the curator, this shows up in ArchivalReadme Package created in the publication folder
+CurationDir: Curation directory where Ingest/Publication folder/README file will be created
+NonDissContentDir: Directory where Non disseminated content will be stored, non disseminated content includes provenance log, email correspondence and archival readme package created in the publication folder
+
 """
 FigshareArticleID="20558580"
 PubVerNum="01"
