@@ -1,51 +1,84 @@
 import configparser
 
+
+"""
+Created on Wed Oct  6 12:39:04 2021
+
+@author: padma carstens
+"""
+
+"""
+Curator fills in the following: 
+
+Figshare Article ID: This is the number found towards the end of the DOI link, click the red "Cite" button on the item under review/to be published 
+ Publication Version Number to be downloaded
+ VTDR token
+  Curator Name
+   Curation Directory where Ingest/Publication folder will be created
+    Directory where Non disseminated content will be stored
+     Path
+"""
+FigshareArticleID="20558580"
+PubVerNum="01"
+VTDRToken="1234"
+CurName="XYZ"
+CurationDir="C:/Users/username/anaconda3/envs/curation"
+NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent/"
+DartExePath="C:/Users/username/AppData/Local/Programs/DART/DART.exe"
+ReadmeDir="C:/Users/username/anaconda3/envs/curation/README_FILES"
+
+#------------------------------------------------------
+
+# ADD SECTION for figshare settings
 # CREATE OBJECT
 config_file = configparser.ConfigParser()
-#------------------------------------------------------
-# ADD SECTION for figshare settings
 config_file.add_section("FigshareSettings")
-# ADD SETTINGS TO SECTION
-#config_file.set("FigshareSettings", "FigshareArticleID", "20376462")
-#Published
-config_file.set("FigshareSettings", "FigshareArticleID", "20371875")
-config_file.set("FigshareSettings", "PublishedVersionNumber", "01")
+config_file.set("FigshareSettings", "FigshareArticleID", FigshareArticleID)
+config_file.set("FigshareSettings", "PublishedVersionNumber", PubVerNum)
 config_file.set("FigshareSettings", "IngestVersionNumber", "01")
-config_file.set("FigshareSettings", "token","1234")
+config_file.set("FigshareSettings", "token",VTDRToken)
+config_file.set("FigshareSettings", "CuratorName",CurName)
 
 #---------------------------------------------------------
 
-#-------------------------------------------------------------
 # ADD SECTION for AutomatedREADME settings:
 config_file.add_section("AutomatedREADMEPathSettings")
-config_file.set("AutomatedREADMEPathSettings","README_Dir", "C:/Users/padma/anaconda3/envs/curation/README_FILES")
-#---------------------------------------------
+config_file.set("AutomatedREADMEPathSettings","README_Dir", ReadmeDir)
+
 #-------------------------------------------------------------
+
 # ADD SECTION for AutomatedArchivalPackageREADME settings:
 config_file.add_section("ArchivalREADMEPathSettings")
-config_file.set("ArchivalREADMEPathSettings","ArchivalREADME_RootDir", "C:/Users/padma/anaconda3/envs/curation")
+config_file.set("ArchivalREADMEPathSettings","ArchivalREADME_RootDir", CurationDir)
 
-#-----------------------------------------------------------------
 #-------------------------------------------------------------
+
 #ADD SECTION for IngestBag_Download_TransferAPTrust script
 config_file.add_section("IngestBag_PathSettings")
 config_file.set("IngestBag_PathSettings","SanDiskDirPath","F:\\")
-config_file.set("IngestBag_PathSettings","IngFolderPath","C:/Users/padma/anaconda3/envs/curation")
-config_file.set("IngestBag_PathSettings","metadatajsonpath","C:/Users/padma/anaconda3/envs/curation")
-#-------------------------------------------------------------
+config_file.set("IngestBag_PathSettings","IngFolderPath",CurationDir)
+config_file.set("IngestBag_PathSettings","metadatajsonpath",CurationDir)
+
 #----------------------------------------------------------------
+
 #ADD SECTION for PubFolder_Download script
 config_file.add_section("PubFolder_PathSettings")
-config_file.set("PubFolder_PathSettings","PubFolderPath","C:/Users/padma/anaconda3/envs/curation")
+config_file.set("PubFolder_PathSettings","PubFolderPath",CurationDir)
 
-#-----------------------------------------------------------------
 #----------------------------------------------------------------
+
 #ADD SECTION for PubBagDART_TransferAPTrust script
 config_file.add_section("PubBagDartAptrust_PathSettings")
 config_file.set("PubBagDartAptrust_PathSettings","LargeBagsPath","F:/VTechbags")
-config_file.set("PubBagDartAptrust_PathSettings","NonDisseminatedContentPath","G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent/")
-#-------------------------------------------------------------
+config_file.set("PubBagDartAptrust_PathSettings","NonDisseminatedContentPath",NonDissContentDir)
+
 #-----------------------------------------------------------------
+
+#ADD SECTION for job.py script
+config_file.add_section("dart_PathSettings")
+config_file.set("dart_PathSettings","dart_exe_path",DartExePath)
+
+#---------------------------------------------------------------
 
 with open(r"configurations.ini", 'w') as configfileObj:
     config_file.write(configfileObj)
@@ -54,3 +87,10 @@ with open(r"configurations.ini", 'w') as configfileObj:
 
 print("Config file 'configurations.ini' created")
 
+# PRINT FILE CONTENT
+read_file = open("configurations.ini", "r")
+content = read_file.read()
+print("Content of the config file are:\n")
+print(content)
+read_file.flush()
+read_file.close()
