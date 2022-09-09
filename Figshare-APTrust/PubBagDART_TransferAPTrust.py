@@ -74,8 +74,8 @@ PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
 #job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
-job = Job("VT Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
+job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+#job = Job("VT Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
 #Open the publication folder and add all the files to the DART app to bag them
 for f in payload:
   job.add_file(aptrustBagName+"\\"+f)
