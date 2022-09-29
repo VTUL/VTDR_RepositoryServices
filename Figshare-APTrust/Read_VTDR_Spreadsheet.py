@@ -75,6 +75,7 @@ IngestVersionNumber: Ingest number of the article in review whose row informatio
    rownum=np.intersect1d(row_aidmatch,row_vermatch)
  #the row number on the spreadsheet is rownum+1 due to array indexing from 0
  #convert numpy array to integer
+   print("Ingest sheet rownumber: ",rownum+1)
    rownum=int(rownum)
    print("Ingest sheet rownumber: ",rownum+1)
 
