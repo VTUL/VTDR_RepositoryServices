@@ -104,9 +104,12 @@ def create_readme(ArticleID,token):
   #In this code we are using BeautifulSoup
   #Description=(details['description']).strip('"<p>""</p>""<br>""<b>""<div>""</div>"')
   Description=details['description']
-  soup=BeautifulSoup(Description,features="html.parser")
+  soup=BeautifulSoup(Description,features="html.parser")#,from_encoding="UTF-8")
   Description=soup.get_text()
-
+  #Description=soup.text
+ 
+  #Description=Description.replace("\n","\\line\n")
+  #Description=Description.replace(" ","\\line\\")
   #Get all the remaining fields 
   Funding=details['funding']
   ResourceTitle=details['resource_title']
