@@ -90,6 +90,12 @@ def create_readme(ArticleID,token):
     groupid_name=groupidnames[i]['name']
     groupids.append(groupid)
     groupname.append(groupid_name)
+ 
+  fundinglist=[]
+  for m in range(len(details['funding_list'])):
+    fund=details['funding_list'][m]['title']
+    fundinglist.append(fund)
+  Funding=s.join(fundinglist)
 
   index=groupids.index(details['group_id'])# this gives the index of the group id displayed on figshare
   Group=groupname[index]#this gives the group name that the displayed group id on figshare corresponds to from the group id list 
@@ -102,16 +108,24 @@ def create_readme(ArticleID,token):
   #One way of doing this:
   #x=re.sub('<[^<]+?>', '', Description)
   #In this code we are using BeautifulSoup
-  #Description=(details['description']).strip('"<p>""</p>""<br>""<b>""<div>""</div>"')
+  #Description=(details['description']).strip('"xa0""<p>""</p>""</p>"<br>""<b>""<div>""</div>""\xa0"')
   Description=details['description']
   soup=BeautifulSoup(Description,features="html.parser")#,from_encoding="UTF-8")
-  Description=soup.get_text()
+  #Description=soup.get_text()
+  # y=soup.get_text()
+  y=soup.text
+  y=y.replace(u'\xa0',u' ')
+  y=y.replace("’",)
+  #y=y.replace("’","’")
+  #y=y.replace(" ","\\line\\'20")
+  y=y.replace("\n","\\line\n")
+  #Desc
   #Description=soup.text
  
   #Description=Description.replace("\n","\\line\n")
   #Description=Description.replace(" ","\\line\\")
   #Get all the remaining fields 
-  Funding=details['funding']
+  #Funding=details['funding']
   ResourceTitle=details['resource_title']
   ResourceDOI=details['resource_doi']
   License=details["license"]['name']
@@ -189,14 +203,14 @@ def create_readme(ArticleID,token):
   print("The new directory "+readmefolder+" is created")
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w',encoding="utf-8")
-
+  #str(Description)
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
         "{\\b Author(s):} "+str(author)+"\\line\n"+
         "{\\b Categories:} "+Categoriesinfo+"\\line\n"+        
         "{\\b Group:} "+str(Group)+"\\line\n"+
         "{\\b Item Type:} "+str(ItemType)+"\\line\n"+
         "{\\b Keywords:} "+str(keywords)+"\\line\n"+
-        "{\\b Description:} "+str(Description)+"\\line\n"
+        "{\\b Description:} "+y+"\\line\n"
         "{\\b Funding:} "+str(Funding)+"\\line\n"+
         "{\\b Resource Title:} "+str(ResourceTitle)+"\\line\n"+
         "{\\b Resource DOI:} "+str(ResourceDOI)+"\\line\n"+
