@@ -113,6 +113,20 @@ else:
 payload=os.listdir(data_directory_path)
 aptrustBagName=IngFolderName
 #Create APTrust Demo/Production workflow in the DART app before running this script, this workflow created should also includes the credentials for the preferred storage i.e. aptrust repo/demo or VT s3
+#job = Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
+#job = Job("Workflow for depositing bag to APTrust-Repo and VT library S3 bucket",aptrustBagName)
+#job = Job("Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
+#job = Job("Workflow for depositing bag to APTrust-Repo" ,aptrustBagName)
+workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
+if workflow == "1":
+    jobname="Workflow for depositing bag to APTrust-Demo"
+if workflow =="2":
+    jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
+if workflow =="3":
+    jobname="Workflow for depositing bag to VT library S3 bucket"
+if workflow =="4":
+    jobname="Workflow for depositing bag to APTrust-Repo"    
+
 workflow=input ("Please enter '1' for APTrust Demo Workflow, '2' for APTrust Production and VT libraries S3 workflow and '3' for VT libraries S3 Workflow:  ")
 if workflow == "1":
     jobname="APTrust Demo Workflow for Virginia Tech"
