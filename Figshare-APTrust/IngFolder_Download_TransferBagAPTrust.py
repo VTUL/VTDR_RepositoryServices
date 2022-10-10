@@ -115,7 +115,7 @@ aptrustBagName=IngFolderName
 #Create APTrust Demo/Production workflow in the DART app before running this script, this workflow created should also includes the credentials for the preferred storage i.e. aptrust repo/demo or VT s3
 workflow=input ("Please enter '1' for APTrust Demo Workflow, '2' for APTrust Production and VT libraries S3 workflow and '3' for VT libraries S3 Workflow:  ")
 if workflow == "1":
-    jobname="APTrust Demo Workflow for deposit for Virginia Tech"
+    jobname="APTrust Demo Workflow for Virginia Tech"
 if workflow =="2":
     jobname="APTrust Production Workflow for Virginia Tech"
 if workflow =="3":
