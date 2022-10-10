@@ -73,16 +73,20 @@ PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
 PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
-#job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-#job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
-#job = Job("VT Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
-workflow=input ("Please enter '1' for APTrust Demo Workflow, '2' for APTrust Production and VT libraries S3 workflow and '3' for VT libraries S3 Workflow:  ")
+#job = Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
+#job = Job("Workflow for depositing bag to APTrust-Repo and VT library S3 bucket",aptrustBagName)
+#job = Job("Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
+#job = Job("Workflow for depositing bag to APTrust-Repo" ,aptrustBagName)
+#workflow=input ("Please enter '1' for APTrust Demo Workflow, '2' for APTrust Production and VT libraries S3 workflow and '3' for VT libraries S3 Workflow:  ")
+workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
 if workflow == "1":
-    jobname="APTrust Demo Workflow for Virginia Tech"
+    jobname="Workflow for depositing bag to APTrust-Demo"
 if workflow =="2":
-    jobname="APTrust Production Workflow for Virginia Tech"
+    jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
 if workflow =="3":
-    jobname="VT Workflow for depositing bag to VT library S3 bucket"
+    jobname="Workflow for depositing bag to VT library S3 bucket"
+if workflow =="4":
+    jobname="Workflow for depositing bag to APTrust-Repo"    
 job=Job(jobname,aptrustBagName)
 #Open the publication folder and add all the files to the DART app to bag them
 for f in payload:
