@@ -115,7 +115,7 @@ def create_readme(ArticleID,token):
   # y=soup.get_text()
   y=soup.text
   y=y.replace(u'\xa0',u' ')
-  y=y.replace("’",)
+  #y=y.replace("’",)
   #y=y.replace("’","’")
   #y=y.replace(" ","\\line\\'20")
   y=y.replace("\n","\\line\n")
