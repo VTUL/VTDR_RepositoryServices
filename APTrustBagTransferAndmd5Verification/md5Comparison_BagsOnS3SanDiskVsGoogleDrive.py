@@ -16,12 +16,15 @@ from retrying import retry
 from datetime import datetime
 
 sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/md5VerificationBagsP175_P176_%Y%m%d_%H%M_P175_P176.xls')
+
+#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/md5VerificationBagsP134v2_%Y%m%d_%H%M_P132v2.xls')
 #rb = open_workbook("C:/Users/padma/anaconda3/envs/curation/Comparison_md5checksum_tarfiles_gdrive_vs_s3.xls")
 wb=Workbook(sheetname)
 #wb = copy(rb)
 
 #sheet2 = wb.get_sheet("MD5comparison_tarfiles>40GB")
 sheet2 = wb.add_sheet("MD5VerificationPubBagsP175_P176")
+#sheet2 = wb.add_sheet("MD5VerificationPubBagsP134v2")
 #sheet2 = wb.get_sheet("MD5comparison for tarfiles<10GB")
 #sheet2 = wb.get_sheet("MD5comparison_tarfiles<=1GB")
 #sheet2 = wb.get_sheet("MD5comparison_tarfiles_1to3GB")
@@ -45,6 +48,7 @@ sheet2.write(0, 4, 'MD5 Verification')
 sheet2.write(0,5,'File Size in GB')
 i1=1
 LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/logfile_md5Verification_P175_P176_%H_%M_%d_%m_%Y.log')
+#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/logfile_md5Verification_P134v2_%H_%M_%d_%m_%Y.log')
 #sourcedir1 = "D:/VTechbags"
 #sourcedir1="F:/VTechbags"
 sourcedir1="F:"

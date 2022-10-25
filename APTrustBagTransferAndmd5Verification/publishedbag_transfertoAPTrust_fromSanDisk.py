@@ -47,7 +47,8 @@ load_dotenv()
 #************CHANGE(1) FOR EVERY 10 BAG RUN***************************
 
 #sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P181.xls')
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P188.xls')
+#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P188.xls')
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P134v2.xls')
 #PathLogSheetAPTrustTransferXLS=os.getenv("PathLogSheetAPTrustTransferXLS")
 #sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P98_8of8.xls')
 #sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P181.xls')
@@ -57,7 +58,8 @@ wb=Workbook(sheetname)
 
 #sheet1=wb.add_sheet("APTrustTransferSheet_P98_8of8")#this name has a character limit
 #sheet1=wb.add_sheet("APTrustTransferSheet_P181")#this name has a character limit
-sheet1=wb.add_sheet("APTrustTransferSheet_P188")#this name has a character limit
+#sheet1=wb.add_sheet("APTrustTransferSheet_P188")#this name has a character limit
+sheet1=wb.add_sheet("APTrustTransferSheet_P134v2")#this name has a character limit
 
 #sheet1=wb.add_sheet("APTrustTransferSheet_P119v3")#this name has a character limit
 sheet1.write(0, 0, 'Bagname made by UPACK')
@@ -82,7 +84,8 @@ sheet1.write(0,16,'Comments')
 
 #LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P98_8of8.log')
 #LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P181.log')
-LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P188.log')
+#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P188.log')
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P134v2.log')
 ext=".tar"
 i1=1
 
@@ -131,7 +134,8 @@ count=0
 #indexing for i for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
 
 #for i in range(210,211):    
-for i in range(217,218):    
+#for i in range(217,218):    
+for i in range(149,150):    
   wb.save(sheetname)
   logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
   IngOrPub='P' #0 for ingest 1 for pub
@@ -681,7 +685,9 @@ for i in range(217,218):
       #-----------------------------------------------------------------------  
       #************CHANGE (5) Change for every 10 loop run***************************
         #job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
-        job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+        #job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
+        job=Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
+        #job=Job("Workflow for depositing bag to APTrust-Repo",aptrustBagName)
         for f in payload:
           job.add_file(source_folder+"\\"+f)
           print("Added following file to bag in DART: ",f)
@@ -721,16 +727,16 @@ for i in range(217,218):
 
         #Get size of bag in tar format made by DART, then untar the bag made by dart stored as a local copy
 
-        #dartpath = "C:/Users/padma/.dart/bags/"
-        dartpath = os.getenv("dartpath")
+        dartpath = "C:/Users/padma/.dart/bags/"
+        #dartpath = os.getenv("dartpath")
         dartBagPath=os.path.join(dartpath,aptrustBagName_tar)
         dartBagSize=os.path.getsize(dartBagPath)
         dartBagSizeGB=dartBagSize/(10**9)
         sheet1.write(i1,4,dartBagSizeGB)
         #Extract/Untar bag made by DART:
         openDartTar=tarfile.open(dartBagPath,"r")
-        #destnpath="C:/Users/padma/.dart/bags/"
-        destnpath=os.getenv("DartDestnpath")
+        destnpath="C:/Users/padma/.dart/bags/"
+        #destnpath=os.getenv("DartDestnpath")
         openDartTar.extractall(destnpath)
         openDartTar.close()
         dartextractedbag=os.path.join(dartpath,aptrustBagName)#SubDir3.replace('.tar','')
@@ -798,8 +804,8 @@ for i in range(217,218):
   #----------------Copy non disseminated content to a different location for Publication bag:-------------------------
   
         if extractedbag[0]=='P':
-          #destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
-          destn_path=os.getenv("NonDisseminatedPath")
+          destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
+          #destn_path=os.getenv("NonDisseminatedPath")
           data_directory=f"NonDisseminatedContent_VTDR_{pPubAccessionNumber[i]}_DOI_{pDOIsuffix[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}"
           destndir=os.path.join(destn_path,data_directory)
           count=0
