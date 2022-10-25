@@ -129,7 +129,9 @@ if workflow =="4":
 
 job=Job(jobname,aptrustBagName)
 for f in payload:
-    job.add_file(data_directory_path+"\\"+f)
+    datapath=os.path.join(data_directory_path,f)
+    job.add_file(datapath)
+    #job.add_file(data_directory_path+"\\"+f)
     print("Added following file to bag in DART: ",f)
     bag_group_identifier=f"VTDR_{IngestAccessionNumber}"
 job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)

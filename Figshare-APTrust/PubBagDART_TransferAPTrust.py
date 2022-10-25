@@ -31,8 +31,8 @@ from job import Job
 from cmath import log
 import logging
 from datetime import datetime
-from xlrd import open_workbook
-from xlwt import Workbook
+#from xlrd import open_workbook
+#from xlwt import Workbook
 from xlutils.copy import copy
 import bagit
 
@@ -89,7 +89,9 @@ if workflow =="4":
 job=Job(jobname,aptrustBagName)
 #Open the publication folder and add all the files to the DART app to bag them
 for f in payload:
-  job.add_file(aptrustBagName+"\\"+f)
+  payloadfilepath=os.path.join(aptrustBagName,f)
+  job.add_file(payloadfilepath)
+  #job.add_file(aptrustBagName+"\\"+f)
   print("Added following file to bag in DART: ",f)
   logging.info("Added following file to bag in DART: %s " % f)
     
