@@ -2,7 +2,7 @@
 import os
 import shutil
 from os.path import exists
-from importlib_metadata import version
+from importlib.metadata import version
 
 import requests
 from requests import HTTPError

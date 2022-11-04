@@ -16,7 +16,8 @@ from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
 import re
 import os
-from PyRTF import *
+import PyRTF 
+#from PyRTF import *
 from bs4 import BeautifulSoup
 from datetime import datetime
 

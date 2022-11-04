@@ -33,7 +33,7 @@ import logging
 from datetime import datetime
 #from xlrd import open_workbook
 #from xlwt import Workbook
-from xlutils.copy import copy
+#from xlutils.copy import copy
 import bagit
 
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
