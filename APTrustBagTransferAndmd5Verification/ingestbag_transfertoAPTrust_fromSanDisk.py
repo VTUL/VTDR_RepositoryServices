@@ -36,7 +36,7 @@ import logging
 from datetime import datetime
 from xlrd import open_workbook
 from xlwt import Workbook
-from xlutils.copy import copy
+#from xlutils.copy import copy
 import filecomparetestmod
 from filecomparetestmod import comparemd5txt
 import bagit
@@ -46,12 +46,18 @@ import bagit
 #Create a log sheet
 #************CHANGE(1) FOR EVERY 10 BAG RUN***************************
 #transferbagnames="I53_I00203"
-transferbagnames="I129_I135_"
-
+#transferbagnames="I129_I135_"
+#transferbagnames="I63_"
+#transferbagnames="I82_"
+#transferbagnames="I110_to_I119_"
+#transferbagnames="I122_to_I125"
+transferbagnames="I124_"
 #rowstart=54 #start at  I1 end at I10
 #rowstart=131 #start at  I1 end at I10
-rowstart=131
-rownd=137
+#rowstart=111
+rowstart=125
+rownd=126
+#rownd=121
 rowstrt=rowstart-1
 rowend=rownd-1
 #sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P181.xls')
@@ -170,6 +176,14 @@ for i in range(rowstrt,rowend):
 #-------------------find ingest bag based on the first ingest number of the ingest bag string and version number
   #files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2 and 'v'+iVersion[i] in i2]
   files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2 and iVersion[i] in i2]
+  #only for I00124, saved as 100124 so include this in the search instead of I00124, so do following comment out top
+  #files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and "100124" in i2 and iVersion[i] in i2]
+  print("files are ",files)
+  x=iIngAccessionNumber[i]
+  print(x)
+  y=iVersion[i]
+  print(y)
+  print("Head Directory is iIngAccessionNumber is ",iIngAccessionNumber[i]," iVersion is ",iVersion[i])
 # if list exists true then do something : if files; if list does not exist then do something: if not files:
   if files:
  #files returns file names which have I00xyz and v01 in the bag name as a list
@@ -194,7 +208,7 @@ for i in range(rowstrt,rowend):
     path1=bagpath#os.path.join( os.path.abspath(root1), filename1 )
     bag_size=os.path.getsize(path1)
     bag_size_gb=bag_size/(10**9)
-    size=20500
+    size=20100
     sizeul=24*(10**9)#less than 24 GB
     if bag_size >= size and bag_size <= sizeul:
       print("i1 is ",i1)
@@ -245,9 +259,9 @@ for i in range(rowstrt,rowend):
         ##Bagging with DART:        
         #  aptrustBagName_tar=f"{aptrustBagName}.tar"  
         #Bagging name conventions for Ingest bags for APTrust transfer:
-          if extractedbag[0]=='I':
-            aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}"#this does not end with .tar
-            aptrustBagName_tar=f"{aptrustBagName}.tar"
+          #if extractedbag[0]=='I':
+          aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}"#this does not end with .tar
+          aptrustBagName_tar=f"{aptrustBagName}.tar"
           print("APTrust bag name is ",aptrustBagName)
           print("APTrust bagname in tar format is ",aptrustBagName_tar)
           logging.info("APTrust bag name is %s " % aptrustBagName)   
