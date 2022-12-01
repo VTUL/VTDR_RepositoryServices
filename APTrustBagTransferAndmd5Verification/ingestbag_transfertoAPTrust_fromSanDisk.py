@@ -51,19 +51,25 @@ import bagit
 #transferbagnames="I82_"
 #transferbagnames="I110_to_I119_"
 #transferbagnames="I122_to_I125"
-transferbagnames="I124_"
+#transferbagnames="I124_"
+#transferbagnames="I142_I149_I150"
+#transferbagnames="I157_I158"
+#transferbagnames="I190_I203"
+transferbagnames="I120_68GB"
 #rowstart=54 #start at  I1 end at I10
 #rowstart=131 #start at  I1 end at I10
 #rowstart=111
-rowstart=125
-rownd=126
+#rowstart=198
+#rownd=199
+rowstart=121
+rownd=122
 #rownd=121
 rowstrt=rowstart-1
 rowend=rownd-1
 #sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P181.xls')
 #sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P188.xls')
 #sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P134v2.xls')
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/'+transferbagnames+'_%Y%m%d_%H%M.xls')
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/'+transferbagnames+'_'+'%Y%m%d_%H%M.xls')
 #PathLogSheetAPTrustTransferXLS=os.getenv("PathLogSheetAPTrustTransferXLS")
 #sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P98_8of8.xls')
 #sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P181.xls')
@@ -74,7 +80,7 @@ wb=Workbook(sheetname)
 #sheet1=wb.add_sheet("APTrustTransferSheet_P98_8of8")#this name has a character limit
 #sheet1=wb.add_sheet("APTrustTransferSheet_P181")#this name has a character limit
 #sheet1=wb.add_sheet("APTrustTransferSheet_P188")#this name has a character limit
-sheet1=wb.add_sheet("Ingestbag"+transferbagnames)#this name has a character limit
+sheet1=wb.add_sheet("Ingestbag_"+transferbagnames)#this name has a character limit
 
 #sheet1=wb.add_sheet("APTrustTransferSheet_P119v3")#this name has a character limit
 sheet1.write(0, 0, 'Bagname made by UPACK')
@@ -92,15 +98,15 @@ sheet1.write(0,11,'md5 checksum of additional file in bag made by UPACK')
 sheet1.write(0,12,'Additional Files in bag made by DART(not found in bag made by UPACK')
 sheet1.write(0,13,'md5 checksum of additional file in bag made by DART')
 sheet1.write(0,14,'md5 checksum of additional file in bag made by DART')
-sheet1.write(0,15,'Exceptions with the bag made by UPACK')
-sheet1.write(0,16,'Comments')
+#sheet1.write(0,15,'Exceptions with the bag made by UPACK')
+sheet1.write(0,15,'Comments')
 #Create a log file
 #************CHANGE(3) FOR EVERY !) BAG RUN ***************************
 
 #LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P98_8of8.log')
 #LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P181.log')
 #LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P188.log')
-LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_'+transferbagnames+'%Y%m%d_%H%M.log')
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_'+transferbagnames+'_'+'%Y%m%d_%H%M.log')
 ext=".tar"
 i1=1
 
@@ -161,6 +167,13 @@ for i in range(rowstrt,rowend):
   HeadDir="F:\\"
   print("ingorpub",IngOrPub)
 
+###EXCEPTIONS/COMMENTS-------------------------------------------------------------------------------------
+
+
+
+
+
+
 #Start processing I is for ingest, P is for publication bag:
 
   if IngOrPub=='I':
@@ -175,7 +188,12 @@ for i in range(rowstrt,rowend):
  #Actions taken for exceptions/comments, overwrite parts of the bag naming:
 #-------------------find ingest bag based on the first ingest number of the ingest bag string and version number
   #files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2 and 'v'+iVersion[i] in i2]
-  files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2 and iVersion[i] in i2]
+  if rowstart == 143 :
+    files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2]#this is to accomodate for missing v01 in I141
+  if rowstart == 160 :
+    files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2]#this is to accomodate for missing v01 in I141  
+  else:
+    files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and iIngAccessionNumber[i] in i2 and iVersion[i] in i2]
   #only for I00124, saved as 100124 so include this in the search instead of I00124, so do following comment out top
   #files = [i2 for i2 in os.listdir(HeadDir) if os.path.isfile(os.path.join(HeadDir,i2)) and "100124" in i2 and iVersion[i] in i2]
   print("files are ",files)
@@ -210,22 +228,35 @@ for i in range(rowstrt,rowend):
     bag_size_gb=bag_size/(10**9)
     size=20100
     sizeul=24*(10**9)#less than 24 GB
-    if bag_size >= size and bag_size <= sizeul:
-      print("i1 is ",i1)
-      count=count+1
-      path1=bagpath#os.path.join( os.path.abspath(root1), filename1 )
-      bag_size=os.path.getsize(path1)
-      bag_size_gb=bag_size/(10**9)
+    #if bag_size >= size and bag_size <= sizeul:
+    print("i1 is ",i1)
+    count=count+1
+    path1=bagpath#os.path.join( os.path.abspath(root1), filename1 )
+    bag_size=os.path.getsize(path1)
+      #bag_size_gb=bag_size/(10**9)
     #print("Bagname tar in S3 VTechbags is ",SubDir3,"\n") 
-      print("Bagname tar in S3 VTechbags is ",files[0],"\n") 
+    print("Bagname tar in S3 VTechbags is ",files[0],"\n") 
     #sheet1.write(i1,0,SubDir3)
-      sheet1.write(i1,0,files[0])
-      print("Bagsize tar on S3 is: ",bag_size_gb)
+    sheet1.write(i1,0,files[0])
+    print("Bagsize tar on S3 is: ",bag_size_gb)
     #logging.info("Bagname in S3 VTechbags is  %s " % SubDir3)
-      logging.info("Bagname in S3 VTechbags is  %s " % files[0])
+    logging.info("Bagname in S3 VTechbags is  %s " % files[0])
     
-      logging.info("BagSize on S3 is %s " % bag_size_gb)
-      sheet1.write(i1,3,bag_size_gb)
+    logging.info("BagSize on S3 is %s " % bag_size_gb)
+    sheet1.write(i1,3,bag_size_gb)
+    aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}"#this does not end with .tar
+    aptrustBagName_tar=f"{aptrustBagName}.tar"
+    print("APTrust bag name is ",aptrustBagName)
+    print("APTrust bagname in tar format is ",aptrustBagName_tar)
+    logging.info("APTrust bag name is %s " % aptrustBagName)   
+    logging.info("APTrust bagname in tar format is %s " % aptrustBagName_tar)    
+    sheet1.write(i1,1,aptrustBagName_tar)
+
+
+    #1st set of transfer was for bags less than 24GB
+    #if bag_size >= size and bag_size <= sizeul:
+    #2nd set of transfer done on 20221116 for bags greater than 24GB
+    if bag_size > sizeul:
       directory_path="F:\\"  
        
       destpath='F:\\'
@@ -247,26 +278,33 @@ for i in range(rowstrt,rowend):
           print("Bag is valid")
           logging.info("Bag is valid %s " % extractedbag)
           sheet1.write(i1,2,"Bag is valid")
-        #for ingest there is not additional 3rd path
-        #source_folder=os.path.join(extractedbagpath,"data",extractedbag)
+        #for ingest there is not additional 3rd path for below bags in 'if' 
+        #source_folder=os.path.join(extractedbagpath,"data",extractedbag)s
           print("rowstrt is ",rowstrt)
-          if rowstrt == 139:
+          
+          if rowstrt == 139 or rowstrt ==144 or rowstart == 178 or rowstart ==181:
             source_folder=os.path.join(destpath, extractedbag,"data")
-          else:            
-            source_folder=os.path.join(destpath, extractedbag,"data",extractedbag)
+          else:
+            source_folder=os.path.join(destpath, extractedbag,"data",extractedbag) 
+          if rowstart >= 183 and rowstart <= 206:
+            source_folder=os.path.join(destpath, extractedbag,"data") 
+
+            
+          #else:            
+          
           print("payload is at : ",source_folder)
           payload=os.listdir(source_folder)
         ##Bagging with DART:        
         #  aptrustBagName_tar=f"{aptrustBagName}.tar"  
         #Bagging name conventions for Ingest bags for APTrust transfer:
           #if extractedbag[0]=='I':
-          aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}"#this does not end with .tar
-          aptrustBagName_tar=f"{aptrustBagName}.tar"
-          print("APTrust bag name is ",aptrustBagName)
-          print("APTrust bagname in tar format is ",aptrustBagName_tar)
-          logging.info("APTrust bag name is %s " % aptrustBagName)   
-          logging.info("APTrust bagname in tar format is %s " % aptrustBagName_tar)    
-          sheet1.write(i1,1,aptrustBagName_tar)
+          #aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}"#this does not end with .tar
+          #aptrustBagName_tar=f"{aptrustBagName}.tar"
+          #print("APTrust bag name is ",aptrustBagName)
+          #print("APTrust bagname in tar format is ",aptrustBagName_tar)
+          #logging.info("APTrust bag name is %s " % aptrustBagName)   
+          #logging.info("APTrust bagname in tar format is %s " % aptrustBagName_tar)    
+          #sheet1.write(i1,1,aptrustBagName_tar)
       #-----------------------------------------------------------------------  
      
          # job=Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
@@ -389,19 +427,36 @@ for i in range(rowstrt,rowend):
         sheet1.write(i1,2,"Bag is not valid")
         print("****************BAG VALIDATION FAILED FOR BAG ",extractedbagpath," SO BAG NOT MIGRATED to APTRUST****************")
         logging.info("****************BAG VALIDATION FAILED FOR BAG %s SO BAG NOT MIGRATED to APTRUST****************" % extractedbagpath)
+        
     else:
-        print("size of bag is less than or equal to ",size," = ",bag_size )
+        print("size of bag is less than lower limit of ",size," = ",' or bag size is greater than upper limit of ', sizeul )
+        print("size of bag in GB is ",bag_size_gb)
         #print("**************************BAG ", bagpath," NOT FOUND SO NOT MIGRATED TO APTRUST****************************")
-        logging.info("size of bag if statement argument is less than or equal to %s = " % size )
+        logging.info("size of bag is less than lower limit of %s = " % size )
+        logging.info("OR size of bag is greater than upper limit of %s = " % sizeul )
         logging.info("size of the bag calculated is %s" % bag_size)
+        logging.info("size of bag in GB is %s =",bag_size_gb)
         # NOT FOUND SO NOT MIGRATED TO APTRUST****************************" % SubDir3 )
-    i1=i1+1
-    print("MY i1 is ",i1)
-    print("i1 at the end of last compute is ",i1)
-    logging.info("i1 at the end of last compute is %s " % i1)
+          ##Exception for corresponding author labelled with no LFI for pub bag P00005
+        print("************************THE FOLLOWING PUBLICATION BAG HAS A COMMENT***************************")
+        print("Comment: Bag size is ~10GB, bag transferred seperately")
+        sheet1.write(i1,15,bag_size_gb)
+        logging.info("************************THIS PUBLICATION BAG HAS A COMMENT***************************")
+        logging.info("Comment: Bag size is below lower transfer limit and above higher transfer limit so bag transferred seperately \n")
+
   else:
     print("Bag does not exist, bag name is ",SubDir3)
     logging.info("Bag does not exist, bag name is %s " % SubDir3)
+    sheet1.write(i1,0,SubDir3)
+    aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}
+    sheet1.write(i1,1,aptrustBagName)
+    sheet1.write(i1,2,"BAG DOES NOT EXIST IN THE EXPECTED FORMAT ON FIRST TRY OF TRANSFER, SO BAG WILL BE TRANSFERRED SEPERATELY IF IT EXISTS IN A DIFFERENT FORMAT OR BAG WAS ABANDONED AND SO DOES NOT EXIST")
+ 
+  i1=i1+1
+  print("MY i1 is ",i1)
+  print("i1 at the end of last compute is ",i1)
+  logging.info("i1 at the end of last compute is %s " % i1)  
+
 #Adjust column size of the log spreadsheet
 sheet1.col(0).width = 15000
 sheet1.col(1).width = 15000
