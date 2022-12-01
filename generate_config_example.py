@@ -17,7 +17,7 @@ NonDissContentDir: Directory where Non disseminated content will be stored, non 
 
 """
 FigshareArticleID="20558580"
-PubVerNum="02"
+PubVerNum="01"
 VTDRToken="1234"
 CurName="XYZ"
 CurationDir="C:/Users/username/anaconda3/envs/curation"
