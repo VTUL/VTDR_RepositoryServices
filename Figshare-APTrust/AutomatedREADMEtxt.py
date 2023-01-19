@@ -16,23 +16,30 @@ import os
 from bs4 import BeautifulSoup
 from datetime import datetime
 from dotenv import load_dotenv
-load_dotenv()
+#Get the parameters from configurations.ini to retrieve information from an article on Figshare
+import configparser
+#config=configload.read_config()
+config=configparser.ConfigParser()
+config.read('configurations.ini')
 
-#importing the load_dotenv from the python-dotenv module
-
-#Get the article id 
-ArticleID=os.getenv["ArticleID"]
+#Get the ArticleID
+ArticleID=config['FigshareSettings']['FigshareArticleID']
 #Get the Published Version number 
-PublishedVersionNumber=os.getenv["PublishedVersionNumber"]
+PublishedVersionNumber=config['FigshareSettings']['PublishedVersionNumber']
+#Remove "0" from the published version number 
 intPublishedVersionNumber=int(PublishedVersionNumber[1])
+
 #Get the Ingest Version number 
-IngestVersionNumber=os.getenv["IngestVersionNumber"]
+IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
+#Remove "0" from Ingest version number
 intIngestVersionNumber=int(IngestVersionNumber[1])
 #Get your figshare token 
-token=os.getenv["token"]
+token=config['FigshareSettings']['token']
 #Get curator name 
-CuratorName=os.getenv["CuratorName"]
-README_Dir=os.getenv("README_Dir")
+CuratorName=config['FigshareSettings']['CuratorName']
+#Get the directory in which to store README file
+README_Dir=config['AutomatedREADMEPathSettings']['README_Dir']
+#Get information from Ingest Sheet, access google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7 and get information about the article using article ID and version number.
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 
 def create_readme(ArticleID,token):
@@ -152,7 +159,7 @@ def create_readme(ArticleID,token):
   print("The new directory "+readmefolder+" is created")
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w',encoding="utf-8")
-
+  
   f.write(" Title of Dataset: "+str(title)+"\n"+
         " Author(s): "+str(author)+"\n"+
         " Categories: "+Categoriesinfo+"\n"+        

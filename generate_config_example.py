@@ -16,7 +16,7 @@ CurationDir: Curation directory where Ingest/Publication folder/README file will
 NonDissContentDir: Directory where Non disseminated content will be stored, non disseminated content includes provenance log, email correspondence and archival readme package created in the publication folder
 
 """
-FigshareArticleID="20558580"
+FigshareArticleID="21651401"
 PubVerNum="01"
 VTDRToken="1234"
 CurName="XYZ"
