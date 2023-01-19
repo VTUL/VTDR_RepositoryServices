@@ -80,7 +80,7 @@ payload=os.listdir(PubFolder)
 workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
 if workflow == "1":
     jobname="Workflow for depositing bag to APTrust-Demo"
-if workflow =="2":
+if workflow == "2":
     jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
 if workflow =="3":
     jobname="Workflow for depositing bag to VT library S3 bucket"

@@ -79,9 +79,7 @@ def create_readme(ArticleID,token):
    cats=details["categories"][i]['title']
    cat.append(cats)
   Categoriesinfo=s.join(cat)
-  #Get the corresponding author email id from spreadsheet
-  #corremail=ingsheet['ingcemail']
-
+  
   #Get the list of group ids
   groupidnames=fs.get_groupid_names(version=None)
   groupids=[]
@@ -109,43 +107,24 @@ def create_readme(ArticleID,token):
   #One way of doing this:
   #x=re.sub('<[^<]+?>', '', Description)
   #In this code we are using BeautifulSoup
-  #Description=(details['description']).strip('"xa0""<p>""</p>""</p>"<br>""<b>""<div>""</div>""\xa0"')
   Description=details['description']
-  soup=BeautifulSoup(Description,features="html.parser")#,from_encoding="UTF-8")
-  #Description=soup.get_text()
-  # y=soup.get_text()
+  soup=BeautifulSoup(Description,features="html.parser")#,newline='')
   y=soup.text
-  y=y.replace(u'\xa0',u' ')
-  #y=y.replace("’",)
-  #y=y.replace("’","’")
-  #y=y.replace(" ","\\line\\'20")
   y=y.replace("\n","\\line\n")
-  #Desc
-  #Description=soup.text
- 
-  #Description=Description.replace("\n","\\line\n")
-  #Description=Description.replace(" ","\\line\\")
+  
   #Get all the remaining fields 
-  #Funding=details['funding']
   ResourceTitle=details['resource_title']
   ResourceDOI=details['resource_doi']
   License=details["license"]['name']
   Publisher=details['custom_fields'][0]['value']
   Location= details['custom_fields'][1]['value']
-  #categorieslink= "https://drive.google.com/file/d/1DbQSnUuWw1xPZMmZYkucUnXtzvONyvTv/view?usp=sharing"  
   CorresAuthName=details['custom_fields'][2]['value']
   CorresAuthEmail=details['custom_fields'][3]['value']
   FilesFolders=details['custom_fields'][4]['value']
   #Remove html tags in files/folders
-  soup=BeautifulSoup(FilesFolders,features="html.parser")
-  x=soup.text
+  soup1=BeautifulSoup(FilesFolders,features="html.parser")
+  x=soup1.text
   x=x.replace("\n","\\line\n")
- #Replace bullets with rtf coding for bullets of different sizes
-  x=x.replace("●","\\line\\bullet")
-  x=x.replace("•","\\line\\bullet")
-  x=x.replace(" – "," - ")
-
-  #CorresAuthor=details['custom_fields'][4]['value']
 
   #Leave the metadata field empty/default value if the metadata fields are not filled in by the author
   if title is None or title=="":
@@ -192,8 +171,18 @@ def create_readme(ArticleID,token):
     Location=""
   if FilesFolders is None or FilesFolders=='':
     FilesFolders=""
+  
+  def rtf_encode_char(unichar):
+    code = ord(unichar)
+    if code < 128:
+        return str(unichar)
+    return '\\u' + str(code if code <= 32767 else code-65536) + '?'
 
+  def rtf_encode(unistr):
+    return ''.join(rtf_encode_char(c) for c in unistr)
 
+  y=rtf_encode(y)
+  x=rtf_encode(x)
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
@@ -204,7 +193,6 @@ def create_readme(ArticleID,token):
   print("The new directory "+readmefolder+" is created")
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w',encoding="utf-8")
-  #str(Description)
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
         "{\\b Author(s):} "+str(author)+"\\line\n"+
         "{\\b Categories:} "+Categoriesinfo+"\\line\n"+        
@@ -222,7 +210,7 @@ def create_readme(ArticleID,token):
         "{\\b Corresponding Author Name:} "+str(CorresAuthName)+"\\line\n"+
         "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
         "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
-        x+ "\\line\n"+
+        str(x)+ "\\line\n"+
         
         "}")
   f.close()
