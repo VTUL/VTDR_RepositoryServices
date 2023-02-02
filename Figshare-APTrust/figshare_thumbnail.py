@@ -6,6 +6,8 @@ from pprint import pprint
 from Read_VTDR_Spreadsheet import vtingsheet
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import configparser
+from Read_VTDR_Spreadsheet import vtpubsheet
+
 #config=configload.read_config()
 config=configparser.ConfigParser()
 config.read('configurations.ini')
@@ -24,15 +26,17 @@ intIngestVersionNumber=int(IngestVersionNumber[1])
 #Get your figshare token 
 token=config['FigshareSettings']['token']
 #Get information from Ingest Sheet, access google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7 and get information about the article using article ID and version number.
-ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
+
+vtsheet=vtpubsheet(ArticleID,PublishedVersionNumber)
+#ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
 # Configure OAuth2 access token for authorization: OAuth2
 #swagger_client.configuration.access_token = token
 import json
 import requests
 # create an instance of the API class
 #api_instance = swagger_client.ArticlesApi()
-article_id = 19738957#ArticleID # Long | Article unique identifier
-version = 2 # Long | Article version identifier
+article_id = ArticleID#ArticleID # Long | Article unique identifier
+version = 1.1 # Long | Article version identifier
 #fileId = 35068654  
 #{'properties': {'file_id': {'description': 'File ID','example': 35086231, 'format': 'int64','type': 'integer'}},'type': 'object','x-model': 'FileId','x-tag': 'articles'}
 
@@ -40,9 +44,13 @@ version = 2 # Long | Article version identifier
 headers = {"Authorization": token}
 url = 'https://api.figshare.com/v2'
 #endpoint = '/account/articles/{}/versions/{}/update_thumb'.format(article_id, version)
-endpoint = '/articles/{}/versions/{}/update_thumb'.format(article_id, version)
-payload = {"file_id": 35086231}
+#endpoint = '/articles/{}/versions/{}/update_thumb'.format(article_id, version)
+#endpoint = 'account/articles/21899328/versions/1/update_thumb'.format(article_id, version)
+endpoint = 'account/articles/{}/versions/{}/update_thumb'.format(article_id, version)
+payload = {"file_id": 38868420}
+#file_id=38843163
 request = requests.put(url+endpoint.format(article_id, version), data=json.dumps(payload), headers=headers)
+#request = requests.put(url+endpoint.format(article_id, version), data=json.dumps(file_id), headers=headers)
 
 #class file_ID:
 #    fileid=35068654
