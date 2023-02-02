@@ -50,7 +50,19 @@ CuratorName=config['FigshareSettings']['CuratorName']
 
 
 #Get the row information of the article in review/ingested article from the Ingest sheet using the corresponding ArticleID and Version Number:
+#try:
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
+    #break
+#except TypeError:
+#    print("Oops! No row with the given article id and ingest version number was found in the Ingest sheet")
+#    raise TypeError
+#finally:
+#    print("Goodbye, see you later aligator")
+    #break
+    #raise
+    #pass
+    #break
+    #raise TypeError("Oops! No row with the given article id and ingest version number was found in the Ingest sheet")
 #Get article id
 article_id=ingsheet['ingarticleid']
 # get Ingest Accession Number 
@@ -117,7 +129,21 @@ aptrustBagName=IngFolderName
 #job = Job("Workflow for depositing bag to APTrust-Repo and VT library S3 bucket",aptrustBagName)
 #job = Job("Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
 #job = Job("Workflow for depositing bag to APTrust-Repo" ,aptrustBagName)
-workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
+
+while True:
+    #try:
+    workflow=input("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
+    try:
+        workflow=int(workflow)
+        #break
+    except ValueError:
+        print("Oops! That was not a valid number. Try again")
+        continue
+    if 1 <= workflow <= 4:
+        break
+    else:
+        print("Please pick a workflow number between 1 and 4")
+workflow=str(workflow)
 if workflow == "1":
     jobname="Workflow for depositing bag to APTrust-Demo"
 if workflow =="2":

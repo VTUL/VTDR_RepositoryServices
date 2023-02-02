@@ -9,6 +9,8 @@ import gspread
 import re
 from oauth2client.service_account import ServiceAccountCredentials
 import numpy as np
+import sys
+from sys import exit
 
 #Following gets data from the spreadsheet version 7 "Ingest" using the ingest number
 def vtingsheet(ArticleID,IngestVersionNumber):
@@ -76,11 +78,22 @@ IngestVersionNumber: Ingest number of the article in review whose row informatio
  #the row number on the spreadsheet is rownum+1 due to array indexing from 0
  #convert numpy array to integer
    print("Ingest sheet rownumber: ",rownum+1)
-   rownum=int(rownum)
-   print("Ingest sheet rownumber: ",rownum+1)
+   try:
+     rownum=int(rownum)
+   except TypeError:
+    print("ROW INFORMATION FOR THE PROVIDED ARTICLE ID AND VERSION NUMBER WAS NOT FOUND IN THE INGEST SHEET")
+    print("Please enter the ingest record information in the ingest sheet and try running again")
+    sys.exit()
+   
+   #print("GOODBYE")
+   #print("Ingest sheet rownumber: ",rownum+1)
+   
 
 #Get the Requestor namen, Version, IngestDate, Title, Comment, ArticleID, IngestNumber that correspond the rownumber found above   
+   #try:
    ing_requestor=ingsheet_requestor[rownum]
+   #except TypeError:
+   # print("Cannot find this row number")
    ing_version=ingsheet_version[rownum]
    ing_date=ingsheet_date[rownum]
    ing_title=ingsheet_title[rownum]
@@ -181,7 +194,13 @@ def vtpubsheet(ArticleID,PublishedVersionNumber):
     print("two or more rows with the same publication for the same version")
   #the row number on the spreadsheet is rownum+1 due to array indexing from 0
   #convert numpy array to integer
-   rownum=int(rownum)
+   try:
+     rownum=int(rownum)
+   except TypeError:
+    print("ROW INFORMATION FOR THE PROVIDED ARTICLE ID AND VERSION NUMBER WAS NOT FOUND IN THE PUBLISHED SHEET")
+    print("Please enter the publication record information in the published sheet and try running again")
+    sys.exit()
+#   rownum=int(rownum)
    print("Published sheet rownumber: ",rownum)
   #get the Ingest number, Published Accession number, Requestion, Corresponding author, version number, date published, title, corresponding author email, college, department, date of most recent comment, most recent comment, article id from row that the article id and version correspond to from the spreadsheet
    psheet_ingestno=ingest_num[rownum]
