@@ -1,3 +1,13 @@
+"""
+Created on Tue Sep 28 09:41:18 2021
+
+@author: padma carstens
+"""
+"""
+Purpose:
+Calculates and returns md5 chcksum of the bag in tar format with the path provided in 'path'
+"""
+
 from test_md5 import md5sum
 import os
 path="C:/Users/padma/.dart/bags/VTDR_P00099_Mc"

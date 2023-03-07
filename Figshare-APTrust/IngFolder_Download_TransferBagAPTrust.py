@@ -14,12 +14,20 @@ Purpose:
 import os
 from os.path import exists
 import sys
+sys.path.append('figshare')
+sys.path.append('LD-Cool-P')
+
 #sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
 #sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
 #sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
-#import figshare
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P/ldcoolp')
+
+#from figshare import Figshare
 from figshare.figshare import Figshare
+#import LD-Cool-P
+#import ldcoolp
+#from ldcoolp import retrieve
 from ldcoolp.curation import retrieve
 import json
 from Read_VTDR_Spreadsheet import vtingsheet

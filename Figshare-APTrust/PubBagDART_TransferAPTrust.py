@@ -20,6 +20,14 @@ The publicaiton bag created by DART can also be uploaded to APTrust using APTrus
 
 import os
 from os.path import exists
+import sys
+sys.path.append('figshare')
+sys.path.append('LD-Cool-P')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P/ldcoolp')
 from turtle import begin_fill
 from ldcoolp.curation import retrieve
 from Read_VTDR_Spreadsheet import vtingsheet

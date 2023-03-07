@@ -5,7 +5,11 @@ Created on Mon Oct 25 10:55:10 2021
 @author: padma carstens
 """
 #Following script creates README rtf file using information from Figshare article in review, works for both in review and published articles as long as all the fields are the same (currently this script accomodates metadata fields in the "Libraries" group on figshare which is modified and different from metadata fields in other groups). 
-
+import os
+from os.path import exists
+import sys
+sys.path.append('figshare')
+sys.path.append('LD-Cool-P')
 
 import os
 from tkinter.messagebox import NO
@@ -16,8 +20,11 @@ from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
 import re
 import os
-import PyRTF 
+#import PyRTF 
 #from PyRTF import *
+#import BeautifulSoup
+#from bs4 import BeautifulSoup
+import bs4
 from bs4 import BeautifulSoup
 from datetime import datetime
 

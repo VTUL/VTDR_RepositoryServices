@@ -16,6 +16,14 @@ Purpose:
 
 import os
 from os.path import exists
+import sys
+sys.path.append('figshare')
+sys.path.append('LD-Cool-P')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P')
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P/ldcoolp')
 import json
 from ldcoolp.curation import retrieve
 from AutomatedArchivalPackageREADME import create_archivalreadme
