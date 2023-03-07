@@ -16,14 +16,14 @@ CurationDir: Curation directory where Ingest/Publication folder/README file will
 NonDissContentDir: Directory where Non disseminated content will be stored, non disseminated content includes provenance log, email correspondence and archival readme package created in the publication folder
 
 """
-FigshareArticleID="21651401"
+FigshareArticleID="21971306"
 PubVerNum="01"
-VTDRToken="1234"
-CurName="XYZ"
-CurationDir="C:/Users/username/anaconda3/envs/curation"
+VTDRToken='7f22a00158d8963f5b013c26863db2300016feecf2999a9dee3056a36f8688b2cc5f34e34a1779e879dff6ea1316720abd7ef6b820dbbc8343454e180d3753d8'
+CurName="Padma Carstens"
+CurationDir="C:/Users/padma/Anaconda3/envs/curation"
 NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent/"
 DartExePath="C:/Users/username/AppData/Local/Programs/DART/DART.exe"
-ReadmeDir="C:/Users/username/anaconda3/envs/curation/README_FILES"
+ReadmeDir="C:/Users/padma/Anaconda3/envs/curation/README_FILES"
 
 #------------------------------------------------------
 

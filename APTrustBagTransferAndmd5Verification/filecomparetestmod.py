@@ -1,3 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct  6 12:39:04 2022
+
+@author: padma carstens
+"""
+"""
+Purpose: 
+
+- Compares the md5 checksums of the bags made by UPACK and DART software in tar format for one bag with path provided. For similar comparison of many bags over a loop please see md5Comparison_BagsOnS3SanDiskVsGoogleDrive.py
+- The bag comparison here runs well for smaller sized bags, for large bags (size >= ~5GB), see hashtest_largefiles.py
+- Returns "md5 verification passed" or "md5 verification failed" for the bags provided and creates a log file at the path provided in "LOG_FILENAME"
+
+Parameters: 
+LOG_FILENAME: path to where the log file is created
+path1: path of the first bag in tar format
+path2: path of the second bag in tar format
+upack_manifestmd5: manifest-md5 text file providing the list of md5 checksums and their corresponding file names obtained from the bag created by running UPACK software. 
+dart_manifestmd5: manifest-md5 text file providing the list of md5 checksums and their corresponding file names obtained from the bag created by running DART software.
+
+"""
+#This code was copy pasted from hashtest.py to run for the 15 large GB files as "hashtest_largefiles.py" to open a new sheet on xl and keep adding the md5 checksums for the large files if md5....largefiles.py doesnt work, to do the same but one large tar file at a time 
+# -*- coding: utf-8 -*-
 
 import os
 import re

@@ -3,6 +3,9 @@
 Created on Tue Oct 26 14:05:20 2021
 
 @author: padma carstens
+
+Purpose:
+-Reads the 2021 version 7 VTDR spreadsheet using google cloud API
 """
 import gspread
 import re

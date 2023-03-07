@@ -15,7 +15,7 @@ import os
 #from PyRTF import *
 from bs4 import BeautifulSoup
 from datetime import datetime
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import configparser
 #config=configload.read_config()

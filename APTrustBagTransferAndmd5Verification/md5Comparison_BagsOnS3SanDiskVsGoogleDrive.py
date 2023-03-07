@@ -1,4 +1,23 @@
+"""
+Created on Tue Sep 28 09:41:18 2021
 
+@author: padma carstens
+"""
+"""
+Purpose:
+-Compares md5 checksums for the 2 copies of bags in tar format that were stored in S3 and google drive
+-Prints out bag names, bag sizes, their md5 checksums and verification details in a log sheet stored in 'VTDR_CompletedBagChecking' on curation services google drive
+
+Note: For file sizes greater than 10GB, if md5 checksum gives errors due to large size of the bag, error catching/exception handling is done, and the calculation repeats again catching the errors until the md5 checksum passes, this could take many hours for bags greater than 40GB
+
+Parameters:
+bagstartID: start of publication bag accession number for which the md5 verification is to be performed 
+
+bagendID: end of publication bag accession number for which the md5 verification is to be performed 
+LOG_FILENAME: provide the path where the log file is to be created
+sourcedir1: path to the s3 bags copied to the sandisk F folder
+sourcedir2: path to the google drive
+"""
 from cmath import log
 import os
 import sys
@@ -15,51 +34,25 @@ from test_md5 import md5sum
 from retrying import retry
 from datetime import datetime
 
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/md5VerificationBagsP175_P176_%Y%m%d_%H%M_P175_P176.xls')
+bagstartID="P175"
+bagendID="P180"
 
-#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/md5VerificationBagsP134v2_%Y%m%d_%H%M_P132v2.xls')
-#rb = open_workbook("C:/Users/padma/anaconda3/envs/curation/Comparison_md5checksum_tarfiles_gdrive_vs_s3.xls")
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/md5VerificationBags_'+bagstartID+"_"+bagendID+"_%Y%m%d_%H%M_.xls')
+
 wb=Workbook(sheetname)
-#wb = copy(rb)
+sheet = wb.add_sheet("MD5VerificationPubBags_"+bagstartID+"_"+bagendID)
 
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles>40GB")
-sheet2 = wb.add_sheet("MD5VerificationPubBagsP175_P176")
-#sheet2 = wb.add_sheet("MD5VerificationPubBagsP134v2")
-#sheet2 = wb.get_sheet("MD5comparison for tarfiles<10GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles<=1GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_1to3GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_3to5GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_5to10GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_10to15GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_15to20GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_20to25GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_25to30GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_30to60GB")
-#sheet2 = wb.get_sheet("MD5comparison_tarfiles_60to80GB")
-#sheet2 = wb.get_sheet("MD5comparisn_tarfiles_80to100GB")
-#sheet1 = book.get_sheet_by_name(name='Sheet2')# 1st number is the row number, 2nd number "0" is the column number
-#sheet1 = book.get_sheet(1)# 1st number is the row number, 2nd number "0" is the column number
-sheet2.write(0, 0, 'Filename on S3')
+sheet.write(0, 0, 'Filename on S3')
 
-sheet2.write(0, 1, 'Filename on GoogleDrive')
-sheet2.write(0, 2, 'MD5 on S3')
-sheet2.write(0, 3, 'MD5 on GoogleDrive')
-sheet2.write(0, 4, 'MD5 Verification')
-sheet2.write(0,5,'File Size in GB')
+sheet.write(0, 1, 'Filename on GoogleDrive')
+sheet.write(0, 2, 'MD5 on S3')
+sheet.write(0, 3, 'MD5 on GoogleDrive')
+sheet.write(0, 4, 'MD5 Verification')
+sheet.write(0,5,'File Size in GB')
 i1=1
-LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/logfile_md5Verification_P175_P176_%H_%M_%d_%m_%Y.log')
-#LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/logfile_md5Verification_P134v2_%H_%M_%d_%m_%Y.log')
-#sourcedir1 = "D:/VTechbags"
-#sourcedir1="F:/VTechbags"
+LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/Log/logfile_md5Verification_'+bagstartID+"_"+bagendID+"_%H_%M_%d_%m_%Y.log')
 sourcedir1="F:"
-#sourcedir1="W:/VTechData Bags"
-#sourcedir1 = "C:/Users/padma/Desktop/onlytarfiles"
-
-#sourcedir2 ="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/Completed_BAGS"
-#sourcedir2 ="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/Completed_BAGS"
-sourcedir2 ="C:/Users/padma/anaconda3/envs/curation"
-#sourcedir1="D:/googledrivebags"
-#sourcedir2 = "C:/Users/padma/Desktop/onlytarfile"
+sourcedir2 ="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/Completed_BAGS"
 ext=".tar"
 
 def retry_on_ioerror(exc):

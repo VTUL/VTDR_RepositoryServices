@@ -1,10 +1,28 @@
-#This code is used for transferring publication bags to APTrust using DART tool. The bags are stored on SanDisk. The md5 checksums of the bags stored on san disk are verified against the bags on google drive using md5Comparison_BagsOnS3SanDiskVsGoogleDrive.py.
-
-#******************************TOTAL 5 CHANGES
 """
 Created on Tue Sep 28 09:41:18 2021
 
 @author: padma carstens
+"""
+"""
+Purpose: 
+-search for publication bags in the sandisk copied from s3, for the range of the row numbers provided from the spreadsheet,search for the publication bag is performed using the ingest number match with the bag name in tar format sitting in san disk
+-Extracts the old bags made with UPACK and the newer bags created by DART
+- Performs bag validation on the bag made by UPACK, creates DART bag using APTrust tag values, deposits the new DART bag to APTrust, compares the md5 checksums of the bags made by UPACK and DART software in tar format for bags entered on the spreadsheet starting for the row numbers provided in rowstrt and rowend. Bags were transferred 10 at a time to APTrust and transfer was checked and log sheets were verified, tracking was updated by  Padma and Jon in MOVING_CONTENT_PROCESS_TRACKING_2022 sheet in 'MovingContentToAPTrust' folder in CurationServicesGoogleDriveArchive
+- Creates a sheet in the path provided under 'sheetname' with filenames and md5 checksum list of the associated files and the comparison results, also creates log file with the name and path provided with more details. Log files and sheets were created in 'MovingContentToAPTrust' folder in curation services google drive archive.
+Note: There are several exceptions and comments in publication bag comparison, exceptions include failed bag validation, human error in bag naming not following the bag naming convention of published date etc. These are all listed under exception/comments in the log sheet in 'APTrust BagTransferAndmd5Verification' folder.
+
+Parameters: 
+rowstart: row number of the 2021 vtdr spreadsheet where transfer starts
+rownd: row number of the 2021 vtdr spreadsheet where transfer ends
+sheetname: creates the provided sheetname at the specified path containing md5 checksum verification results of the 2 bags that are compared
+sizeul: the upper limit of the size of the bag on which md5 verification is to be performed.
+sheet: add the sheet with the provided name
+dartpath: path to the folder where bags created using aptrust tag values and DART app are created
+LOG_FILENAME: path to where the log file is created in text format, containing md5 checksum verification results of the 2 bags that are compared
+filename_s3: filename of the bag in s3 in tar format
+path1: path of the bag on s3
+filename_gd: filename of the bag in google drive in tar format
+path: path of the bag on google drive
 """
 
 import os
@@ -40,28 +58,36 @@ from xlutils.copy import copy
 import filecomparetestmod
 from filecomparetestmod import comparemd5txt
 import bagit
-from dotenv import load_dotenv
-load_dotenv()
+
+
+#Fetch information from published sheet
+#Pvtsheet=aptrust_vtpubsheet()
+Pvtsheet=vtpubsheet(ArticleID=None,PublishedVersionNumber=None)
+pPubAccessionNumber= Pvtsheet['pPubnum']
+pIngAccessionNumber=Pvtsheet['pIngestnum']
+pRequestorLFI=Pvtsheet['pReqLnameFini']
+pCorrespondingAuthorLFI=Pvtsheet['pCorLnameFini']
+#get version
+pVersion=Pvtsheet['pVersion']
+pDate=Pvtsheet['pDate']
+pDOIsuffix=Pvtsheet['pDOIsuffix']
+#************CHANGE rowstart and rownd FOR EVERY 10 BAG RUN***************************
+rowstart=20
+rownd=30
+#rownd=121
+rowstrt=rowstart-1
+rowend=rownd-1
 
 #Create a log sheet
-#************CHANGE(1) FOR EVERY 10 BAG RUN***************************
-
-#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P181.xls')
-#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P188.xls')
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_%Y%m%d_%H%M_P134v2.xls')
+transferbagIDs=pIngAccessionNumber[rowstrt]+"_"+pIngAccessionNumber[rowend]
+sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/MovingContentToAPTrust/APTrustTransferInformationSheet_'+transferbagIDs+'%Y%m%d_%H%M.xls')
 #PathLogSheetAPTrustTransferXLS=os.getenv("PathLogSheetAPTrustTransferXLS")
 #sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P98_8of8.xls')
 #sheetname=datetime.now().strftime(str(PathLogSheetAPTrustTransferXLS)+'_%Y%m%d_%H%M_P181.xls')
 wb=Workbook(sheetname)
 
-#************CHANGE(2) FOR EVERY 10 BAG RUN***************************
+sheet1=wb.add_sheet("transferbagIDs")#this name has a character limit
 
-#sheet1=wb.add_sheet("APTrustTransferSheet_P98_8of8")#this name has a character limit
-#sheet1=wb.add_sheet("APTrustTransferSheet_P181")#this name has a character limit
-#sheet1=wb.add_sheet("APTrustTransferSheet_P188")#this name has a character limit
-sheet1=wb.add_sheet("APTrustTransferSheet_P134v2")#this name has a character limit
-
-#sheet1=wb.add_sheet("APTrustTransferSheet_P119v3")#this name has a character limit
 sheet1.write(0, 0, 'Bagname made by UPACK')
 sheet1.write(0, 1, 'Bagname made by DART')
 sheet1.write(0, 2, 'ValidationTest of bag made by UPACK')
@@ -80,12 +106,7 @@ sheet1.write(0,14,'md5 checksum of additional file in bag made by DART')
 sheet1.write(0,15,'Exceptions with the bag made by UPACK')
 sheet1.write(0,16,'Comments')
 #Create a log file
-#************CHANGE(3) FOR EVERY !) BAG RUN ***************************
-
-#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P98_8of8.log')
-#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P181.log')
-#LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P188.log')
-LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_%Y%m%d_%H%M_P134v2.log')
+LOG_FILENAME=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration\MovingContentToAPTrust/APTrustTransferLogfile_'+transferbagIDs+'_'+'%Y%m%d_%H%M_P134v2.log')
 ext=".tar"
 i1=1
 
@@ -112,30 +133,15 @@ iIngAccessionNumber= ivtsheet['iIngestnum']
 iRequestorLFI=ivtsheet['iReqLnameFini']
 iCorrespondingAuthorLFI=ivtsheet['iCorLnameFini']
 
-#Fetch information from published sheet
-#Pvtsheet=aptrust_vtpubsheet()
-Pvtsheet=vtpubsheet(ArticleID=None,PublishedVersionNumber=None)
-pPubAccessionNumber= Pvtsheet['pPubnum']
-pIngAccessionNumber=Pvtsheet['pIngestnum']
-pRequestorLFI=Pvtsheet['pReqLnameFini']
-pCorrespondingAuthorLFI=Pvtsheet['pCorLnameFini']
-#get version
-pVersion=Pvtsheet['pVersion']
-pDate=Pvtsheet['pDate']
-pDOIsuffix=Pvtsheet['pDOIsuffix']
 sourcedir1="F:/VTechbags"
 count=0
 
 
-#************CHANGE (4) FOR 10 LOOP RUN***************************
-#indexing for i for P1-P10: 1,11
-#indexing for i below for P11-P20: 11, 22 i=21 gets the bag P00020 which is row 22
-#indexing for i for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
-#indexing for i for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
+#************ 10 bag loop runs***************************
+#Example1 of indexing: for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
+#Example 2 indexing: for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
 
-#for i in range(210,211):    
-#for i in range(217,218):    
-for i in range(149,150):    
+for i in range(rowstrt,rowend):    
   wb.save(sheetname)
   logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
   IngOrPub='P' #0 for ingest 1 for pub
@@ -144,9 +150,7 @@ for i in range(149,150):
   HeadDir="F:\\"
   print("ingorpub",IngOrPub)
 
-###EXCEPTIONS/COMMENTS-------------------------------------------------------------------------------------
-
-
+###EXCEPTIONS/COMMENTS FOR PUBLICATION BAGS MADE BY UPACK-----------------------------------------------------------
   ##Exception for corresponding author labelled with no LFI for pub bag P00005
   if i==5 and IngOrPub=='P':
     pCorrespondingAuthorLFI[i]="Beauchene"
@@ -605,7 +609,7 @@ for i in range(149,150):
         print("Bag is valid")
         logging.info("Bag is valid %s " % extractedbag)
         sheet1.write(i1,2,"Bag is valid")
-        #for ingest there is not additional 3rd path
+        #for ingest there is no additional 3rd path
         #source_folder=os.path.join(extractedbagpath,"data",extractedbag)
         if i == 96 or i == 113 or i == 119 or i == 131 or i == 134 or i == 135 or i ==136 or i==137 or i == 107:
           source_folder=os.path.join(destpath,extractedbag,"data")
@@ -617,7 +621,7 @@ for i in range(149,150):
         payload=os.listdir(source_folder)
 
 
-
+#-------------------------------------------------------------
         ##Bagging with DART:        
 
         #Exception/Actions for Publication bags:  
@@ -682,8 +686,7 @@ for i in range(149,150):
         logging.info("APTrust bag name is %s " % aptrustBagName)   
         logging.info("APTrust bagname in tar format is %s " % aptrustBagName_tar)    
         sheet1.write(i1,1,aptrustBagName_tar)
-      #-----------------------------------------------------------------------  
-      #************CHANGE (5) Change for every 10 loop run***************************
+      #----------------------------------------------------------
         #job = Job("APTrust Demo Workflow for Virginia Tech",aptrustBagName)
         #job = Job("APTrust Production Workflow for Virginia Tech",aptrustBagName)
         job=Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
@@ -723,7 +726,7 @@ for i in range(149,150):
           logging.info("**************************BAG MIGRATION TO APTRUST FAILED****************")
           sheet1.write(i1,5,"Job Failed")
      
-       #Compare manifest-md5 in bag made by DART and transferred to APTrust with bag made by UPACK
+       #Compare manifest-md5 of bag made by DART and transferred to APTrust with that of the bag made by UPACK
 
         #Get size of bag in tar format made by DART, then untar the bag made by dart stored as a local copy
 
@@ -801,7 +804,7 @@ for i in range(149,150):
           i1=i1+1
 
 
-  #----------------Copy non disseminated content to a different location for Publication bag:-------------------------
+  #----------------From the extracted UPACK bags, open the 'VTCurationServices' folder and copy non disseminated content (includes provenance log and email correspondence) to a 'NonDisseminatedContent' folder on curation services google drive for future reference-------------------------
   
         if extractedbag[0]=='P':
           destn_path="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"

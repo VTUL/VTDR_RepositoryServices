@@ -11,7 +11,7 @@ from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
 import re
 import os
-import PyRTF
+#import PyRTF
 #from PyRTF import *
 import configparser
 config=configparser.ConfigParser()
