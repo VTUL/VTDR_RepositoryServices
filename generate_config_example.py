@@ -14,7 +14,7 @@ VTDRToken: VTDR token created under applications
 CurName: Name of the curator, this shows up in ArchivalReadme Package created in the publication folder
 CurationDir: Curation directory where Ingest/Publication folder/README file will be created
 NonDissContentDir: Directory where Non disseminated content will be stored, non disseminated content includes provenance log, email correspondence and archival readme package created in the publication folder
-FileID: This is used only in the ChangeThumbnail.py script. File ID is the number at the end of the file link, this is the ID of the file that the curator wants to change the thumbnail of the published article to.
+FileID: This is used only in the ChangeThumbnail.py script. File ID is the number at the end of the file link, this is the ID of the file that the curator wants to change the thumbnail of the published article to
 """
 FigshareArticleID="21651401"
 PubVerNum="01"
