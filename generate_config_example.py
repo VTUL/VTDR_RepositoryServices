@@ -28,7 +28,7 @@ FileID="38878398"
 #------------------------------------------------------
 
 # ADD SECTION for figshare settings
-# CREATE OBJECT
+# CREATE OBJECTS
 config_file = configparser.ConfigParser()
 config_file.add_section("FigshareSettings")
 config_file.set("FigshareSettings", "FigshareArticleID", FigshareArticleID)
