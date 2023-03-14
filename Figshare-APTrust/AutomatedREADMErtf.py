@@ -187,9 +187,13 @@ def create_readme(ArticleID,token):
 
   def rtf_encode(unistr):
     return ''.join(rtf_encode_char(c) for c in unistr)
-
+  
   y=rtf_encode(y)
   x=rtf_encode(x)
+  title=rtf_encode(title)
+  Funding=rtf_encode(Funding)
+  ResourceTitle=rtf_encode(ResourceTitle)
+  OtherRef=rtf_encode(OtherRef)
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
