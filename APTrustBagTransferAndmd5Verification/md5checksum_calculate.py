@@ -10,12 +10,13 @@ Calculates and returns md5 chcksum of the bag in tar format with the path provid
 
 from test_md5 import md5sum
 import os
-path="C:/Users/padma/.dart/bags/VTDR_P00099_Mc"
+#path="C:/Users/padma/.dart/bags/VTDR_P00099_Mc"
+path="C:/Users/padma/Anaconda3/envs/curation/neehar"
 
 
 
 #path="F:\P00079_KuehlR_KuehlR_v01_20200213\data\P00079_KuehlR_KuehlR_v01_20200213"
-path="F:\P00079_KuehlR_KuehlR_v01_20200213\data\P00079_KuehlR_KuehlR_v01_20200213"
+#path="F:\P00079_KuehlR_KuehlR_v01_20200213\data\P00079_KuehlR_KuehlR_v01_20200213"
 payload=os.listdir(path)
 print("payload", payload)
 #md5_returned=md5sum(path).hexdigest()
