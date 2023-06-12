@@ -75,10 +75,6 @@ PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
 PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
-#job = Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
-#job = Job("Workflow for depositing bag to APTrust-Repo and VT library S3 bucket",aptrustBagName)
-#job = Job("Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
-#job = Job("Workflow for depositing bag to APTrust-Repo" ,aptrustBagName)
 workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
 if workflow == "1":
     jobname="Workflow for depositing bag to APTrust-Demo"
