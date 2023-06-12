@@ -56,22 +56,7 @@ df['year']=pd.DatetimeIndex(df['dates']).year
 
 years=df['year']
 months=df['month']
-#print(years)
-#print(months)
-#print(a)
-#monthly_sum=df.groupby([years,months]).Publications.sum()
 
-
-
-#ms=df.groupby([years,months]).Publications.sum()
-#s=df.groupby([years,months])[Publications].sum()
-
-
-
-#monthly_sum=df.groupby([years,months]).a.sum()
-#monthly_sum=df.groupby(months).Publications.sum()
-#print(monthly_sum)
-#ms=monthly_sum
 import pandas as pd
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -84,15 +69,7 @@ import matplotlib.pyplot as plt
 ##ms.plot('YYYY,MM','NumberOfPublications')
 #plt.show()
 s=df.groupby([years,months])['PublicationsPerMonth'].sum()
-#s=df.groupby([years,months])['Publications'].mean()
-#s=df.groupby([years,months])['Publications'].mean()
-#s=df.resample('M').mean()
-#vx=s.unstack('month').loc[0:69]
-#vx=s.unstack('month').loc[:]
-#vy=s.unstack('year').loc[:,'Publications']
-#vz=s.unstack('Publications').loc[:]
-#vx.plot()
-#s.plot()
+
 #Rolling average
 #s5=df.groupby([years,months])['Publications'].rolling(2).mean()
 q=pd.DataFrame(s)

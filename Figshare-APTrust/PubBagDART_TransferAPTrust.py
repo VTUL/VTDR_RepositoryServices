@@ -16,20 +16,14 @@ Notes:
 Part of this script is built off of "Scripting with DART" code available on APTrust github page. In the scripting with DART code a new job called job.py is created and executed based on a pre-defined DART workflow. 
 The publicaiton bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app. Documentation for this is also availabla on APTrust github page
 """
-
-
 import os
 from os.path import exists
 import sys
 sys.path.append('figshare')
 sys.path.append('LD-Cool-P')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P/ldcoolp')
+
 from turtle import begin_fill
-from ldcoolp.curation import retrieve
+#from ldcoolp.curation import retrieve
 from Read_VTDR_Spreadsheet import vtingsheet
 from Read_VTDR_Spreadsheet import vtpubsheet
 import shutil

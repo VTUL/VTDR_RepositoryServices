@@ -18,21 +18,30 @@ import os
 from os.path import exists
 import sys
 sys.path.append('figshare')
-sys.path.append('LD-Cool-P')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P/ldcoolp')
-import json
-from ldcoolp.curation import retrieve
+
+from figshare.figshare import Figshare
+import requests
+from requests import HTTPError
+#from ldcoolp.curation import retrieve
 from AutomatedArchivalPackageREADME import create_archivalreadme
 from Read_VTDR_Spreadsheet import vtpubsheet
 from Read_VTDR_Spreadsheet import vtingsheet
 import shutil
 import os
+import figshareRetrieve
+import figshareDownload
+import json
+from Read_VTDR_Spreadsheet import vtingsheet
+from datetime import date
+import filecmp
+from datetime import datetime
+import job
+from job import Job
+from redata.commons.logger import log_stdout
+import hashlib
+from logging import Logger
 #import figshare
-from figshare.figshare import Figshare
+#from figshare.figshare import Figshare
 
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 
@@ -90,7 +99,7 @@ metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Ve
 fversion=int(PublishedVersionNumber[1])
 
 fs=Figshare(token=token,private=False,version=fversion)
-FileDownload=retrieve.download_files(article_id, fversion, fs, data_directory=PubFolderPayloadPath, metadata_directory=metadata_directory_path)
+FileDownload=figshareDownload.download_files(article_id, fversion, fs, data_directory=PubFolderPayloadPath, metadata_directory=metadata_directory_path)
 
 #----------------Download figshare metadata for the published article and write it into a json file
 
