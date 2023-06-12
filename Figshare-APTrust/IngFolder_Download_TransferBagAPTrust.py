@@ -15,20 +15,14 @@ import os
 from os.path import exists
 import sys
 sys.path.append('figshare')
-sys.path.append('LD-Cool-P')
-
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare/figshare')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/figshare')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P')
-#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/LD-Cool-P/ldcoolp')
+sys.path.append('curationTesting')
 
 #from figshare import Figshare
 from figshare.figshare import Figshare
-#import LD-Cool-P
-#import ldcoolp
-#from ldcoolp import retrieve
-from ldcoolp.curation import retrieve
+import requests
+from requests import HTTPError
+import figshareRetrieve
+import figshareDownload
 import json
 from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
@@ -36,11 +30,11 @@ import filecmp
 from datetime import datetime
 import job
 from job import Job
+from redata.commons.logger import log_stdout
 
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 
 import configparser
-#config=configload.read_config()
 config=configparser.ConfigParser()
 config.read('configurations.ini')
 
@@ -60,17 +54,6 @@ CuratorName=config['FigshareSettings']['CuratorName']
 #Get the row information of the article in review/ingested article from the Ingest sheet using the corresponding ArticleID and Version Number:
 #try:
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
-    #break
-#except TypeError:
-#    print("Oops! No row with the given article id and ingest version number was found in the Ingest sheet")
-#    raise TypeError
-#finally:
-#    print("Goodbye, see you later aligator")
-    #break
-    #raise
-    #pass
-    #break
-    #raise TypeError("Oops! No row with the given article id and ingest version number was found in the Ingest sheet")
 #Get article id
 article_id=ingsheet['ingarticleid']
 # get Ingest Accession Number 
@@ -107,16 +90,22 @@ data_directory_path=os.path.join(IngFolderPath,IngFolderName)
 metadata_jsonpath=config["IngestBag_PathSettings"]['metadatajsonpath']
 metadata_filename=f"{IngestAccessionNumber}_DownloadedFileMetadata"
 metadata_directory_path=os.path.join(metadata_jsonpath,metadata_filename)
-
-
 #-------------------------------------------------------------------------------------------------
 
 #------------------STEP 2-------------------------------------------------------------------------
 # Download private article under review to the ingest folder created in step 1, save Ingest metadata in json file format, there is no versioning in ingest so set version to None
 fversion=None
-fs=Figshare(token=token,private=True,version=fversion)
-
-FileDownload=retrieve.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
+fs=Figshare(token=token,private=True)#,version=fversion)
+#-----------------------------------------------------------------------------
+FileDownload=figshareDownload.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
+#privatefigshare_url='https://api.figshare.com/v'+str(Version[1])+'/account/articles/'+str(article_id)
+#data_directory=data_directory_path
+#metadata_directory=metadata_directory_path
+#metadata_only=False
+#root_directory=None
+#log = None
+#-----------------------------------------------------------------------------------------------
+#FileDownload=retrieve.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 privatefigshare_url='https://api.figshare.com/v'+str(Version[1])+'/account/articles/'+str(article_id)
 json_out_file=f"{data_directory_path}/{IngestAccessionNumber}_IngestedMetadata.json"
 json_response=fs.get_article_details(article_id,version=None)

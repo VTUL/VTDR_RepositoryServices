@@ -4,8 +4,6 @@ Created on Mon Oct 25 10:55:10 2021
 
 @author: padma carstens
 """
-
-
 from Read_VTDR_Spreadsheet import vtpubsheet
 from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date

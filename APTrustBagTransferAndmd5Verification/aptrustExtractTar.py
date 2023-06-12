@@ -5,8 +5,8 @@ Created on Tue Sep 28 09:41:18 2021
 """
 """
 Purpose: 
--search for publication bags in the sandisk copied from s3, for the range of the row numbers provided from the spreadsheet,search for the publication bag is performed using the ingest number match with the bag name in tar format sitting in san disk
--Extracts the old bags made with UPACK and the newer bags created by DART
+-Extract the bags downloaded on SanDisk from APTrust in tar format
+---------------------------------------------------------------------
 - Performs bag validation on the bag made by UPACK, creates DART bag using APTrust tag values, deposits the new DART bag to APTrust, compares the md5 checksums of the bags made by UPACK and DART software in tar format for bags entered on the spreadsheet starting for the row numbers provided in rowstrt and rowend. Bags were transferred 10 at a time to APTrust and transfer was checked and log sheets were verified, tracking was updated by  Padma and Jon in MOVING_CONTENT_PROCESS_TRACKING_2022 sheet in 'MovingContentToAPTrust' folder in CurationServicesGoogleDriveArchive
 - Creates a sheet in the path provided under 'sheetname' with filenames and md5 checksum list of the associated files and the comparison results, also creates log file with the name and path provided with more details. Log files and sheets were created in 'MovingContentToAPTrust' folder in curation services google drive archive.
 Note: There are several exceptions and comments in publication bag comparison, exceptions include failed bag validation, human error in bag naming not following the bag naming convention of published date etc. These are all listed under exception/comments in the log sheet in 'APTrust BagTransferAndmd5Verification' folder.
@@ -23,6 +23,7 @@ filename_s3: filename of the bag in s3 in tar format
 path1: path of the bag on s3
 filename_gd: filename of the bag in google drive in tar format
 path: path of the bag on google drive
+-------------------------
 """
 
 import os
@@ -30,19 +31,12 @@ from os.path import exists
 import json
 from turtle import begin_fill
 #from typing import _KT_co
-from ldcoolp.curation import retrieve
 import spreadsheet_aptrust_transfer
 #from auto_fill_archive import create_archivalreadme
 #from spreadsheet_aptrust_transfer import aptrust_vtingsheet
 #from spreadsheet_aptrust_transfer import aptrust_vtpubsheet
 import sys
-sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/VTechDataRepo/Figshare-APTrust')
-#import FigshareAPTrustWorkflow
-#from Figshare-APTrust.Read_VTDR_Spreadsheet import vtingsheet
-#from Figshare-APTrust.Read_VTDR_Spreadsheet import vtpubsheet
-#import Read_VTDR_Spreadsheet
-from Read_VTDR_Spreadsheet import vtingsheet
-from Read_VTDR_Spreadsheet import vtpubsheet
+sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/VTechDataRepo')
 
 import shutil
 import tarfile
@@ -141,100 +135,7 @@ count=0
 #Example1 of indexing: for P23-P30: i=22 gets the row 23 which is the bag P00021, i=22,32 runs until i=31 and terminates when i=32, so last bag corresponds to i=31,row 32 which is P00030
 #Example 2 indexing: for P41-P50: i=42 gets the row 43 which is the bag P00041, i=42,53 runs until i=52 and terminates when i=53, so last bag corresponds to i=52,row 53 which is P00050
 
-for i in range(rowstrt,rowend):    
-  wb.save(sheetname)
-  logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
-  IngOrPub='P' #0 for ingest 1 for pub
-  print("Row number on spreadsheet is " , i+1)
-  logging.info("Row number on spreadsheet is %s " % str(i+1))
-  HeadDir="F:\\"
-  print("ingorpub",IngOrPub)
-#Start processing I is for ingest, P is for publication bag:
-  if IngOrPub=='I':
-    SubDir3=f"{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}.tar"
-    print("**********NOW PROCESSING ",iIngAccessionNumber[i],"**********")
-    logging.info("**************************NOW PROCESSING %s ****************" % iIngAccessionNumber[i])
-
-  #No exception/comment fetch:
-  if IngOrPub=='P':
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-  
- #Actions taken for exceptions/comments, overwrite parts of the bag naming:
-
-  #P00050 version missing in bag name
-  if IngOrPub=='P'and i == 52:
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_{pDate[i]}.tar"
-  #Bag P00062 published date in bag name is not the same as that on figshare
-  if IngOrPub=='P'and i == 64:
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20190603.tar"  
-  #Bag P00064 published date in bag name is not the same as that on figshare
-  if IngOrPub=='P'and i == 67:
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20190619.tar"
-
-  if IngOrPub=='P'and i == 84:
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20200128.tar"
-
-  if IngOrPub=='P'and i == 86:
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_20200317.tar"
-
-  if IngOrPub=='P'and i == 89:
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v02_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 97:
-    pVersion[i]="02"
-    pDate[i]="20210405"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 103:
-    pDate[i]="20200708"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if i==120 and IngOrPub=='P':
-    pDate[i]="20201117"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if i==112 and IngOrPub=='P':
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}__{pVersion[i]}_{pDate[i]}.tar"    
-
-  if i==113 and IngOrPub=='P':
-    pDate[i]="20210406"
-    pVersion[i]="02"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 130:
-    pDate[i]="20210420"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 131:
-    pDate[i]="20210512"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 145:
-    pDate[i]="20210830"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 146:
-    pDate[i]="20210830"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-
-  if IngOrPub=='P'and i == 150:
-    pDate[i]="20210909"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-  if IngOrPub=='P'and i == 154:
-    pDate[i]="20210923"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"
-  if IngOrPub=='P'and i == 177:
-    pDate[i]="20211025"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar" 
-
-  if IngOrPub=='P'and i == 210:
-    pVersion[i]="01"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_v{pVersion[i]}_{pDate[i]}.tar"   
-
-  if IngOrPub=='P'and i == 107:
-    pDate[i]="20210521"
-    SubDir3=f"{pPubAccessionNumber[i]}_{pRequestorLFI[i]}_{pCorrespondingAuthorLFI[i]}_{pVersion[i]}(8of8)_{pDate[i]}.tar" 
-
+HeadDir="F:\\"
   print("**********NOW PROCESSING ",pPubAccessionNumber[i],"**********")
   logging.info("**************************NOW PROCESSING %s ****************" % pPubAccessionNumber[i])
 

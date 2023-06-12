@@ -62,12 +62,9 @@ def create_readme(ArticleID,token):
   :param Article ID: Figshare article id under "Cite" button for an article in review
   :param token: Figshare token: click circle on data.lib.vt.edu, then click "Applications" then click "Create Personal Token"
   """
-
   #If creating this AFTER the article is published then change "private" to "False" below
   fs=Figshare(token=token,private=True)
-
   #There is no versioning for article under review in figshare
-
   #Retrieve article information from Figshare
   details=fs.get_article_details(ArticleID,version=None)
   #Get the title of the article
