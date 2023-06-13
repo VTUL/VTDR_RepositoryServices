@@ -89,7 +89,7 @@ def download_files(article_id, fversion, fs, root_directory=None, data_directory
                                 for chunk in iter(lambda: f.read(4096),b""):
                                     hash_md5.update(chunk)
                             checksum_compute=hash_md5.hexdigest()
-                            if checksum_compute == filefigshare_checksum:
+                            if checksum_compute == file_dict['supplied_md5']:
                                 checksum_pass=True
                                 log.info("MD5 Checksum passed!!!")
                             else:
