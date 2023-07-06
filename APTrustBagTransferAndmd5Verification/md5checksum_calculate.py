@@ -21,8 +21,11 @@ sheet1.write(0,0,'filename')
 sheet1.write(0,1,'checksum')
 
 #path='E:/VTDR_P00098_I00115_DOI_2v3w-sb92_AsbeckA_v02_1of8_20210409/data'
-path='G:/Shared drives/Data Services TEAM DRIVE/DataManagementCurationServices/ALT_COMPLETED_BAGS/P00098_not_tarred/P00098_AsbeckA_AsbeckA_02(1of8)_20210521/P00098_AsbeckA_AsbeckA_02(1of8)_20210521/data'
-
+#path='G:/Shared drives/Data Services TEAM DRIVE/DataManagementCurationServices/ALT_COMPLETED_BAGS/P00098_not_tarred/P00098_AsbeckA_AsbeckA_02(1of8)_20210521/P00098_AsbeckA_AsbeckA_02(1of8)_20210521/data'
+#path='E:/VTDR_P00074_I00089_DOI_yhsb-t439_JosephL_v01_20191002/data'
+#path='C:/Users/padma/anaconda3/envs/curation/VTDR_P00074_I00089_DOI_yhsb-t439_JosephL_v01_20191002/data'
+path='C:/Users/padma/anaconda3/envs/curation/MissedGoogleDriveBags/I00221_JaberR_JaberR_v01_20220603/data'
+#path='D://I00221_JaberR_JaberR_v01_20220603/data'
 payload=os.listdir(path)
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
 iCount=1

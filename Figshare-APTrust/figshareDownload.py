@@ -83,27 +83,32 @@ def download_files(article_id, fversion, fs, root_directory=None, data_directory
 #                                                      file_dict['supplied_md5'])
                             #------------------------------
                             log.info("Performing MD5 checksum ...")
-                            checksum_pass=False
+                            checksum_flag=False
                             hash_md5=hashlib.md5()
                             with open(filename,"rb") as f:
                                 for chunk in iter(lambda: f.read(4096),b""):
                                     hash_md5.update(chunk)
                             checksum_compute=hash_md5.hexdigest()
                             if checksum_compute == file_dict['supplied_md5']:
-                                checksum_pass=True
+                                checksum_flag=True
+                                print('checksum flag stage 1 ',checksum_flag)
                                 log.info("MD5 Checksum passed!!!")
                             else:
+                                print('checksum flag stage 2 ',checksum_flag)
                                 log.warning("Checksum failed!!!")
                             log.info(f"MD5 Result: {checksum_compute}")  
                             log.info(f"Expectation: {file_dict['supplied_md5']}")
                             #-------------------------------
                             if checksum_flag:
+                                print('checksum flag stage 3 ',checksum_flag)
                                 break
                         else:
+                            print('checksum flag stage 4 ',checksum_flag)
                             log.info("Not performing checksum on linked-only record")
                             break
                 else:
                     if not checksum_flag:
+                        print('checksum flag stage 5 ',checksum_flag)
                         log.warning("File retrieval unsuccessful! "
                                     f"Aborted after {N_TRIES_MD5} tries")
             else:
