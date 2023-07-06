@@ -28,11 +28,11 @@ from os.path import exists
 import json
 from turtle import begin_fill
 #from typing import _KT_co
-from ldcoolp.curation import retrieve
+#from ldcoolp.curation import retrieve
 import spreadsheet_aptrust_transfer
 import sys
-sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/VTechDataRepo/Figshare-APTrust')
-
+#sys.path.insert(0,'C:/Users/padma/anaconda3/envs/curation/VTechDataRepo/Figshare-APTrust')
+sys.path.append('C:/Users/padma/anaconda3/envs/curation/VTDR_RepositoryServices/Figshare-APTrust')
 from Read_VTDR_Spreadsheet import vtingsheet
 from Read_VTDR_Spreadsheet import vtpubsheet
 
@@ -44,7 +44,7 @@ from job import Job
 from cmath import log
 import logging
 from datetime import datetime
-from xlrd import open_workbook
+#from xlrd import open_workbook
 from xlwt import Workbook
 #from xlutils.copy import copy
 import filecomparetestmod
@@ -74,8 +74,8 @@ iRequestorLFI=ivtsheet['iReqLnameFini']
 iCorrespondingAuthorLFI=ivtsheet['iCorLnameFini']
 
 #************CHANGE rowstart and rownd FOR EVERY 10 BAG RUN***************************
-rowstart=121
-rownd=122
+rowstart=207 #for I204 SAME EXACT ROW OF THE ONE YOU NEED TO PULL FROM THE SHEETS, NO ADDITION OR SUBTRACTION OF ROWS
+rownd=228# for I221
 #rownd=121
 rowstrt=rowstart-1
 rowend=rownd-1
@@ -121,7 +121,8 @@ pCorrespondingAuthorLFI=Pvtsheet['pCorLnameFini']
 pVersion=Pvtsheet['pVersion']
 pDate=Pvtsheet['pDate']
 pDOIsuffix=Pvtsheet['pDOIsuffix']
-sourcedir1="F:/VTechbags"
+#sourcedir1="F:/VTechbags"
+sourcedir1="D://"
 count=0
 
 """
@@ -137,7 +138,8 @@ for i in range(rowstrt,rowend):
   IngOrPub='I'
   print("Row number on spreadsheet is " , i+1)
   logging.info("Row number on spreadsheet is %s " % str(i+1))
-  HeadDir="F:\\"
+  #HeadDir="F:\\"
+  HeadDir="D:\\"
   print("ingorpub",IngOrPub)
 #Start processing I is for ingest, P is for publication bag:
 
@@ -192,7 +194,7 @@ for i in range(rowstrt,rowend):
     bag_size=os.path.getsize(path1)
     bag_size_gb=bag_size/(10**9)
     #size=20100
-    sizeul=24*(10**9)#less than 24 GB
+    sizeul=50*(10**9)#less than 50 GB
     #if bag_size >= size and bag_size <= sizeul:
     print("i1 is ",i1)
     count=count+1
@@ -221,10 +223,12 @@ for i in range(rowstrt,rowend):
     #1st set of transfer was for bags less than 24GB
     #if bag_size >= size and bag_size <= sizeul:
     #2nd set of transfer done on 20221116 for bags greater than 24GB
-    if bag_size > sizeul:
-      directory_path="F:\\"  
+    if bag_size < sizeul:
+      #directory_path="F:\\"  
+      directory_path="D:\\"  
        
-      destpath='F:\\'
+      #destpath='F:\\'
+      destpath='D:\\'
     #if i != 96 :   
     #Extract/Untar bag on sandisk:
       mytar=tarfile.open(bagpath,"r")
@@ -253,6 +257,8 @@ for i in range(rowstrt,rowend):
             source_folder=os.path.join(destpath, extractedbag,"data",extractedbag) 
           if rowstart >= 183 and rowstart <= 206:
             source_folder=os.path.join(destpath, extractedbag,"data") 
+          if rowstrt == 206 or rowstrt == 207:
+            source_folder=os.path.join(destpath, extractedbag,"data") 
 
             
           #else:            
@@ -262,7 +268,7 @@ for i in range(rowstrt,rowend):
         ##Bagging with DART:        
       #-----------------------------------------------------------------------  
      
-         # job=Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
+          #job=Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
           job=Job("Workflow for depositing bag to APTrust-Repo",aptrustBagName)
           for f in payload:
             job.add_file(source_folder+"\\"+f)
@@ -303,7 +309,8 @@ for i in range(rowstrt,rowend):
 
         #Get size of bag in tar format made by DART, then untar the bag made by dart stored as a local copy
 
-          dartpath = "C:/Users/padma/.dart/bags/"
+          #dartpath = "C:/Users/padma/.dart/bags/"
+          dartpath='C:/Users/padma/Documents/DART'
         #dartpath = os.getenv("dartpath")
           dartBagPath=os.path.join(dartpath,aptrustBagName_tar)
           dartBagSize=os.path.getsize(dartBagPath)
@@ -383,9 +390,10 @@ for i in range(rowstrt,rowend):
         sheet1.write(i1,2,"Bag is not valid")
         print("****************BAG VALIDATION FAILED FOR BAG ",extractedbagpath," SO BAG NOT MIGRATED to APTRUST****************")
         logging.info("****************BAG VALIDATION FAILED FOR BAG %s SO BAG NOT MIGRATED to APTRUST****************" % extractedbagpath)
-        
+        print("Bagsize tar on S3 is: ",bag_size_gb)
     else:
-        print("size of bag is less than lower limit of ",size," = ",' or bag size is greater than upper limit of ', sizeul )
+        #print("size of bag is less than lower limit of ",bag_size_gb," = ",' or bag size is greater than upper limit of ', sizeul )
+        print('bag size is less than upper limit of ', sizeul )
         print("size of bag in GB is ",bag_size_gb)
         #print("**************************BAG ", bagpath," NOT FOUND SO NOT MIGRATED TO APTRUST****************************")
         logging.info("size of bag is less than lower limit of %s = " % size )
@@ -407,11 +415,12 @@ for i in range(rowstrt,rowend):
     aptrustBagName=f"VTDR_{iIngAccessionNumber[i]}_{iRequestorLFI[i]}_{iCorrespondingAuthorLFI[i]}_v{iVersion[i]}_{iDate[i]}"#f"VTDR_{extractedbag}
     sheet1.write(i1,1,aptrustBagName)
     sheet1.write(i1,2,"BAG DOES NOT EXIST IN THE EXPECTED FORMAT ON FIRST TRY OF TRANSFER, SO BAG WILL BE TRANSFERRED SEPERATELY IF IT EXISTS IN A DIFFERENT FORMAT OR BAG WAS ABANDONED AND SO DOES NOT EXIST")
- 
+    
   i1=i1+1
   print("MY i1 is ",i1)
   print("i1 at the end of last compute is ",i1)
   logging.info("i1 at the end of last compute is %s " % i1)  
+  
 
 #Adjust column size of the log spreadsheet
 sheet1.col(0).width = 15000
@@ -432,5 +441,6 @@ sheet1.col(14).width = 10000
 sheet1.col(15).width = 40000
 sheet1.col(16).width = 4000
 
-wb.save(sheetname)
 
+
+wb.save(sheetname)
