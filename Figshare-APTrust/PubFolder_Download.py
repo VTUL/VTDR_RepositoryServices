@@ -19,7 +19,8 @@ from os.path import exists
 import sys
 sys.path.append('figshare')
 
-from figshare.figshare import Figshare
+#from figshare.figshare import Figshare
+from figshare import Figshare
 import requests
 from requests import HTTPError
 #from ldcoolp.curation import retrieve
