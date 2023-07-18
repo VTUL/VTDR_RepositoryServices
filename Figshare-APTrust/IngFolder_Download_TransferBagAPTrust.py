@@ -17,8 +17,8 @@ import sys
 sys.path.append('figshare')
 sys.path.append('curationTesting')
 
-#from figshare import Figshare
-from figshare.figshare import Figshare
+from figshare import Figshare
+#from figshare.figshare import Figshare
 import requests
 from requests import HTTPError
 import figshareRetrieve
@@ -95,7 +95,7 @@ metadata_directory_path=os.path.join(metadata_jsonpath,metadata_filename)
 #------------------STEP 2-------------------------------------------------------------------------
 # Download private article under review to the ingest folder created in step 1, save Ingest metadata in json file format, there is no versioning in ingest so set version to None
 fversion=None
-fs=Figshare(token=token,private=True)#,version=fversion)
+fs=Figshare(token=token,private=True,version=fversion)
 #-----------------------------------------------------------------------------
 FileDownload=figshareDownload.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 #privatefigshare_url='https://api.figshare.com/v'+str(Version[1])+'/account/articles/'+str(article_id)
