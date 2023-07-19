@@ -15,7 +15,8 @@ import os
 from tkinter.messagebox import NO
 #from figshare.figshare import Figshare
 import figshare
-from figshare.figshare import Figshare
+#from figshare.figshare import Figshare
+from figshare import Figshare
 from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
 import re
