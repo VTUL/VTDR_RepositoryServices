@@ -105,10 +105,10 @@ job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
 
 exit_code = job.run()
 if exit_code == 0:
-  print("Job completed")
+  print("JOB COMPLETED")
   print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
 else:
-  print("Job failed. Check the DART log for details.")
+  print("JOB FAILED. Check the DART log for details.")
   print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
 
 #----------------Copy non disseminated content to a NonDisseminatedContent folder:-------------------------
