@@ -28,11 +28,20 @@ Parameters:
 ArticleID: Figshare article ID of the article that needs to be read from the spreadsheet
 IngestVersionNumber: Ingest number of the article in review whose row information needs to be read
  """
+ #Get the parameters from configurations.ini to retrieve information on spreadsheet
+
+ import configparser
+ config=configparser.ConfigParser()
+ config.read('configurations.ini')
+ spreadSheet=config['SpreadsheetSettings']['SpreadsheetName']
+
  scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
  creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
  client = gspread.authorize(creds)
  #Open the spreadsheet sheet1: "Ingested"
- ingsheet = client.open("20211214_VTDR_PublishedDatasets_Log_V7").sheet1
+ #ingsheet = client.open("20211214_VTDR_PublishedDatasets_Log_V7").sheet1
+ print(spreadSheet)
+ ingsheet = client.open(spreadSheet).sheet1
  #Get the column values for Ingest Numbers:
  ingestnums=ingsheet.col_values(1)
  #Get the column values for Requestor:
@@ -129,12 +138,23 @@ def vtpubsheet(ArticleID,PublishedVersionNumber):
   ArticleID: Figshare article ID of the article that needs to be read from the spreadsheet
   PublishedVersionNumber: Publication number of the published article whose row information needs to be read
    """
+ #Get the parameters from configurations.ini to retrieve information on spreadsheet
+
+  import configparser
+  config=configparser.ConfigParser()
+  config.read('configurations.ini')
+  spreadSheet=config['SpreadsheetSettings']['SpreadsheetName']
+
+  scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+  creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+  client = gspread.authorize(creds)
+  
 # use creds to create a client to interact with the Google Drive API
   scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
   creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
   client = gspread.authorize(creds)
   #Open the spreadsheet sheet1: "Published"
-  pubsheet = client.open("20211214_VTDR_PublishedDatasets_Log_V7").worksheet('Published')
+  pubsheet = client.open(spreadSheet).worksheet('Published')
   #Get the column values for Ingest Number:
   ingest_num=pubsheet.col_values(1)
   #Get the column values for Published Accession number:
