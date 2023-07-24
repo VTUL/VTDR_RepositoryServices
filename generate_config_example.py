@@ -25,6 +25,9 @@ NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonD
 DartExePath="C:/Users/username/AppData/Local/Programs/DART/DART.exe"
 ReadmeDir="C:/Users/username/anaconda3/envs/curation/README_FILES"
 FileID="38878398"
+#spreadsheetName="20211214_VTDR_PublishedDatasets_Log_V7"
+spreadsheetName="20230721_VTDR_PublishedDatasets_Log_V8"
+
 #------------------------------------------------------
 
 # ADD SECTION for figshare settings
@@ -36,6 +39,11 @@ config_file.set("FigshareSettings", "PublishedVersionNumber", PubVerNum)
 config_file.set("FigshareSettings", "IngestVersionNumber", "01")
 config_file.set("FigshareSettings", "token",VTDRToken)
 config_file.set("FigshareSettings", "CuratorName",CurName)
+
+#---------------------------------------------------------
+# ADD SECTION for spreadsheet settings
+config_file.add_section("SpreadsheetSettings")
+config_file.set("SpreadsheetSettings","SpreadsheetName",spreadsheetName)
 
 #---------------------------------------------------------
 
