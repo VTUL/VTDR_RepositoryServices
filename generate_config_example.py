@@ -15,6 +15,17 @@ CurName: Name of the curator, this shows up in ArchivalReadme Package created in
 CurationDir: Curation directory where Ingest/Publication folder/README file will be created
 NonDissContentDir: Directory where Non disseminated content will be stored, non disseminated content includes provenance log, email correspondence and archival readme package created in the publication folder
 FileID: This is used only in the ChangeThumbnail.py script. File ID is the number at the end of the file link, this is the ID of the file that the curator wants to change the thumbnail of the published article to
+---------------------------------------------------------------------------------------------------
+Following is copy pasted from https://aptrust.github.io/userguide/partner_tools/
+
+APTRUST_AWS_KEY	Access Key ID to access S3. Required only for S3 operations. Works with any S3-compatible service.
+APTRUST_AWS_SECRET	Secret access key to access S3. Required only for S3 operations. Works with any S3-compatible service.
+APTRUST_REGISTRY_URL	URL of the APTrust registry you want to access. Production is https://repo.aptrust.org. Demo is https://demo.aptrust.org. Required only for registry operations.
+APTRUST_REGISTRY_API_VERSION	Version of the current registry API. For now, this should be v3. Required only for registry operations.
+APTRUST_REGISTRY_EMAIL	The email address associated with your APTrust registry account. Required only for registry operations.
+APTRUST_REGISTRY_API_KEY	The API key associated with your APTrust registry account. Required only for registry operations. Go to the name icon on repo.aptrust.org, click “GET API KEY”, generate your key
+------------------------------------------------------------------------------------------------------
+
 """
 FigshareArticleID="21651401"
 PubVerNum="01"
