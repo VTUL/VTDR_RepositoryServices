@@ -31,7 +31,8 @@ from datetime import datetime
 import job
 from job import Job
 from redata.commons.logger import log_stdout
-
+import aptCmd
+from aptCmd import registryCheck
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 
 import configparser
@@ -114,7 +115,7 @@ if not os.path.exists(json_out_file):
     with open(json_out_file, 'w') as f:
         json.dump(json_response,f,indent=4)
 else:
-    print(f"File exists: {json_out_file}")
+    print(f"Ingest metadata file already exists as: {json_out_file}")
 
 #-----------------STEP 3---------------------------------------------------------------------------
 #Bag the ingest folder with DART using tar format, transfer the Ingest bag to VT S3/ APTrust demo/ APTrust repo
@@ -127,52 +128,56 @@ aptrustBagName=IngFolderName
 #job = Job("Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
 #job = Job("Workflow for depositing bag to APTrust-Repo" ,aptrustBagName)
 
-while True:
+#if workflow =='2' or workflow =='3':
+checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
+if checkReg == 1 :
+  #---------------------------------------------------
+  while True:
     #try:
-    workflow=input("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
-    try:
-        workflow=int(workflow)
+      workflow=input("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
+      try:
+          workflow=int(workflow)
         #break
-    except ValueError:
-        print("Oops! That was not a valid number. Try again")
-        continue
-    if 1 <= workflow <= 4:
-        break
-    else:
-        print("Please pick a workflow number between 1 and 4")
-workflow=str(workflow)
-if workflow == "1":
-    jobname="Workflow for depositing bag to APTrust-Demo"
-if workflow =="2":
-    jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
-if workflow =="3":
-    jobname="Workflow for depositing bag to VT library S3 bucket"
-if workflow =="4":
-    jobname="Workflow for depositing bag to APTrust-Repo"    
-
-job=Job(jobname,aptrustBagName)
-for f in payload:
-    datapath=os.path.join(data_directory_path,f)
-    job.add_file(datapath)
+      except ValueError:
+          print("Oops! That was not a valid number. Try again")
+          continue
+      if 1 <= workflow <= 4:
+          break
+      else:
+          print("Please pick a workflow number between 1 and 4")
+  workflow=str(workflow)
+  if workflow == "1":
+      jobname="Workflow for depositing bag to APTrust-Demo"
+  if workflow =="2":
+      jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
+  if workflow =="3":
+      jobname="Workflow for depositing bag to VT library S3 bucket"
+  if workflow =="4":
+      jobname="Workflow for depositing bag to APTrust-Repo"    
+#---------------------------------------------------------------------
+  job=Job(jobname,aptrustBagName)
+  for f in payload:
+      datapath=os.path.join(data_directory_path,f)
+      job.add_file(datapath)
     #job.add_file(data_directory_path+"\\"+f)
-    print("Added following file to bag in DART: ",f)
-    bag_group_identifier=f"VTDR_{IngestAccessionNumber}"
-job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
-job.add_tag("bag-info.txt","Source-Organization","Virginia Tech")
-job.add_tag("aptrust-info.txt", "Access", "Institution")
-job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
-aptrust_title=aptrustBagName
-job.add_tag("aptrust-info.txt","Title",aptrust_title)
-job.add_tag("bagit.txt","BagIt-Version","0.97")
-job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
+      print("Added following file to bag in DART: ",f)
+      bag_group_identifier=f"VTDR_{IngestAccessionNumber}"
+  job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
+  job.add_tag("bag-info.txt","Source-Organization","Virginia Tech")
+  job.add_tag("aptrust-info.txt", "Access", "Institution")
+  job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
+  aptrust_title=aptrustBagName
+  job.add_tag("aptrust-info.txt","Title",aptrust_title)
+  job.add_tag("bagit.txt","BagIt-Version","0.97")
+  job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
 
-exit_code = job.run()
-if exit_code == 0:
-    print("Job completed")
-    print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
+  exit_code = job.run()
+  if exit_code == 0:
+      print("Job completed")
+      print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
 
-else:
-    print("Job failed. Check the DART log for details.")
-    print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
+  else:
+      print("Job failed. Check the DART log for details.")
+      print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
 
      
