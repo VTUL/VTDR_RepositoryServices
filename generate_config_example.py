@@ -27,7 +27,12 @@ ReadmeDir="C:/Users/username/anaconda3/envs/curation/README_FILES"
 FileID="38878398"
 #spreadsheetName="20211214_VTDR_PublishedDatasets_Log_V7"
 spreadsheetName="20230721_VTDR_PublishedDatasets_Log_V8"
-
+APTRUST_REGISTRY_URL = 'https://repo.aptrust.org'
+APTRUST_REGISTRY_API_VERSION='v3'
+APTRUST_REGISTRY_EMAIL='xyz@vt.edu'
+APTRUST_REGISTRY_API_KEY=''
+APTRUST_AWS_KEY=''
+APTRUST_AWS_SECRET=''
 #------------------------------------------------------
 
 # ADD SECTION for figshare settings
@@ -84,7 +89,19 @@ config_file.set("PubBagDartAptrust_PathSettings","NonDisseminatedContentPath",No
 config_file.add_section("dart_PathSettings")
 config_file.set("dart_PathSettings","dart_exe_path",DartExePath)
 
-#---------------------------------------------------------------
+#------------------------------------------------------
+# ADD SECTION for accessing APTRUST repo registry
+# CREATE OBJECTS
+
+config_file.add_section("APTrustSettings")
+#config_file.set("APTrustSettings","aptCmdPath",aptPartnerToolPath )
+config_file.set("APTrustSettings", "registryURL", APTRUST_REGISTRY_URL)
+config_file.set("APTrustSettings", "registryAPIversion",APTRUST_REGISTRY_API_VERSION )
+config_file.set("APTrustSettings", "registryEmail", APTRUST_REGISTRY_EMAIL )
+config_file.set("APTrustSettings", "registryKey", APTRUST_REGISTRY_API_KEY)
+config_file.set("APTrustSettings", "AWSkey", APTRUST_AWS_KEY)
+config_file.set("APTrustSettings", "AWSsecret", APTRUST_AWS_SECRET)
+
 
 with open(r"configurations.ini", 'w') as configfileObj:
     config_file.write(configfileObj)
@@ -96,7 +113,20 @@ print("Config file 'configurations.ini' created")
 # PRINT FILE CONTENT
 read_file = open("configurations.ini", "r")
 content = read_file.read()
+
 print("Content of the config file are:\n")
-print(content)
+
+count=1
+
+with open('configurations.ini') as infile:
+     for line in infile:
+        line = line.strip()
+        if count == 5 :
+            #print("HERE SKIPPING ",count)
+            count += 1
+            continue
+        if count > 30 : break
+        print(line)
+        count += 1
 read_file.flush()
 read_file.close()
