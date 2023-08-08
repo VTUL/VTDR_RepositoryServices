@@ -1,4 +1,6 @@
 import configparser
+import os
+import platform
 """
 Created on Wed Oct  6 12:39:04 2021
 
@@ -31,10 +33,19 @@ FigshareArticleID="21651401"
 PubVerNum="01"
 VTDRToken="1234"
 CurName="XYZ"
-CurationDir="C:/Users/username/anaconda3/envs/curation"
-NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent/"
-DartExePath="C:/Users/username/AppData/Local/Programs/DART/DART.exe"
-ReadmeDir="C:/Users/username/anaconda3/envs/curation/README_FILES"
+GetPlatform=platform.system()#platform is Darwin for Mac, Windows for windows
+if GetPlatform=="Darwin":
+  CurationDir="/Users/padma/opt/anaconda3/envs/curation"
+  NonDissContentDir="/Volumes/GoogleDrive/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
+  DartExePath="/Applications/DART.app/Contents/MacOS/DART"
+  ReadmeDir="/Users/padma/opt/anaconda3/envs/curation/README_FILES"
+  platformExt="./"
+if GetPlatform=="Windows":
+  CurationDir="C:/Users/padma/anaconda3/envs/curation"
+  NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/NonDisseminatedContent/"
+  DartExePath="C:/Users/padma/AppData/Local/Programs/DART/DART.exe"
+  ReadmeDir="C:/Users/padma/anaconda3/envs/curation/README_FILES"
+  platformExt=""
 FileID="38878398"
 #spreadsheetName="20211214_VTDR_PublishedDatasets_Log_V7"
 spreadsheetName="20230721_VTDR_PublishedDatasets_Log_V8"
@@ -112,8 +123,9 @@ config_file.set("APTrustSettings", "registryEmail", APTRUST_REGISTRY_EMAIL )
 config_file.set("APTrustSettings", "registryKey", APTRUST_REGISTRY_API_KEY)
 config_file.set("APTrustSettings", "AWSkey", APTRUST_AWS_KEY)
 config_file.set("APTrustSettings", "AWSsecret", APTRUST_AWS_SECRET)
+config_file.set("APTrustSettings", "platformExtn", platformExt)
 
-
+#--------------------
 with open(r"configurations.ini", 'w') as configfileObj:
     config_file.write(configfileObj)
     configfileObj.flush()

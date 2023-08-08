@@ -27,8 +27,8 @@ def registryCheck(bagName):
   os.environ['APTRUST_REGISTRY_API_VERSION']=config["APTrustSettings"]["registryAPIversion"]
   os.environ['APTRUST_REGISTRY_EMAIL']=config["APTrustSettings"]["registryEmail"]
   os.environ['APTRUST_REGISTRY_URL']=config["APTrustSettings"][ "registryURL"]
-
-  cmd="apt-cmd registry get object identifier=vt.edu/"+bagName
+  platformExt=config["APTrustSettings"]["platformExtn"]
+  cmd=platformExt+"apt-cmd registry get object identifier=vt.edu/"+bagName
   child = subprocess.Popen(cmd, shell=True,  stderr=subprocess.PIPE, stdout=subprocess.PIPE,close_fds=True,encoding='utf8')
   stdout_data, stderr_data = child.communicate()
   
