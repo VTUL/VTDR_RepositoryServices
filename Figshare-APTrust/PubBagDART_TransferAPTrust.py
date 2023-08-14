@@ -76,9 +76,23 @@ aptrustBagName_tar=f"{aptrustBagName}.tar"
 PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
 PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
+destn_path_sandisk=config['PubFolder_PathSettings']['SanDiskDirPath']
+local_dir_path=config["PubFolder_PathSettings"]["LocalPathBag"]
+
+if not os.path.exists(destn_path_sandisk):
+    print("*************SAN DISK PATH IS NOT FOUND*************")
+    SanDiskProceedInput=input("Do you still wish to create the local bag?(yes/no)")
+    if SanDiskProceedInput=='no':
+       print("***QUIT MAKING THE BAG***")
+       quit()
+    if SanDiskProceedInput == 'yes':
+       print("***PROCEEDING MAKING BAG WITHOUT COPYING TO SANDISK***")
+if os.path.exists(destn_path_sandisk):
+   SanDiskProceedInput="yes"
+print("SANDISK INPUT IS ",SanDiskProceedInput)
 
 checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-if checkReg == 1 :
+if checkReg == 1 and SanDiskProceedInput=="yes":
   #-------------------------------------
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
   while True:
@@ -129,6 +143,7 @@ if checkReg == 1 :
   else:
     print("JOB FAILED. Check the DART log for details.")
     print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
+    quit()
 
 #----------------Copy non disseminated content to a NonDisseminatedContent folder:-------------------------
 
@@ -138,9 +153,10 @@ if checkReg == 1 :
   count=0
 
   for root, dirs, files in os.walk(PubFolder):
-    print("root is",root)
-    print("dir is", dirs)
-    print("files are", files)
+    print("Root folder is: ",root)
+    print("Directories in the root folder are: ", dirs)
+    print("\n \n")
+    print("Non-Disseminated files in the root folder are", files)
     random_names=os.listdir(PubFolder)
     inner_dirs = [
     os.path.join(PubFolder, name)
@@ -149,27 +165,49 @@ if checkReg == 1 :
           ]
           
     inner_dirs=" ".join(inner_dirs)
-    print("\n\n")
-    print("Inner Dissemination Directory starting with D or Diss or Dis or i or I is ", inner_dirs,"\n")
+   # print("\n\n")
+   # print("Inner Dissemination Directory starting with D or Diss or Dis or i or I is ", inner_dirs,"\n")
     if root==inner_dirs: 
         print("*********************SKIPPING COPYING CONTENTS OF THE DISSEMINATED FOLDER******************************** ")
     else:
         for filename in files:
             print("***************************STARTING COPYING CONTENTS FOR FOLLOWING PATHS*************************")
-            print("root is",root)
-            print("dir is", dirs)
-            print("files are", files)
-            print("FILENAME is ",filename)
-            print("absolute path ",os.path.abspath(root))
-            print("destination path ", os.path.join(destndir,filename))
+            print("Current root folder is: ",root)
+            print("Directories in this root are: ", dirs)
+            #print("files are", files)
+            print("COPYING FILE: ",filename)
+            print("absolute path of the file is: ",os.path.abspath(root))
+            print("copied file to the destination path: ", os.path.join(destndir,filename))
             oldpath=os.path.join(os.path.abspath(root),filename)
             newpath=os.path.join(destndir,filename)
             if not os.path.exists(destndir):
-                print("Following directory does not exits for copying contents excluding disseminated folder contents, so creating it: ",destndir, " Now copying file: ", filename)
+                print("\n \n")
+                print("Non Disseminated Content folder does not exist on GoogleDrive. So creating it and copying non-disseminated content to the folder: ",destndir)
                 os.mkdir(destndir)
                 shutil.copy(oldpath,newpath)
             elif not os.path.exists(newpath):
-                print("Directory is already created: ", destndir, " But the file: ", filename ," does not exist in this directory so copying it ")
+                print("Non Disseminated directory: ", destndir, " already exists. But content is missing in it so copying content ")
                 shutil.copy(oldpath,newpath)
             else:
-                print("Directory is already created: ", destndir," file already exists so not copying file: ",filename)
+               # print("Non Disseminated directory: ",destndir, " already exists on Google Drive with content in it. ")
+                print("FILENAME IS: ",filename)
+                overWriteNonDiss=input("Do you want to overwrite this content in non disseminated folder on google drive?(yes/no)")
+                if overWriteNonDiss == 'yes' :
+                   print("You picked to overwrite existing non-disseminated content ")
+                   print("Now overwriting file: ",filename)
+                   shutil.copy(oldpath,newpath)
+                else: 
+                   print("not overwriting existing non disseminated content")
+          
+#----------------Copy Publication bag to SanDisk path defined in generate_config.py:-------------------------
+  destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
+  localPath=os.path.join(local_dir_path,aptrustBagName_tar)
+  if not os.path.exists(destn_path_sandisk):
+     print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
+  if os.path.exists(destn_path_sandisk):
+    if not os.path.exists(destn_path_bag):
+      shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
+      print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
+    else:
+      print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
+          

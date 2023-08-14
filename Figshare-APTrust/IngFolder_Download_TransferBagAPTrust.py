@@ -16,7 +16,7 @@ from os.path import exists
 import sys
 sys.path.append('figshare')
 sys.path.append('curationTesting')
-
+import shutil
 from figshare import Figshare
 #from figshare.figshare import Figshare
 import requests
@@ -122,15 +122,26 @@ else:
 
 payload=os.listdir(data_directory_path)
 aptrustBagName=IngFolderName
-#Create APTrust Demo/Production workflow in the DART app before running this script, this workflow created should also includes the credentials for the preferred storage i.e. aptrust repo/demo or VT s3
-#job = Job("Workflow for depositing bag to APTrust-Demo",aptrustBagName)
-#job = Job("Workflow for depositing bag to APTrust-Repo and VT library S3 bucket",aptrustBagName)
-#job = Job("Workflow for depositing bag to VT library S3 bucket" ,aptrustBagName)
-#job = Job("Workflow for depositing bag to APTrust-Repo" ,aptrustBagName)
+aptrustBagName_tar=f"{aptrustBagName}.tar"
+#------check if sandisk is connected/exists to move a copy to it
+destn_path_sandisk=config["IngestBag_PathSettings"]["SanDiskDirPath"]
+local_dir_path=config["IngestBag_PathSettings"]["LocalPathBag"]
 
-#if workflow =='2' or workflow =='3':
+if not os.path.exists(destn_path_sandisk):
+    print("*************SAN DISK PATH IS NOT FOUND*************")
+    SanDiskProceedInput=input("Do you still wish to create the local bag?(yes/no)")
+    if SanDiskProceedInput=='no':
+       print("***QUIT MAKING THE BAG***")
+       quit()
+    if SanDiskProceedInput == 'yes':
+       print("***PROCEEDING MAKING BAG WITHOUT COPYING TO SANDISK***")
+if os.path.exists(destn_path_sandisk):
+   SanDiskProceedInput="yes"
+print("SANDISK INPUT IS ",SanDiskProceedInput)
+
+
 checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-if checkReg == 1 :
+if checkReg == 1 and SanDiskProceedInput=="yes" :
   #---------------------------------------------------
   while True:
     #try:
@@ -179,5 +190,22 @@ if checkReg == 1 :
   else:
       print("Job failed. Check the DART log for details.")
       print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
+      quit()
+#-----------------------COPY BAG TO SAN DISK LOCATION:
+
+#----------------Copy Publication bag to SanDisk path defined in generate_config.py:-------------------------
+
+  destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
+  localPath=os.path.join(local_dir_path,aptrustBagName_tar)
+  if not os.path.exists(destn_path_sandisk):
+    print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
+  if os.path.exists(destn_path_sandisk):
+    if not os.path.exists(destn_path_bag):
+      shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
+      print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
+    else:
+      print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
+          
+
 
      

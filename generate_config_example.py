@@ -27,6 +27,8 @@ APTRUST_REGISTRY_API_VERSION	Version of the current registry API. For now, this 
 APTRUST_REGISTRY_EMAIL	The email address associated with your APTrust registry account. Required only for registry operations.
 APTRUST_REGISTRY_API_KEY	The API key associated with your APTrust registry account. Required only for registry operations. Go to the name icon on repo.aptrust.org, click “GET API KEY”, generate your key
 ------------------------------------------------------------------------------------------------------
+SanDiskPath: Path to the sandisk
+LocalBagPath: Path where DART bags are stored, this path is also found on Dart app->ApplicationSettings, listed under "Value"
 
 """
 FigshareArticleID="21651401"
@@ -40,12 +42,16 @@ if GetPlatform=="Darwin":
   DartExePath="/Applications/DART.app/Contents/MacOS/DART"
   ReadmeDir="/Users/padma/opt/anaconda3/envs/curation/README_FILES"
   platformExt="./"
+  SanDiskPath="D:/"
+  LocalBagPath='C:/Users/padma/Documents/DART'
 if GetPlatform=="Windows":
   CurationDir="C:/Users/padma/anaconda3/envs/curation"
   NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/NonDisseminatedContent/"
   DartExePath="C:/Users/padma/AppData/Local/Programs/DART/DART.exe"
   ReadmeDir="C:/Users/padma/anaconda3/envs/curation/README_FILES"
   platformExt=""
+  SanDiskPath="D:/"
+  LocalBagPath='C:/Users/padma/Documents/DART'
 FileID="38878398"
 #spreadsheetName="20211214_VTDR_PublishedDatasets_Log_V7"
 spreadsheetName="20230721_VTDR_PublishedDatasets_Log_V8"
@@ -91,13 +97,14 @@ config_file.add_section("IngestBag_PathSettings")
 config_file.set("IngestBag_PathSettings","SanDiskDirPath","F:\\")
 config_file.set("IngestBag_PathSettings","IngFolderPath",CurationDir)
 config_file.set("IngestBag_PathSettings","metadatajsonpath",CurationDir)
-
+config_file.set("IngestBag_PathSettings","LocalPathBag",LocalBagPath)
 #----------------------------------------------------------------
 
 #ADD SECTION for PubFolder_Download script
 config_file.add_section("PubFolder_PathSettings")
 config_file.set("PubFolder_PathSettings","PubFolderPath",CurationDir)
-
+config_file.set("PubFolder_PathSettings","SanDiskDirPath",SanDiskPath)
+config_file.set("PubFolder_PathSettings","LocalPathBag",LocalBagPath)
 #----------------------------------------------------------------
 
 #ADD SECTION for PubBagDART_TransferAPTrust script
@@ -136,9 +143,7 @@ print("Config file 'configurations.ini' created")
 # PRINT FILE CONTENT
 read_file = open("configurations.ini", "r")
 content = read_file.read()
-
 print("Content of the config file are:\n")
-
 count=1
 
 with open('configurations.ini') as infile:
@@ -148,7 +153,7 @@ with open('configurations.ini') as infile:
             #print("HERE SKIPPING ",count)
             count += 1
             continue
-        if count > 30 : break
+        if count > 33 : break
         print(line)
         count += 1
 read_file.flush()
