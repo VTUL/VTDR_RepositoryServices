@@ -46,6 +46,7 @@ def registryCheck(bagName):
       print("*************************************************")
       print("****Bag: "+bagName+" already exists in aptrust bag registry***")
       print("*************************************************")
+      print("***BAG STATUS IS (D is for deleted, A is for available): ",stdString["state"],"***")
       overWriteBag=input("DO YOU WANT TO OVERWRITE THE EXISTING BAG? (yes/no) ")
       if overWriteBag == 'yes':
        print('You picked to overwrite the bag')
@@ -62,5 +63,6 @@ def registryCheck(bagName):
 # Example run:
 #x=registryCheck("VTDR_I00XYZ_CarstensP_CarstensP_v01_20230119")
 #x=registryCheck("VTDR_P00257_I00289_DOI_23741097_ShirzaeiM_v01_20230726")
+#x=registryCheck("VTDR_P00254_I00286_DOI_19522195_LangagerM_v02_20230706")
 
 #print("return code is x = ",x)

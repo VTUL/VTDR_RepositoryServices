@@ -91,40 +91,45 @@ if os.path.exists(destn_path_sandisk):
    SanDiskProceedInput="yes"
 print("SANDISK INPUT IS ",SanDiskProceedInput)
 
-checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-if checkReg == 1 and SanDiskProceedInput=="yes":
+#checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
+#if checkReg == 1 and SanDiskProceedInput=="yes":
   #-------------------------------------
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
-  while True:
-    workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
-    try: 
-       workflow=int(workflow)
-    except ValueError:
-          print("Oops! That was not a valid number. Try again")
-          continue
-    if 1 <= workflow <= 4:
-          break
-    else:      
-          print("Please pick a workflow number between 1 and 4")
-  workflow=str(workflow) 
-  if workflow == "1":
-    jobname="Workflow for depositing bag to APTrust-Demo"
-  if workflow == "2":
-    jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
-  if workflow =="3":
-    jobname="Workflow for depositing bag to VT library S3 bucket"
-  if workflow =="4":
-    jobname="Workflow for depositing bag to APTrust-Repo" 
-#----------------------------------------   
+while True:
+  workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
+  try: 
+     workflow=int(workflow)
+  except ValueError:
+        print("Oops! That was not a valid number. Try again")
+        continue
+  if 1 <= workflow <= 4:
+        break
+  else:      
+        print("Please pick a workflow number between 1 and 4")
+workflow=str(workflow) 
+if workflow == "1":
+  jobname="Workflow for depositing bag to APTrust-Demo"
+if workflow == "2":
+  jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
+if workflow =="3":
+  jobname="Workflow for depositing bag to VT library S3 bucket"
+if workflow =="4":
+  jobname="Workflow for depositing bag to APTrust-Repo" 
+#---------------------------------------   
+
+if workflow =='2' or workflow == '3' or workflow =='4':
+   checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
+  
+if (workflow == "1" and SanDiskProceedInput=="yes") or (checkReg == 1 and SanDiskProceedInput=="yes"):
   job=Job(jobname,aptrustBagName)
-#Open the publication folder and add all the files to the DART app to bag them
+  #Open the publication folder and add all the files to the DART app to bag them
   for f in payload:
     payloadfilepath=os.path.join(aptrustBagName,f)
     job.add_file(payloadfilepath)
-  #job.add_file(aptrustBagName+"\\"+f)
+    #job.add_file(aptrustBagName+"\\"+f)
     print("Added following file to bag in DART: ",f)
     logging.info("Added following file to bag in DART: %s " % f)
-    
+  
   bag_group_identifier=f"VTDR_{pPubAccessionNumber}"
   job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
   job.add_tag("bag-info.txt","Source-Organization","Virginia Tech")
@@ -162,7 +167,7 @@ if checkReg == 1 and SanDiskProceedInput=="yes":
     os.path.join(PubFolder, name)
     for name in random_names
     if name[:2] == "Dis" or name[:3] =="Diss" or name[0] =="D" or name[0] == "i" or name[0] == "I"
-          ]
+        ]
           
     inner_dirs=" ".join(inner_dirs)
    # print("\n\n")
