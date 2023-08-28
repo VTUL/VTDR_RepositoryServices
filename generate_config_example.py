@@ -31,7 +31,7 @@ SanDiskPath: Path to the sandisk
 LocalBagPath: Path where DART bags are stored, this path is also found on Dart app->ApplicationSettings, listed under "Value"
 
 """
-FigshareArticleID="21651401"
+FigshareArticleID="23741097"
 PubVerNum="01"
 VTDRToken="1234"
 CurName="XYZ"
@@ -61,6 +61,7 @@ APTRUST_REGISTRY_EMAIL='xyz@vt.edu'
 APTRUST_REGISTRY_API_KEY=''
 APTRUST_AWS_KEY=''
 APTRUST_AWS_SECRET=''
+LargeBagsPath="F:/VTechbags"#path for storing large bags in sandisk
 #------------------------------------------------------
 
 # ADD SECTION for figshare settings
@@ -94,7 +95,7 @@ config_file.set("ArchivalREADMEPathSettings","ArchivalREADME_RootDir", CurationD
 
 #ADD SECTION for IngestBag_Download_TransferAPTrust script
 config_file.add_section("IngestBag_PathSettings")
-config_file.set("IngestBag_PathSettings","SanDiskDirPath","F:\\")
+config_file.set("IngestBag_PathSettings","SanDiskDirPath",SanDiskPath)
 config_file.set("IngestBag_PathSettings","IngFolderPath",CurationDir)
 config_file.set("IngestBag_PathSettings","metadatajsonpath",CurationDir)
 config_file.set("IngestBag_PathSettings","LocalPathBag",LocalBagPath)
@@ -109,7 +110,7 @@ config_file.set("PubFolder_PathSettings","LocalPathBag",LocalBagPath)
 
 #ADD SECTION for PubBagDART_TransferAPTrust script
 config_file.add_section("PubBagDartAptrust_PathSettings")
-config_file.set("PubBagDartAptrust_PathSettings","LargeBagsPath","F:/VTechbags")
+config_file.set("PubBagDartAptrust_PathSettings","LargeBagsPath",LargeBagsPath)
 config_file.set("PubBagDartAptrust_PathSettings","NonDisseminatedContentPath",NonDissContentDir)
 
 #-----------------------------------------------------------------

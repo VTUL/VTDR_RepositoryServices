@@ -25,13 +25,17 @@ from datetime import datetime
 import sys
 sys.path.append('Figshare-APTrust')
 import bagit
+import xlwt
 from xlwt import Workbook
 
 i1=1
 
 LOG_FILENAME=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/validationlogfile_%H_%M_%d_%m_%Y.log')
 import bagit
-sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/DownloadingBagsFromAPTrust/finalAptrustBagValidationForAllBags_'+'%Y%m%d_%H%M.xls')
+#sheetname=datetime.now().strftime('G:/Shared drives/CurationServicesGoogleDriveArchive/Administration/DownloadingBagsFromAPTrust/finalAptrustBagValidationForAllBags_'+'%Y%m%d_%H%M.xls')
+
+sheetname=datetime.now().strftime('C:/Users/padma/anaconda3/envs/curation/bagvalidation_'+'%Y%m%d_%H%M.xls')
+
 wb=Workbook(sheetname)
 #bagstocheck=["I00180_BrownR_BrownR_v01_20211018","P00133_GutierrezC_AylwardF_v01_20210901","P00137_BalantrapuN_BalantrapuN_v01_20210923","P00155_NoahW_NoahW_v01_20211027","P00158_DeardenT_DeardenT_v01_20211130","P00159_BrooksM_BrooksM_v01_20211201","P00160_JantzenB_JantzenB_v01_20211210"]
 sheet1=wb.add_sheet("aptrustDownldedBagValidn")#this name has a character limit
@@ -47,9 +51,11 @@ sheet1.write(0,3,'BagValidationTest')
 #bagstocheck=['VTDR_P00074_I00089_DOI_yhsb-t439_JosephL_v01_20191002']
 #bagstocheck=["VTDR_P00098_I00115_DOI_2v3w-sb92_AsbeckA_v02_20210409"]
 #bagstocheck=["VTDR_P00098_I00115_DOI_2v3w-sb92_AsbeckA_v02_20210409"]
-bagstocheck=["I00221_JaberR_JaberR_v01_20220603"]
+#bagstocheck=["I00221_JaberR_JaberR_v01_20220603"]
+bagstocheck=["VTDR_P00179_I00209_DOI_19709143_EmoriS_v01_20220509"]
 #rootfolder="E://"
-rootfolder="D://"
+#rootfolder="D://"
+rootfolder="C:/Users/padma/anaconda3/envs/curation/"
 bagNameWithTar=rootfolder+bagstocheck[0]+".tar"
 
 sheet1.write(1,0,bagNameWithTar)
@@ -59,6 +65,7 @@ bagsizeGB=bagsize/(10**9)
 sheet1.write(1,1,bagsizeGB)
 
 #bagstocheck=["P00170_HaakD_HaakD_v01_20220302"]
+bagstocheck=["VTDR_P00179_I00209_DOI_19709143_EmoriS_v01_20220509"]
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO, filemode='w')
 #print("Validation for 3 random bags in S3: ")
 print("Validation for ", bagstocheck)
