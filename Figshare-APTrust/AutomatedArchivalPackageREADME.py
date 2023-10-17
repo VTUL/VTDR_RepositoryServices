@@ -15,7 +15,7 @@ import configparser
 config=configparser.ConfigParser()
 config.read('configurations.ini')
 
-def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName, archival_directory: str = '',):
+def create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName, archival_directory: str = ''):
   """
 Purpose: Create ArchivalPackageREADME file in rtf format. Read the row information from Ingest and Published sheet from the google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7.xls. Write to rtf using rtf coding syntax. This function is called in 
 PubFolder_Download.py to create ArchivalPackageREADME.rtf in the Publication folder 
@@ -89,4 +89,9 @@ Example: create_archivalreadme("20161580","01","01","Padma Carstens",'C:/Users/p
   f.close()
 
   return 
-
+#test run
+#ArticleID="24280165"#0376462"#24280165"#"23741097"#"20376462"#"19522195"#20376462"#"21971306"##"21971306"#"19522195"#"20376462"#
+#PublishedVersionNumber="01"
+#IngestVersionNumber='01'
+#CuratorName='Padma'
+#create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName)

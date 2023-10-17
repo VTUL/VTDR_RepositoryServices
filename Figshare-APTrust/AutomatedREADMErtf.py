@@ -68,6 +68,7 @@ def create_readme(ArticleID,token):
   #There is no versioning for article under review in figshare
   #Retrieve article information from Figshare
   details=fs.get_article_details(ArticleID,version=None)
+  print(details)
   #Get the title of the article
   title=details["title"]
   #Get the author list
@@ -104,7 +105,7 @@ def create_readme(ArticleID,token):
   index=groupids.index(details['group_id'])# this gives the index of the group id displayed on figshare
   Group=groupname[index]#this gives the group name that the displayed group id on figshare corresponds to from the group id list 
 
-  ItemType="Dataset"
+  ItemType=details['defined_type_name']#"Dataset"#change
 
   #Get the list of keywords
   keywords=s.join(details['tags'])
@@ -118,8 +119,10 @@ def create_readme(ArticleID,token):
   y=y.replace("\n","\\line\n")
   
   #Get all the remaining fields 
-  ResourceTitle=details['resource_title']
-  ResourceDOI=details['resource_doi']
+  #ResourceTitle=details['resource_title']
+  
+  #References=details['references']
+  #ResourceDOI=details['resource_doi']
   License=details["license"]['name']
   Publisher=details['custom_fields'][0]['value']
   Location= details['custom_fields'][1]['value']
@@ -150,14 +153,14 @@ def create_readme(ArticleID,token):
     Description=""
   if Funding is None or Funding=='':
     Funding=""
-  if ResourceTitle is None or ResourceTitle == "":
-    ResourceTitle="Will be added after manuscript is accepted"
+  #if ResourceTitle is None or ResourceTitle == "":
+  #  ResourceTitle="Will be added after manuscript is accepted"
 
   #Add hyperlink to Resource DOI and References using RTF coding syntax:
-  if ResourceDOI is None or ResourceDOI=='':
-    ResourceDOI="Will be added after manuscript is accepted"
-  else:
-    ResourceDOI="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+"https://doi.org/"+ResourceDOI+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(ResourceDOI)+" }}}"
+  #if ResourceDOI is None or ResourceDOI=='':
+  #  ResourceDOI="Will be added after manuscript is accepted"
+  #else:
+  #  ResourceDOI="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+"https://doi.org/"+ResourceDOI+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(ResourceDOI)+" }}}"
   if License is None or License=='':
     License="CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
   OtherRef=[]  
@@ -190,7 +193,7 @@ def create_readme(ArticleID,token):
   x=rtf_encode(x)
   title=rtf_encode(title)
   Funding=rtf_encode(Funding)
-  ResourceTitle=rtf_encode(ResourceTitle)
+  #ResourceTitle=rtf_encode(ResourceTitle)
   OtherRef=rtf_encode(OtherRef)
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
@@ -210,9 +213,7 @@ def create_readme(ArticleID,token):
         "{\\b Keywords:} "+str(keywords)+"\\line\n"+
         "{\\b Description:} "+y+"\\line\n"
         "{\\b Funding:} "+str(Funding)+"\\line\n"+
-        "{\\b Resource Title:} "+str(ResourceTitle)+"\\line\n"+
-        "{\\b Resource DOI:} "+str(ResourceDOI)+"\\line\n"+
-        "{\\b Other References:} "+str(OtherRef)+"\\line\n"+
+        "{\\b References:} "+str(OtherRef)+"\\line\n"+
         "{\\b License:} "+str(License)+"\\line\n"+
         "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
         "{\\b Location:} "+str(Location)+"\\line\n"+
