@@ -68,7 +68,7 @@ def create_readme(ArticleID,token):
   #There is no versioning for article under review in figshare
   #Retrieve article information from Figshare
   details=fs.get_article_details(ArticleID,version=None)
-  print(details)
+  #print(details)
   #Get the title of the article
   title=details["title"]
   #Get the author list
@@ -161,13 +161,14 @@ def create_readme(ArticleID,token):
   #  ResourceDOI="Will be added after manuscript is accepted"
   #else:
   #  ResourceDOI="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+"https://doi.org/"+ResourceDOI+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(ResourceDOI)+" }}}"
+  #Get License and related materials:
   if License is None or License=='':
     License="CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
   OtherRef=[]  
-  if OtherRef is None or OtherRef=='':
-    OtherRef=""
-  else:
-   for i in range(len(details["references"])):
+  #if OtherRef is None or OtherRef=='':
+  #  OtherRef=""
+  #else:
+  for i in range(len(details["references"])):
      orefs=details["references"][i]
      OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}"
      OtherRef.append(OtherRefs)
