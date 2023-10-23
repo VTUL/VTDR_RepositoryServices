@@ -373,3 +373,4 @@ class Figshare:
 
         for file_dict in file_list:
             urlretrieve(file_dict['download_url'], os.path.join(dir0, file_dict['name']))
+

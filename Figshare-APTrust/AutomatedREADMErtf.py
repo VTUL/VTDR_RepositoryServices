@@ -155,7 +155,14 @@ def create_readme(ArticleID,token):
     Funding=""
   #if ResourceTitle is None or ResourceTitle == "":
   #  ResourceTitle="Will be added after manuscript is accepted"
+  def rtf_encode_char(unichar):
+    code = ord(unichar)
+    if code < 128:
+        return str(unichar)
+    return '\\u' + str(code if code <= 32767 else code-65536) + '?'
 
+  def rtf_encode(unistr):
+    return ''.join(rtf_encode_char(c) for c in unistr)
   #Add hyperlink to Resource DOI and References using RTF coding syntax:
   #if ResourceDOI is None or ResourceDOI=='':
   #  ResourceDOI="Will be added after manuscript is accepted"
@@ -168,11 +175,28 @@ def create_readme(ArticleID,token):
   #if OtherRef is None or OtherRef=='':
   #  OtherRef=""
   #else:
+  #Only the links of the related materials
   for i in range(len(details["references"])):
      orefs=details["references"][i]
      OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}"
      OtherRef.append(OtherRefs)
   OtherRef=s.join(OtherRef)
+
+#Get related materials and types idtype: identifiertype, idrelation: identifier relation, idtitle: identifier title, related materials link orefs
+  relatedMaterials=[]
+  for i in range(len(details["related_materials"])):
+     idtype=details['related_materials'][i]['identifier_type']
+     idrelation=details['related_materials'][i]['relation']
+     idtitle=details['related_materials'][i]['title']
+     #soup=BeautifulSoup(idtitle,features="html.parser")#,newline='')
+     #cleantitle=soup.text
+     #cleantitle=idtitle.replace("â€œ",'"')
+     cleantitle=rtf_encode(idtitle)
+     orefs=details["references"][i]
+     OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}"
+     relatedMaterialStr=idtype+' '+idrelation+' '+cleantitle+' '+OtherRefs
+     relatedMaterials.append(relatedMaterialStr)
+  allRelMaterials=s.join(relatedMaterials)
     
   if Publisher is None or Publisher=='':
     Publisher="University Libraries, Virginia Tech"
@@ -181,14 +205,7 @@ def create_readme(ArticleID,token):
   if FilesFolders is None or FilesFolders=='':
     FilesFolders=""
   
-  def rtf_encode_char(unichar):
-    code = ord(unichar)
-    if code < 128:
-        return str(unichar)
-    return '\\u' + str(code if code <= 32767 else code-65536) + '?'
 
-  def rtf_encode(unistr):
-    return ''.join(rtf_encode_char(c) for c in unistr)
   
   y=rtf_encode(y)
   x=rtf_encode(x)
@@ -214,7 +231,7 @@ def create_readme(ArticleID,token):
         "{\\b Keywords:} "+str(keywords)+"\\line\n"+
         "{\\b Description:} "+y+"\\line\n"
         "{\\b Funding:} "+str(Funding)+"\\line\n"+
-        "{\\b References:} "+str(OtherRef)+"\\line\n"+
+        "{\\b Related Materials:} "+str(allRelMaterials)+"\\line\n"+
         "{\\b License:} "+str(License)+"\\line\n"+
         "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
         "{\\b Location:} "+str(Location)+"\\line\n"+
