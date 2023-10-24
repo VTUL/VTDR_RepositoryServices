@@ -13,9 +13,7 @@ sys.path.append('LD-Cool-P')
 
 import os
 from tkinter.messagebox import NO
-#from figshare.figshare import Figshare
 import figshare
-#from figshare.figshare import Figshare
 from figshare import Figshare
 from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
@@ -23,15 +21,12 @@ import re
 import os
 #import PyRTF 
 #from PyRTF import *
-#import BeautifulSoup
-#from bs4 import BeautifulSoup
 import bs4
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
-import configparser
-#config=configload.read_config()
+import configparser 
 config=configparser.ConfigParser()
 config.read('configurations.ini')
 
@@ -63,7 +58,7 @@ def create_readme(ArticleID,token):
   :param Article ID: Figshare article id under "Cite" button for an article in review
   :param token: Figshare token: click circle on data.lib.vt.edu, then click "Applications" then click "Create Personal Token"
   """
-  #If creating this AFTER the article is published then change "private" to "False" below
+  #If creating this AFTER the article is published then change "private" to "False" below, this will create README file using the published metadata
   fs=Figshare(token=token,private=True)
   #There is no versioning for article under review in figshare
   #Retrieve article information from Figshare
@@ -95,23 +90,20 @@ def create_readme(ArticleID,token):
     groupid_name=groupidnames[i]['name']
     groupids.append(groupid)
     groupname.append(groupid_name)
- 
+  #Get the funding list
   fundinglist=[]
   for m in range(len(details['funding_list'])):
     fund=details['funding_list'][m]['title']
     fundinglist.append(fund)
   Funding=s.join(fundinglist)
-
+  #Get the group names from group ids
   index=groupids.index(details['group_id'])# this gives the index of the group id displayed on figshare
   Group=groupname[index]#this gives the group name that the displayed group id on figshare corresponds to from the group id list 
-
+  #Get the item type 'dataset' or 'code' etc.
   ItemType=details['defined_type_name']#"Dataset"#change
-
   #Get the list of keywords
   keywords=s.join(details['tags'])
   #Strip html tags in description
-  #One way of doing this:
-  #x=re.sub('<[^<]+?>', '', Description)
   #In this code we are using BeautifulSoup
   Description=details['description']
   soup=BeautifulSoup(Description,features="html.parser")#,newline='')
@@ -119,10 +111,6 @@ def create_readme(ArticleID,token):
   y=y.replace("\n","\\line\n")
   
   #Get all the remaining fields 
-  #ResourceTitle=details['resource_title']
-  
-  #References=details['references']
-  #ResourceDOI=details['resource_doi']
   License=details["license"]['name']
   Publisher=details['custom_fields'][0]['value']
   Location= details['custom_fields'][1]['value']
@@ -153,8 +141,7 @@ def create_readme(ArticleID,token):
     Description=""
   if Funding is None or Funding=='':
     Funding=""
-  #if ResourceTitle is None or ResourceTitle == "":
-  #  ResourceTitle="Will be added after manuscript is accepted"
+  #special character encoding conversion to rtf -------------
   def rtf_encode_char(unichar):
     code = ord(unichar)
     if code < 128:
@@ -163,56 +150,41 @@ def create_readme(ArticleID,token):
 
   def rtf_encode(unistr):
     return ''.join(rtf_encode_char(c) for c in unistr)
-  #Add hyperlink to Resource DOI and References using RTF coding syntax:
-  #if ResourceDOI is None or ResourceDOI=='':
-  #  ResourceDOI="Will be added after manuscript is accepted"
-  #else:
-  #  ResourceDOI="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+"https://doi.org/"+ResourceDOI+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(ResourceDOI)+" }}}"
+  #---------------------------------------------------
   #Get License and related materials:
   if License is None or License=='':
     License="CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
   OtherRef=[]  
-  #if OtherRef is None or OtherRef=='':
-  #  OtherRef=""
-  #else:
-  #Only the links of the related materials
-  for i in range(len(details["references"])):
-     orefs=details["references"][i]
-     OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}"
-     OtherRef.append(OtherRefs)
-  OtherRef=s.join(OtherRef)
 
-#Get related materials and types idtype: identifiertype, idrelation: identifier relation, idtitle: identifier title, related materials link orefs
+  #Get related materials and types idtype: identifiertype, idrelation: identifier relation, idtitle: identifier title, related materials encoded as a hyperlink as orefs to output to readme:
   relatedMaterials=[]
+  s1='\n'
   for i in range(len(details["related_materials"])):
      idtype=details['related_materials'][i]['identifier_type']
      idrelation=details['related_materials'][i]['relation']
      idtitle=details['related_materials'][i]['title']
-     #soup=BeautifulSoup(idtitle,features="html.parser")#,newline='')
-     #cleantitle=soup.text
-     #cleantitle=idtitle.replace("â€œ",'"')
-     cleantitle=rtf_encode(idtitle)
+     cleantitle=rtf_encode(idtitle) #rtf encoding for special chars
      orefs=details["references"][i]
-     OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}"
-     relatedMaterialStr=idtype+' '+idrelation+' '+cleantitle+' '+OtherRefs
+     OtherRefs="{\\colortbl ;\\red0\\green0\\blue238;}{\\field{\\*\\fldinst HYPERLINK "+"\""+orefs+"\""+"}{\\fldrslt{\\ul\\cf1 "+str(orefs)+" }}}" #hyperlink in rtf
+     if idtitle=='': 
+       relatedMaterialStr=idtype+', '+idrelation+', '+OtherRefs
+     else:
+       relatedMaterialStr=idtype+', '+idrelation+', '+cleantitle+', '+OtherRefs
      relatedMaterials.append(relatedMaterialStr)
-  allRelMaterials=s.join(relatedMaterials)
-    
+  print(type(relatedMaterials))
+  allRelMaterials='\\line\n'.join(relatedMaterials)
+
+  #Get publisher, location, files/folders fill in values    
   if Publisher is None or Publisher=='':
     Publisher="University Libraries, Virginia Tech"
   if Location is None or Location=='':
     Location=""
   if FilesFolders is None or FilesFolders=='':
     FilesFolders=""
-  
-
-  
-  y=rtf_encode(y)
-  x=rtf_encode(x)
+  #special character encoding in title funding for outputting to rtf 
   title=rtf_encode(title)
   Funding=rtf_encode(Funding)
-  #ResourceTitle=rtf_encode(ResourceTitle)
-  OtherRef=rtf_encode(OtherRef)
+
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
@@ -231,7 +203,7 @@ def create_readme(ArticleID,token):
         "{\\b Keywords:} "+str(keywords)+"\\line\n"+
         "{\\b Description:} "+y+"\\line\n"
         "{\\b Funding:} "+str(Funding)+"\\line\n"+
-        "{\\b Related Materials:} "+str(allRelMaterials)+"\\line\n"+
+        "{\\b Related Materials: [Identifier Type, Relationship, Identifier, see DataCite relation types for more information]} \\line\n"+str(allRelMaterials)+"\\line\n"+
         "{\\b License:} "+str(License)+"\\line\n"+
         "{\\b Publisher:} "+str(Publisher)+"\\line\n"+
         "{\\b Location:} "+str(Location)+"\\line\n"+
