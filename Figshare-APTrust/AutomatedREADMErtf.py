@@ -171,7 +171,7 @@ def create_readme(ArticleID,token):
      else:
        relatedMaterialStr=idtype+', '+idrelation+', '+cleantitle+', '+OtherRefs
      relatedMaterials.append(relatedMaterialStr)
-  print(type(relatedMaterials))
+  #print(type(relatedMaterials))
   allRelMaterials='\\line\n'.join(relatedMaterials)
 
   #Get publisher, location, files/folders fill in values    
