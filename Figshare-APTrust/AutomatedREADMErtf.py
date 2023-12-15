@@ -184,6 +184,7 @@ def create_readme(ArticleID,token):
   #special character encoding in title funding for outputting to rtf 
   title=rtf_encode(title)
   Funding=rtf_encode(Funding)
+  y=rtf_encode(y)
 
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
