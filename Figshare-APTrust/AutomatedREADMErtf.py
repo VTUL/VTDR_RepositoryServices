@@ -107,8 +107,8 @@ def create_readme(ArticleID,token):
   #In this code we are using BeautifulSoup
   Description=details['description']
   soup=BeautifulSoup(Description,features="html.parser")#,newline='')
-  y=soup.text
-  y=y.replace("\n","\\line\n")
+  parsedDescription=soup.text
+  parsedDescription=parsedDescription.replace("\n","\\line\n")
   
   #Get all the remaining fields 
   License=details["license"]['name']
@@ -119,8 +119,8 @@ def create_readme(ArticleID,token):
   FilesFolders=details['custom_fields'][4]['value']
   #Remove html tags in files/folders
   soup1=BeautifulSoup(FilesFolders,features="html.parser")
-  x=soup1.text
-  x=x.replace("\n","\\line\n")
+  parsedFilesFolders=soup1.text
+  parsedFilesFolders=parsedFilesFolders.replace("\n","\\line\n")
 
   #Leave the metadata field empty/default value if the metadata fields are not filled in by the author
   if title is None or title=="":
@@ -184,8 +184,8 @@ def create_readme(ArticleID,token):
   #special character encoding in title funding for outputting to rtf 
   title=rtf_encode(title)
   Funding=rtf_encode(Funding)
-  y=rtf_encode(y)
-
+  descriptionRtfEncode=rtf_encode(parsedDescription)
+  filesFoldersRtfEncode=rtf_encode(parsedFilesFolders)
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
@@ -202,7 +202,7 @@ def create_readme(ArticleID,token):
         "{\\b Group:} "+str(Group)+"\\line\n"+
         "{\\b Item Type:} "+str(ItemType)+"\\line\n"+
         "{\\b Keywords:} "+str(keywords)+"\\line\n"+
-        "{\\b Description:} "+y+"\\line\n"
+        "{\\b Description:} "+descriptionRtfEncode+"\\line\n"
         "{\\b Funding:} "+str(Funding)+"\\line\n"+
         "{\\b Related Materials: [Identifier Type, Relationship, Identifier, see DataCite relation types for more information]} \\line\n"+str(allRelMaterials)+"\\line\n"+
         "{\\b License:} "+str(License)+"\\line\n"+
@@ -211,7 +211,7 @@ def create_readme(ArticleID,token):
         "{\\b Corresponding Author Name:} "+str(CorresAuthName)+"\\line\n"+
         "{\\b Corresponding Author E-mail Address:} "+str(CorresAuthEmail)+"\\line\n"+
         "{\\b Files/Folders in Dataset and Description of Files}"+"\\line\n"+
-        str(x)+ "\\line\n"+
+        str(filesFoldersRtfEncode)+ "\\line\n"+
         
         "}")
   f.close()
