@@ -53,6 +53,17 @@ Example: create_archivalreadme("20161580","01","01","Padma Carstens",'C:/Users/p
   DatePublished= vtsheet['gsdatepub']  
   DOI=vtsheet['gsdoi']
   Title=vtsheet['gstitle']
+    #special character encoding conversion to rtf -------------
+  def rtf_encode_char(unichar):
+    code = ord(unichar)
+    if code < 128:
+        return str(unichar)
+    return '\\u' + str(code if code <= 32767 else code-65536) + '?'
+
+  def rtf_encode(unistr):
+    return ''.join(rtf_encode_char(c) for c in unistr)
+  #---------------------------------------------------
+  Title=rtf_encode(Title)
   authoremail=vtsheet['gscorauthemail']
   college=vtsheet['gscollg']
   dept=vtsheet['gsdept']
@@ -90,8 +101,8 @@ Example: create_archivalreadme("20161580","01","01","Padma Carstens",'C:/Users/p
 
   return 
 #test run
-#ArticleID="24280165"#0376462"#24280165"#"23741097"#"20376462"#"19522195"#20376462"#"21971306"##"21971306"#"19522195"#"20376462"#
-#PublishedVersionNumber="01"
+#ArticleID="17092283"#0376462"#24280165"#"23741097"#"20376462"#"19522195"#20376462"#"21971306"##"21971306"#"19522195"#"20376462"#
+#PublishedVersionNumber="03"
 #IngestVersionNumber='01'
 #CuratorName='Padma'
 #create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,CuratorName)
