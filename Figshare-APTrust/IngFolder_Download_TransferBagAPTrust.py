@@ -15,7 +15,7 @@ import os
 from os.path import exists
 import sys
 sys.path.append('figshare')
-sys.path.append('curationTesting')
+sys.path.append('curation')
 import shutil
 from figshare import Figshare
 #from figshare.figshare import Figshare
