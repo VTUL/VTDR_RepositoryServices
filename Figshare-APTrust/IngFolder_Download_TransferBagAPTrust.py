@@ -167,9 +167,10 @@ if workflow =="4":
     jobname="Workflow for depositing bag to APTrust-Repo"    
 #---------------------------------------------------------------------
 
-if workflow =='2' or workflow == '3' or workflow =='4':
+if workflow =='2' or workflow =='4':
    checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-  
+if workflow =='3': 
+   checkReg=1 #bag is only uploaded to s3, so aptrust registry check is skipped by setting it to 1
 if (workflow == "1" and SanDiskProceedInput=="yes") or (checkReg == 1 and SanDiskProceedInput=="yes"):
   job=Job(jobname,aptrustBagName)
   for f in payload:
