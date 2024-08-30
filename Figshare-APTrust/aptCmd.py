@@ -29,8 +29,10 @@ def registryCheck(bagName):
   os.environ['APTRUST_REGISTRY_URL']=config["APTrustSettings"][ "registryURL"]
   platformExt=config["APTrustSettings"]["platformExtn"]
   cmd=platformExt+"apt-cmd registry get object identifier=vt.edu/"+bagName
+  #print(cmd)
   child = subprocess.Popen(cmd, shell=True,  stderr=subprocess.PIPE, stdout=subprocess.PIPE,close_fds=True,encoding='utf8')
   stdout_data, stderr_data = child.communicate()
+  #print(child)
   
   if child.returncode == 1:
     print("**************************REGISTRY REQUEST FOR THE BAG FAILED, PLEASE CHECK YOUR AP TRUST REGISTRY CREDENTIALS AND TRY AGAIN**************************************************")
@@ -39,6 +41,7 @@ def registryCheck(bagName):
   else:     
     stdString=json.loads(stdout_data)
     stdOut=json.dumps(stdString)
+    #print(stdOut)
     if stdOut.startswith('{"error"'):
       print('Filename (object identifier): '+bagName+' is not found in APTrust bag registry in repo, so uploading this bag to APtrust')
       return 1

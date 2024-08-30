@@ -2,4 +2,4 @@ The codes here show the workflow set up by Virginia Tech Data Repository (https:
 The codes are run to create folders to save the downloaded private files (to ingest bags)/ published files (to publication bags) to the local computer/remote storage, create an Archival Package readme file for archival purposes in addition to an automated README file in rtf format created from the filled in figshare metadata fields.
 Lastly, the codes deposit these bags to APTrust via their DART platform (https://aptrust.github.io/dart-docs/users/workflows/) and/or Virginia Tech Libraries storage 
 
-Documentation on how to set up a Windows environment to use these codes is available at CuratorWorkflowDiagramWithScriptExecution_v1_20220819.pdf
+Documentation on how to set up a Windows environment to use these codes is available at CuratorWorkflowDiagramWithScriptExecution_v1_20231108.docx

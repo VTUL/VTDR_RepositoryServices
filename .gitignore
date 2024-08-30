@@ -8,3 +8,4 @@ configurations.ini
 config.py
 generate_config.py
 main.py
+generate_config_bulk.py
