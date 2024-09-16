@@ -1,8 +1,12 @@
 import sys
 import configparser
+from generate_config_bulk import configurations
+x=configurations("24328498","01")
 config=configparser.ConfigParser()
 config.read('configurations-bulk.ini')
 curPath=config['IngestBag_PathSettings']['IngFolderPath']
+print(curPath)#stop
+quit()
 sys.path.append(curPath)
 sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
 import aptCmd
@@ -37,7 +41,6 @@ from job import Job
 from redata.commons.logger import log_stdout
 #from aptCmdRegCheck import registryCheck
 #import generate_config
-from generate_config_bulk import configurations
 from IngFolder_Download_TransferBagAPTrust_bulk import DownloadIngest
 from PubFolder_Download_bulk import DownloadPub
 from PubBagDART_TransferAPTrust_bulk import DownloadPubTrnsfr

@@ -144,20 +144,20 @@ def configurations(FigshareArticleID,PubVerNum):
   config_file.set("APTrustSettings", "AWSsecret", APTRUST_AWS_SECRET)
   config_file.set("APTrustSettings", "platformExtn", platformExt)
 #-----------------------------------------
-  with open(r"configurations.ini", 'w') as configfileObj:
+  with open(r"configurations-bulk.ini", 'w') as configfileObj:
       config_file.write(configfileObj)
       configfileObj.flush()
       configfileObj.close()
 
-  print("Config file 'configurations.ini' created")
+  print("Config file 'configurations-bulk.ini' created")
 
 # PRINT FILE CONTENT
-  read_file = open("configurations.ini", "r")
+  read_file = open("configurations-bulk.ini", "r")
   content = read_file.read()
   print("Content of the config file are:\n")
   count=1
 
-  with open('configurations.ini') as infile:
+  with open('configurations-bulk.ini') as infile:
        for line in infile:
           line = line.strip()
           if count == 5 :
