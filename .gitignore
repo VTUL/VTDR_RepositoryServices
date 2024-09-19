@@ -8,4 +8,6 @@ configurations.ini
 config.py
 generate_config.py
 main.py
+.idea
+_pycache_
 generate_config_bulk.py
