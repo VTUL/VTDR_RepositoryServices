@@ -6,7 +6,6 @@ config=configparser.ConfigParser()
 config.read('configurations-bulk.ini')
 curPath=config['IngestBag_PathSettings']['IngFolderPath']
 print(curPath)#stop
-quit()
 sys.path.append(curPath)
 sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
 import aptCmd
@@ -48,23 +47,47 @@ from PubBagDART_TransferAPTrust_bulk import DownloadPubTrnsfr
 #----------------------
 
 #Enter ingest articles:
-#FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]#26401090","26487280"]
+#FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]
 
 #------------------------------------
 
 #Enter Publication articles:
-FigshareArticleID=["25196813","26364370","26227082","26397688","26401090","26487280"]
+#FigshareArticleID=["25196813","26364370","26227082","26397688","26401090","26487280"]
+FigshareArticleID=["23646627","21818604","21538380"]#,"26397688","26401090","26487280"]
 #--------------------------------
+
 #Uncomment below: 
 # If transferring ingest bags to aptrust, then uncomment 'Ing'
 # If downloading publication data from figshare, then uncomment 'Pub'
 # If transferring publication bags to aptrust, after VTCurationServicesActions folder is filled in(folder path already provided), then uncomment 'PubTransfer' 
+#--------------------------------INPUT----------------------------------------------------------------------
+while True:
+  #try:
+    IngOrPub=input("Please enter '1' for Ing transfer to APTrust or '2' for Pub transfer to APTrust: ")
+    try:
+        IngOrPub=int(IngOrPub)
+      #break
+    except ValueError:
+        print("Oops! That was not a valid number. Try again")
+        continue
+    if 1 <= IngOrPub <= 2:
+        break
+    else:
+        print("Please pick number 1 or 2")
+IngOrPub=str(IngOrPub)
+#-----------------------------------------------------------------------------------------------------------------
 
+#IngOrPub=input("Enter Ing or Pub")
+if IngOrPub=="1":
+  DwnldContnt="Ing"
+if IngOrPub=="2":
+  DwnldContnt="Pub"
 #DwnldContnt='Ing' #Pub Input 
 #DwnldContnt='Pub' #Pub Input 
-DwnldContnt='PubTransfer' #Pub Input 
+#DwnldContnt='PubTransfer' #Pub Input 
 #----------------------------------------------
-
+#print(DwnlodContnt)
+#quit()
 n=len(FigshareArticleID)
 PubVerNum=["01" for x in range(n)] 
 def workflowValue():
@@ -95,6 +118,7 @@ for i in range(n) :
     DwnldIngOrPubx=DownloadIngest(workflowVal)
   if DwnldContnt=='Pub': 
     DwnldIngOrPubx=DownloadPub()
-  if DwnldContnt=='PubTransfer': 
     DwnldIngOrPubxTransfer=DownloadPubTrnsfr(workflowVal)
+  #if DwnldContnt=='PubTransfer': 
+  #  DwnldIngOrPubxTransfer=DownloadPubTrnsfr(workflowVal)
 
