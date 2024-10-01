@@ -1,16 +1,16 @@
+#!/usr/bin/env python
+'''
+generate_config_batch_example.py
+Created on   2024/10/01 14:36:15
+@author  :   padma carstens 
+'''
+
 import configparser
 
 import os
 
 import platform 
 #print("platform is ",platform.system)
-
-"""
-Created on Wed Oct  6 12:39:04 2021
-
-@author: padma carstens
-"""
-
 """
 Curator fills in the following parameters/paths: 
 
@@ -20,6 +20,7 @@ VTDRToken: VTDR token created under applications
 CurName: Name of the curator, this shows up in ArchivalReadme Package created in the publication folder
 CurationDir: Curation directory where Ingest/Publication folder/README file will be created
 NonDissContentDir: Directory where Non disseminated content will be stored, non disseminated content includes provenance log, email correspondence and archival readme package created in the publication folder
+FileID: This is used only in the ChangeThumbnail.py script. File ID is the number at the end of the file link, this is the ID of the file that the curator wants to change the thumbnail of the published article to
 VTCurSerFoldPath: Local Folder Path where files for the VTCurationServicesActions are stored(emails, provenance logs etc.)
 ---------------------------------------------------------------------------------------------------
 Following is copy pasted from https://aptrust.github.io/userguide/partner_tools/
@@ -35,25 +36,25 @@ SanDiskPath: Path to the sandisk
 LocalBagPath: Path where DART bags are stored, this path is also found on Dart app->ApplicationSettings, listed under "Value"
 """
 def configurations(FigshareArticleID,PubVerNum):
-  print("STARTING CONFIGURATIONS IN GENERATE CONFIG")
+  #print("STARTING CONFIGURATIONS IN GENERATE CONFIG")
   VTDRToken=""
-  CurName="Padma Carstens"
+  CurName=""
   GetPlatform=platform.system()#platform is Darwin for Mac, Windows for windows
   print('PLATFORM name is ',GetPlatform)
-
-  if GetPlatform=="Darwin": #Mac
+  if GetPlatform=="Darwin":
     CurationDir="/Users/padma/opt/anaconda3/envs/curation"
     NonDissContentDir="/Volumes/GoogleDrive/Shared drives/CurationServicesGoogleDriveArchive/BAGS/NonDisseminatedContent"
     DartExePath="/Applications/DART.app/Contents/MacOS/DART"
     ReadmeDir="/Users/padma/opt/anaconda3/envs/curation/README_FILES"
     platformExt="./"
+  #SanDiskPath="E:BagsFrom20230821/"
     SanDiskPath="D:Bags/"
     LocalBagPath='C:/Users/padma/Documents/DART'
     VTCurSerFoldPath="/Users/padma/opt/anaconda3/envs/curation/test"
-
   if GetPlatform=="Windows":
     CurationDir="C:/Users/padma/anaconda3/envs/curation"
     NonDissContentDir="G:/Shared drives/CurationServicesGoogleDriveArchive/NonDisseminatedContent/"
+    NonDissContentDir="G:/.shortcut-targets-by-id/1C-f2wyhvu0EsnV88nEAXwlc0qY-9Knek/CurationServicesGoogleDriveArchive/NonDisseminatedContent"
     DartExePath="C:/Users/padma/AppData/Local/Programs/DART/DART.exe"
     ReadmeDir="C:/Users/padma/anaconda3/envs/curation/README_FILES"
     platformExt=""
@@ -61,14 +62,15 @@ def configurations(FigshareArticleID,PubVerNum):
     LocalBagPath='C:/Users/padma/Documents/DART'
     VTCurSerFoldPath="C:/Users/padma/anaconda3/envs/curation/test"
   
-  spreadsheetName="20230721_VTDR_PublishedDatasets_Log_V8"
+#spreadsheetName="20211214_VTDR_PublishedDatasets_Log_V7"
+  spreadsheetName=""
   APTRUST_REGISTRY_URL = 'https://repo.aptrust.org'
   APTRUST_REGISTRY_API_VERSION='v3'
   APTRUST_REGISTRY_EMAIL=''
   APTRUST_REGISTRY_API_KEY=""
   APTRUST_AWS_KEY=''
   APTRUST_AWS_SECRET=''
-
+#aptPartnerToolPath='C:/Users/padma/anaconda3/envs/curation/apt-cmd.exe'
 #------------------------------------------------------
 
 
@@ -144,20 +146,20 @@ def configurations(FigshareArticleID,PubVerNum):
   config_file.set("APTrustSettings", "AWSsecret", APTRUST_AWS_SECRET)
   config_file.set("APTrustSettings", "platformExtn", platformExt)
 #-----------------------------------------
-  with open(r"configurations-bulk.ini", 'w') as configfileObj:
+  with open(r"configurations-batch.ini", 'w') as configfileObj:
       config_file.write(configfileObj)
       configfileObj.flush()
       configfileObj.close()
 
-  print("Config file 'configurations-bulk.ini' created")
+  print("Config file 'configurations-batch.ini' created")
 
 # PRINT FILE CONTENT
-  read_file = open("configurations-bulk.ini", "r")
+  read_file = open("configurations-batch.ini", "r")
   content = read_file.read()
   print("Content of the config file are:\n")
   count=1
 
-  with open('configurations-bulk.ini') as infile:
+  with open('configurations-batch.ini') as infile:
        for line in infile:
           line = line.strip()
           if count == 5 :

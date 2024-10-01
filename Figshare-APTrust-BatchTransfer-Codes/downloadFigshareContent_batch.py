@@ -1,9 +1,32 @@
+#!/usr/bin/env python
+'''
+downloadFigshareContent_batch.py
+Created on   2024/10/01 13:34:59
+@author  :   padma carstens 
+'''
+"""
+Purpose:
+download content from figshare for the provided article ids and transfer content to aptrust. VTcuration services actions folder path is defined in generate_config_batch.py and stores the emails. Prov log is created and moved to VTCurServActions folder for publication folder. Readme file is created and moved to Disseminated content folder for published content
+
+Input: 
+Ing/Pub: Ing for ingest content, provide figshare article ids on line 20 for ingesting and transferring articles in the format on line 16. Pub for publication content, provide figshare article ids on line 20 for published articles in the same format on line 16
+aptrust repo/demo: input workflow value of 1 for demo and 4 for repo 
+FighsareArticleIDs are provided as an array of article IDs. For Eg:
+Enter article ids as follows(Ingest/Pub):
+FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]
+
+"""
+#ENTER ARTICLE IDS 
+FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]
+#------------------------------------
 import sys
 import configparser
-from generate_config_bulk import configurations
-x=configurations("24328498","01")
+from generate_config_batch import configurations
+#DONT CHANGE THE FOLLOWING CONF GENERATION FOR TEST ARTICLE
+TestGen=configurations("24328498","01")
 config=configparser.ConfigParser()
-config.read('configurations-bulk.ini')
+#------------------------------
+config.read('configurations-batch.ini')
 curPath=config['IngestBag_PathSettings']['IngFolderPath']
 print(curPath)#stop
 sys.path.append(curPath)
@@ -12,12 +35,8 @@ import aptCmd
 from aptCmd import registryCheck
 import Read_VTDR_Spreadsheet
 from Read_VTDR_Spreadsheet import vtingsheet
-#import packages and modules
-import configparser
 import os
 import platform 
-
-#import aptCmd
 import shutil
 import requests
 import job
@@ -27,40 +46,16 @@ import json
 import filecmp
 import shutil
 import os
-#import aptCmdRegCheck
-#-------------------------------
-#------------import functions
-
 from figshare import Figshare
 from requests import HTTPError
-
 from datetime import date
 from datetime import datetime
 from job import Job
 from redata.commons.logger import log_stdout
-#from aptCmdRegCheck import registryCheck
-#import generate_config
-from IngFolder_Download_TransferBagAPTrust_bulk import DownloadIngest
-from PubFolder_Download_bulk import DownloadPub
-from PubBagDART_TransferAPTrust_bulk import DownloadPubTrnsfr
-#from generate_config import configurations
-#----------------------
+from PubFolder_Download_batch import DownloadPub
+from PubBagDART_TransferAPTrust_batch import DownloadPubTrnsfr
 
-#Enter ingest articles:
-#FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]
-
-#------------------------------------
-
-#Enter Publication articles:
-#FigshareArticleID=["25196813","26364370","26227082","26397688","26401090","26487280"]
-FigshareArticleID=["23646627","21818604","21538380"]#,"26397688","26401090","26487280"]
-#--------------------------------
-
-#Uncomment below: 
-# If transferring ingest bags to aptrust, then uncomment 'Ing'
-# If downloading publication data from figshare, then uncomment 'Pub'
-# If transferring publication bags to aptrust, after VTCurationServicesActions folder is filled in(folder path already provided), then uncomment 'PubTransfer' 
-#--------------------------------INPUT----------------------------------------------------------------------
+#----------INPUT ING/PUB FROM CURATOR------------------
 while True:
   #try:
     IngOrPub=input("Please enter '1' for Ing transfer to APTrust or '2' for Pub transfer to APTrust: ")
@@ -75,21 +70,20 @@ while True:
     else:
         print("Please pick number 1 or 2")
 IngOrPub=str(IngOrPub)
-#-----------------------------------------------------------------------------------------------------------------
-
-#IngOrPub=input("Enter Ing or Pub")
 if IngOrPub=="1":
   DwnldContnt="Ing"
 if IngOrPub=="2":
   DwnldContnt="Pub"
+print('You selected to download ',DwnldContnt," content")
+#----------------------------------------
 #DwnldContnt='Ing' #Pub Input 
 #DwnldContnt='Pub' #Pub Input 
 #DwnldContnt='PubTransfer' #Pub Input 
 #----------------------------------------------
-#print(DwnlodContnt)
-#quit()
 n=len(FigshareArticleID)
 PubVerNum=["01" for x in range(n)] 
+
+#------------INPUT FROM USER IF TRANSFER IS TO DEMO OR REPO
 def workflowValue():
     while True:
   #try:
@@ -107,18 +101,31 @@ def workflowValue():
     workflowStr=str(workflow)
     return workflowStr
 workflowVal=workflowValue()
-
+if workflowVal=='1': 
+  print("You picked to transfer content to AptrustDemo")
+if workflowVal=='4': 
+  print("You picked to transfer to AptrustRepo")
+#quit()
+#-------------------------------------
+#workflowVal='4'
 
 for i in range(n) :
-  print("STARTING CONFIGURATIONS")
+ # print("STARTING CONFIGURATIONS")
+  print("Fig article ID is",FigshareArticleID[i])
+ # quit()
   print(os.getcwd())
   x=configurations(FigshareArticleID[i],PubVerNum[i])
 
   if DwnldContnt=='Ing': 
+    from IngFolder_Download_TransferBagAPTrust_batch import DownloadIngest
     DwnldIngOrPubx=DownloadIngest(workflowVal)
+    
   if DwnldContnt=='Pub': 
+    print("Fig article ID is",FigshareArticleID[i])
+    #quit()
     DwnldIngOrPubx=DownloadPub()
     DwnldIngOrPubxTransfer=DownloadPubTrnsfr(workflowVal)
+   # quit()
   #if DwnldContnt=='PubTransfer': 
   #  DwnldIngOrPubxTransfer=DownloadPubTrnsfr(workflowVal)
 

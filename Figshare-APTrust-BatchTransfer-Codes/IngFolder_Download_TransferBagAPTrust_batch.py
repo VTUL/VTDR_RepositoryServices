@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  6 12:39:04 2021
-
-@author: padma carstens
-"""
+#!/usr/bin/env python
+'''
+IngFolder_Download_TransferBagAPTrust_batch.py
+Created on   2024/10/01 14:18:53
+@author  :   padma carstens 
+'''
 
 """
 Purpose: 
-1. Downloads article in review from figshare using article ID and token. This was built off of UAL-RE ldcoolp code to download article information which was built off of figshare Python code to retrieve article information 
-2. Read the ingest row information for the corresponding article in review from "Ingest" sheet in the google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7.xls. Creates ingest dataset folder following VTDR ingest folder naming and APTrust bag naming convention for preservation.
-3. Calls and passes tags and ingest folder to DART app through STDIN using a predefined VT workflow. The workflow is created within the DART app. DART creates the ingest bag from the ingest folder in the .dart folder in the local computer. DART also transfers this Ingest bag to APTrust Repo and VT S3 storage, credentials for upload are stored in the DART app. The ingest bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app.
+Batch downloads for each article in review and uploads to aptrust:
+ 1. Downloads article in review from figshare using article ID and token. This was built off of UAL-RE ldcoolp code to download article information which was built off of figshare Python code to retrieve article information 
+ 2. Read the ingest row information for the corresponding article in review from "Ingest" sheet in the google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7.xls. Creates ingest dataset folder following VTDR ingest folder naming and APTrust bag naming convention for preservation.
+ 3. Calls and passes tags and ingest folder to DART app through STDIN using a predefined VT workflow. The workflow is created within the DART app. DART creates the ingest bag from the ingest folder in the .dart folder in the local computer. DART also transfers this Ingest bag to APTrust Repo and VT S3 storage, credentials for upload are stored in the DART app. The ingest bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app.
 """
 import os
 from os.path import exists
@@ -30,15 +31,12 @@ from datetime import datetime
 import job
 from job import Job
 from redata.commons.logger import log_stdout
-#import aptCmdRegCheck
-#from aptCmdRegCheck import registryCheck
-#Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import configparser
 
 def DownloadIngest(workflowVal):
   config=configparser.ConfigParser()
-  config.read('configurations-bulk.ini')
-#Get the ArticleID from configurations-bulk.ini
+  config.read('configurations-batch.ini')
+#Get the ArticleID from configurations-batch.ini
   ArticleID=config['FigshareSettings']['FigshareArticleID']
 #Get the Published Version number 
   PublishedVersionNumber=config['FigshareSettings']['PublishedVersionNumber']
@@ -157,7 +155,7 @@ def DownloadIngest(workflowVal):
         quit()
 #-----------------------COPY BAG TO SAN DISK LOCATION:
 
-#----------------Copy Publication bag to SanDisk path defined in generate_config_bulk.py if it exists:-------------------------
+#----------------Copy Publication bag to SanDisk path defined in generate_config_batch.py if it exists:-------------------------
 
     destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
     localPath=os.path.join(local_dir_path,aptrustBagName_tar)
