@@ -1,20 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  6 12:39:04 2021
-
-@author: padma carstens
-"""
-
+#!/usr/bin/env python
+'''
+PubBagDART_TransferAPTrust_batch.py
+Created on   2024/10/01 12:53:04
+@author  :   padma carstens 
+'''
 """
 Purpose: 
--Opens the publication folder created by PubFolder_Download.py. 
--Opens the DART app, adds publication folder items and tag values to DART.
--Runs DART, creates a publication bag at .dart folder
--Uploads the publication bag to the storage services picked in the DART workflow to repo/demo/VT S3 
--Copies non disseminted content to the non disseminated content folder under BAGS folder on google drive
+Repeats the following actions for batch upload/transfer of publication bags to aptrust:
+  -Opens the publication folder created by PubFolder_Download.py. 
+  -Opens the DART app, adds publication folder items and tag values to DART.
+  -Runs DART, creates a publication bag at .dart folder
+  -Uploads the publication bag to the storage services picked in the DART workflow to repo/demo/VT S3 
+  -Copies non disseminted content to the non disseminated content folder under BAGS folder on google drive
 Notes:
 Part of this script is built off of "Scripting with DART" code available on APTrust github page. In the scripting with DART code a new job called job.py is created and executed based on a pre-defined DART workflow. 
-The publicaiton bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app. Documentation for this is also availabla on APTrust github page
+The publication bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app. Documentation for this is also availabla on APTrust github page
 """
 
 
@@ -22,7 +22,7 @@ The publicaiton bag created by DART can also be uploaded to APTrust using APTrus
 import configparser
 import sys
 config=configparser.ConfigParser()
-config.read('configurations-bulk.ini')
+config.read('configurations-batch.ini')
 curPath=config['IngestBag_PathSettings']['IngFolderPath']
 sys.path.append(curPath)
 sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
@@ -39,11 +39,15 @@ from datetime import datetime
 import bagit
 import aptCmd
 from aptCmd import registryCheck
+#from rtfInsert import rtfStrInsert
+import os
+import AutomatedProvenanceLog_batch
+from AutomatedProvenanceLog_batch import create_provlog
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 
 def DownloadPubTrnsfr(workflowVal):
   config=configparser.ConfigParser()
-  config.read('configurations-bulk.ini')
+  config.read('configurations-batch.ini')
 
 
 # get the ArticleID from configurations 
@@ -78,15 +82,13 @@ def DownloadPubTrnsfr(workflowVal):
   PubFolder=os.path.join(PubFolderPath,aptrustBagName)
   print("Pub Folder Path ",PubFolder)
   #-------------------------------------------------------------------------
-  #Add emails and provenance logs to all the publication folders:
+  #Add emails and provenance log to all the publication folders:
   #Get the publication folder created by PubFolder_Download.py
   #Get the VTCurationServices folder path and copy its contents to the Publication folder:
   # path to source directory
   SRC_DIR =config['VTCurationServicesActionsFolder']['VTCurationServicesActionsFolderPath']
   # path to destination directory
   TARG_DIR = PubFolder+"/VTCurationServicesActions"
-#  files = os.listdir(src_dir)
-#  shutil.copytree(src_dir, dest_dir)
   GLOB_PARMS = "*" #maybe "*.pdf" ?
 
   for file in glob.glob(os.path.join(SRC_DIR, GLOB_PARMS)):
@@ -97,13 +99,15 @@ def DownloadPubTrnsfr(workflowVal):
             file,os.path.join(os.path.split(TARG_DIR)[-2:])))
         # This is just a print command that outputs to console that the
         # file was already in directory
-  #--------------------------------------------------------------------------
-
-  
+  #Get curator name 
+  CuratorName=config['FigshareSettings']['CuratorName']
+  #Create provenance log
+  create_provlog(TARG_DIR,CuratorName)
+  #Get the paths to bags:
   payload=os.listdir(PubFolder)
   destn_path_sandisk=config['PubFolder_PathSettings']['SanDiskDirPath']
   local_dir_path=config["PubFolder_PathSettings"]["LocalPathBag"]
-
+  #Transfer content to aptrust repo/demo/s3vtul
   workflow=workflowVal
   if workflow == "1":
     jobname="Workflow for depositing bag to APTrust-Demo"
@@ -203,4 +207,4 @@ def DownloadPubTrnsfr(workflowVal):
         print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
       else:
         print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
-          
+ 

@@ -29,16 +29,18 @@ def registryCheck(bagName):
   os.environ['APTRUST_REGISTRY_URL']=config["APTrustSettings"][ "registryURL"]
   platformExt=config["APTrustSettings"]["platformExtn"]
   cmd=platformExt+"apt-cmd registry get object identifier=vt.edu/"+bagName
-  #print(cmd)
+  #print("rrrr",cmd)
   child = subprocess.Popen(cmd, shell=True,  stderr=subprocess.PIPE, stdout=subprocess.PIPE,close_fds=True,encoding='utf8')
   stdout_data, stderr_data = child.communicate()
-  #print(child)
+  #print("tttt",child)
   
   if child.returncode == 1:
     print("**************************REGISTRY REQUEST FOR THE BAG FAILED, PLEASE CHECK YOUR AP TRUST REGISTRY CREDENTIALS AND TRY AGAIN**************************************************")
     #break
     return 0
   else:     
+    print(child.returncode)
+    #print("XXXXXXXXXXXXXXX",stdout_data,"XXXXXXXXXXXXXXXXXXX")
     stdString=json.loads(stdout_data)
     stdOut=json.dumps(stdString)
     #print(stdOut)
@@ -67,5 +69,10 @@ def registryCheck(bagName):
 #x=registryCheck("VTDR_I00XYZ_CarstensP_CarstensP_v01_20230119")
 #x=registryCheck("VTDR_P00257_I00289_DOI_23741097_ShirzaeiM_v01_20230726")
 #x=registryCheck("VTDR_P00254_I00286_DOI_19522195_LangagerM_v02_20230706")
-
+#x=registryCheck("VTDR_P00255_I00287_DOI_23646627_DayerA_v01_20230710")
 #print("return code is x = ",x)
+
+"""
+Note:     raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) error means something is wrong with the credentials for aptrust registry
+"""
