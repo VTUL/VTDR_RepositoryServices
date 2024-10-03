@@ -17,21 +17,25 @@ FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328
 
 """
 #ENTER ARTICLE IDS 
-FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]
+#Ingest test:
+FigshareArticleID=["26860051","24328498"]#6781466","26086258","25267117","24749499","24328498"]
+#Publication test:
+FigshareArticleID=["23646627","21818604","21538380"]
 #------------------------------------
 import sys
 import configparser
 #import generate_config_batch
 from generate_config_batch import configurations
 #DONT CHANGE THE FOLLOWING CONF GENERATION FOR TEST ARTICLE
-TestGen=configurations("24328498","01")
-config=configparser.ConfigParser()
+#TestGen=configurations("24328498","01")
+#config=configparser.ConfigParser()
 #------------------------------
-config.read('configurations-batch.ini')
-curPath=config['IngestBag_PathSettings']['IngFolderPath']
-print(curPath)#stop
-sys.path.append(curPath)
-sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
+#config.read('configurations-batch.ini')
+#curPath=config['IngestBag_PathSettings']['IngFolderPath']
+#print(curPath)#stop
+#sys.path.append(curPath)
+#sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
+sys.path.append('curation')
 import aptCmd
 from aptCmd import registryCheck
 import Read_VTDR_Spreadsheet
