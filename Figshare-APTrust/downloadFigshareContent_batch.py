@@ -21,6 +21,7 @@ FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328
 #------------------------------------
 import sys
 import configparser
+#import generate_config_batch
 from generate_config_batch import configurations
 #DONT CHANGE THE FOLLOWING CONF GENERATION FOR TEST ARTICLE
 TestGen=configurations("24328498","01")
