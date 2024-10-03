@@ -5,16 +5,22 @@ Lastly, the codes deposit these bags to APTrust via their DART platform (https:/
 Documentation on how to set up a Windows environment to use these codes is available at CuratorWorkflowDiagramWithScriptExecution_v1_20231108.docx
 
 # RUNNING BATCH CODES
-  Open a new folder in your curation directory, name it 'batchcodes'. Go to the curation directory on vscode bash:
-
+  Open a new folder in your curation directory, name it 'batchcodes'. In VScode, File->OpenFolder->batchcodes, click 'Select Folder'
+Open a python terminal:
+```
 conda activate curation
 cd curation/batchcodes
 git clone https://github.com/VTUL/VTDR_RepositoryServices.git
+cd ..
+```
 
-Open generate_config_batch_example.py and save it as generate_config_batch.py. Copy paste the credentials from generate_config.py. The only new addition will be the path to the curation services actions folder where emails are to be saved:
+From the Explorer on the left side in VSCode, open generate_config_batch_example.py and save it as generate_config_batch.py. Copy paste the credentials from generate_config.py. The only new addition will be the path to the curation services actions folder where emails are to be saved:
+
     VTCurSerFoldPath="/Users/padma/opt/anaconda3/envs/curation/test"
 
-Move the contents(emails, provenance log) to this folder (VTCurSerFoldPath). Open AutomateProvenanceLog_Batch.py and fill in the curator/description. Save the file. 
+Make a new folder in 'curation' folder called 'test'(or whatever you want to name it, make sure to change it above as well if other than 'test') and move the contents of curation services actions(emails etc.) to this folder.
+
+Open AutomateProvenanceLog_Batch.py and fill in the curator/description. Save the file. 
  
 Open downloadFigshareContent_batch.py
 
@@ -22,7 +28,11 @@ Provide the article ids on the first line in this code:
 ```
 FigshareArticleID=["212121","5453543","32232"]
 ```
-Add more with a comma, or replace with the article ids for the ingest/publication content. 
+Add more ids or replace with the article ids for the ingest/publication content. 
+Run downloadFigshareContent_batch.py
+(For the error bs4 not found, please do "pip3 install BeautifulSoup4")
+Pick 1 for Ingest, 2 for Pub
+Pick 1 for demo, 4 for repo
 
 Run downloadFigshareContent_batch.py
 (For the error bs4 not found, please do "pip3 install BeautifulSoup4")
