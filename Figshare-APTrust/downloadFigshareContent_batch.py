@@ -26,15 +26,6 @@ import sys
 import configparser
 #import generate_config_batch
 from generate_config_batch import configurations
-#DONT CHANGE THE FOLLOWING CONF GENERATION FOR TEST ARTICLE
-#TestGen=configurations("24328498","01")
-#config=configparser.ConfigParser()
-#------------------------------
-#config.read('configurations-batch.ini')
-#curPath=config['IngestBag_PathSettings']['IngFolderPath']
-#print(curPath)#stop
-#sys.path.append(curPath)
-#sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
 sys.path.append('curation')
 import aptCmd
 from aptCmd import registryCheck

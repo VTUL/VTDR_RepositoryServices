@@ -24,11 +24,7 @@ import requests
 from requests import HTTPError
 #from ldcoolp.curation import retrieve
 import configparser
-config=configparser.ConfigParser()
-config.read('configurations-batch.ini')
-curPath=config['IngestBag_PathSettings']['IngFolderPath']
-sys.path.append(curPath)
-sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
+sys.path.append("curation")
 import AutomatedArchivalPackageREADME
 import Read_VTDR_Spreadsheet
 from AutomatedArchivalPackageREADME import create_archivalreadme

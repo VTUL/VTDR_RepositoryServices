@@ -3,8 +3,6 @@
 AutomatedProvenanceLog_batch.py
 Created on   2024/10/01 12:10:20
 @author  :   padma carstens 
-@contact :   padma@vt.edu
-@license :   MIT License
 '''
 """
 Purpose: 
