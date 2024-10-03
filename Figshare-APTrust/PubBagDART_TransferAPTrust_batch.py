@@ -21,11 +21,7 @@ The publication bag created by DART can also be uploaded to APTrust using APTrus
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import configparser
 import sys
-config=configparser.ConfigParser()
-config.read('configurations-batch.ini')
-curPath=config['IngestBag_PathSettings']['IngFolderPath']
-sys.path.append(curPath)
-sys.path.append(curPath+'/VTDR_RepositoryServices/Figshare-APTrust')
+sys.path.append("curation")
 from Read_VTDR_Spreadsheet import vtpubsheet
 from Read_VTDR_Spreadsheet import vtingsheet
 from turtle import begin_fill
