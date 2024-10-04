@@ -3,6 +3,7 @@
 PubFolder_Download_batch.py
 Created on   2024/9/25 14:13:23
 @author  :   padma carstens 
+@co-author: jonathan petters
 '''
 """
 Purpose: 

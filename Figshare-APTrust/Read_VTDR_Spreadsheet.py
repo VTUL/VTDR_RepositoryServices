@@ -3,10 +3,10 @@
 Created on Tue Oct 26 14:05:20 2021
 
 @author: padma carstens
-
+@co-author: jonathan petters 
 Purpose:
 
-Read VTDR 2022 sheet
+Read VTDR 2022 spreadsheet
 
 """
 #from boto import Version

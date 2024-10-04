@@ -3,6 +3,7 @@
 generate_config_batch_example.py
 Created on   2024/10/01 14:36:15
 @author  :   padma carstens 
+@co-author: jonathan petters
 '''
 
 import configparser

@@ -3,13 +3,14 @@
 AutomatedProvenanceLog_batch.py
 Created on   2024/10/01 12:10:20
 @author  :   padma carstens 
+@co-author: jonathan petters
 '''
 """
 Purpose: 
 Creates a provenance log in rtf format at the path provided, inserting a varying date string for batch upload of publication folders to aptrust. Called to automate provenance log creation for batch publication folder download/transfer by PubBagDART_TransferAPTrust_batch.py 
 Input: 
 PubFolderVTCSApath: Path where provenance log needs to be created
-InsString: String that needs to be inserted, changes with the date/time of ingestion
+CuratorName: Name of the curator
 Output: ProvenanceLog.rtf created at the path provided
 """
 from datetime import datetime
