@@ -3,6 +3,7 @@
 downloadFigshareContent_batch.py
 Created on   2024/10/01 13:34:59
 @author  :   padma carstens 
+@co-author: jonathan petters
 '''
 """
 Purpose:

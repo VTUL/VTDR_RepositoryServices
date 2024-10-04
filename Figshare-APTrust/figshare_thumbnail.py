@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+'''
+figshare_thumbnail.py
+'''
+
 #from __future__ import print_statement
 import time
 import swagger_client

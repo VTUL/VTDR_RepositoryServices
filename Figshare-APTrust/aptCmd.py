@@ -3,6 +3,7 @@
 Created on Fri Jul 4 12:30:24 2023
 
 @author: padma carstens
+@co-author: jonathan petters
 """
 """
 Purpose: 

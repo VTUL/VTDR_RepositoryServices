@@ -3,6 +3,7 @@
 IngFolder_Download_TransferBagAPTrust_batch.py
 Created on   2024/10/01 14:18:53
 @author  :   padma carstens 
+@co-author: jonathan petters
 '''
 
 """

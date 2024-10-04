@@ -3,6 +3,7 @@
 AutomatedProvenanceLog.py
 Created on   2024/10/01 12:10:20
 @author  :   padma carstens 
+@co-author: jonathan petters
 @contact :   padma@vt.edu
 @license :   MIT License
 '''
