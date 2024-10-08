@@ -77,3 +77,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+
+# Microsoft Doc locks
+.~lock.*
