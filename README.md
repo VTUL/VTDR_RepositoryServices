@@ -2,8 +2,8 @@ The codes here show the workflow set up by [Virginia Tech Data Repository](https
 The workflow creates folders for [VTDR](https://data.lib.vt.edu) articles in-review(ingest content: before curator-client interactions) and after review(published content: after curator-client interactions). The content is then bagged in tarred format. Part of the bagging for published content involves creation of ArchivalReadme.rtf file, README.rtf file, and addition of emails, ProvenanceLog.rtf by the curator. The bagged content is then transferred to APTrust via their [DART](https://aptrust.github.io/dart-docs/users/workflows/) and/or Virginia Tech Libraries storage. [APTrust registry](https://aptrust.org/documentation-page/registry/) checks are made to avoid overwriting existing bags.
 
 Detailed documentation on how to set up a Windows/Mac environment to use these codes is available at:
-ScriptsSetupAndExecution_CurationWorkflow_Windows.docx
-ScriptsSetupAndExecution_CurationWorkflow_Mac.docs
+[ScriptsSetupAndExecution_CurationWorkflow_Windows.docx](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Windows.docx)
+[ScriptsSetupAndExecution_CurationWorkflow_Mac.docx](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Mac.docx)
 
 Workflow diagram with description of each block is available at:
 CuratorWorkflowDiagramWithScriptExecution_v1_20231108.docx
@@ -28,7 +28,8 @@ git clone https://github.com/VTUL/VTDR_RepositoryServices.git
 cd ..
 ```
 
-From the Explorer on the left side in VSCode, open generate_config_batch_example.py and save it as generate_config_batch.py. Copy paste the credentials from generate_config.py. The only new addition will be the path to the curation services actions folder where emails are to be saved:
+From the Explorer on the left side in VSCode, open generate_config_batch_example.py and save it as generate_config_batch.py. Fill in only the values of the credentials from generate_config.py. Please note that copying lines from generate_config.py to generate_config_batch.py changes formatting, and causes errors. In order to avoid this, copy paste only the values. For Eg: for figshare token, copy the token value only, and paste it in generate_config_batch.py.
+The only new addition will be the path to the curation services actions folder where emails are to be saved:
 
     VTCurSerFoldPath="/Users/padma/opt/anaconda3/envs/curation/test"
 
