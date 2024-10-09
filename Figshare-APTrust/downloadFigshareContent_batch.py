@@ -7,21 +7,28 @@ Created on   2024/10/01 13:34:59
 '''
 """
 Purpose:
-download content from figshare for the provided article ids and transfer content to aptrust. VTcuration services actions folder path is defined in generate_config_batch.py and stores the emails. Prov log is created and moved to VTCurServActions folder for publication folder. Readme file is created and moved to Disseminated content folder for published content
+downloadFigshareContent_batch.py calls functions defined in the scripts: generate_config_batch.py, IngFolder_Download_TransferBagAPTrust_batch.py, PubBagDART_TransferAPTrust_batch.py and AutomatedProvenanceLog_batch.py
+The following actions are performed by running this script:
+-download content from figshare for the provided "FigsareArticleID"s at the start of the script and transfer content to aptrust. 
+-VTcuration services actions folder path is defined in generate_config_batch.py and stores the emails. 
+-Prov log is created and moved to VTCurServActions folder for publication folder. 
+-Readme file is created and moved to Disseminated content folder for published content
+Note: The only place ARTICLE IDs need to be entered is under FigshareArticleID at the beginning of the script
 
-Input: 
-Ing/Pub: Ing for ingest content, provide figshare article ids on line 20 for ingesting and transferring articles in the format on line 16. Pub for publication content, provide figshare article ids on line 20 for published articles in the same format on line 16
-aptrust repo/demo: input workflow value of 1 for demo and 4 for repo 
-FighsareArticleIDs are provided as an array of article IDs. For Eg:
+Input from user: 
+-FighsareArticleIDs are provided as an array of article IDs. For Eg:
 Enter article ids as follows(Ingest/Pub):
 FigshareArticleID=["26860051","26781466","26086258","25267117","24749499","24328498"]
+When the script is run, it will ask to input 'Ing' for ingest bagging or 'Pub' for publication bagging.
+When the script is run, it will ask to input '1' for transferring bag to aptrust demo and 4 for transferring bag to aptrust repo 
+
 
 """
-#ENTER ARTICLE IDS 
+#ENTER ARTICLE IDS that need to be ingested/published article ids that need to be bagged:
 #Ingest test:
 FigshareArticleID=["26860051","24328498"]#6781466","26086258","25267117","24749499","24328498"]
 #Publication test:
-FigshareArticleID=["23646627","21818604","21538380"]
+#FigshareArticleID=["23646627","21818604","21538380"]
 #------------------------------------
 import sys
 import configparser
@@ -52,7 +59,7 @@ from redata.commons.logger import log_stdout
 from PubFolder_Download_batch import DownloadPub
 from PubBagDART_TransferAPTrust_batch import DownloadPubTrnsfr
 
-#----------INPUT ING/PUB FROM CURATOR------------------
+#----------INPUT 'Ing'/'Pub' FROM CURATOR------------------
 while True:
   #try:
     IngOrPub=input("Please enter '1' for Ing transfer to APTrust or '2' for Pub transfer to APTrust: ")
@@ -77,10 +84,12 @@ print('You selected to download ',DwnldContnt," content")
 #DwnldContnt='Pub' #Pub Input 
 #DwnldContnt='PubTransfer' #Pub Input 
 #----------------------------------------------
+#Get the number of article ids to be bagged:
 n=len(FigshareArticleID)
+#Assign version '01' to all the publication 
 PubVerNum=["01" for x in range(n)] 
 
-#------------INPUT FROM USER IF TRANSFER IS TO DEMO OR REPO
+#------------INPUT '1' for aptrust demo or '4' for aptrust repo and other values
 def workflowValue():
     while True:
   #try:
@@ -108,17 +117,17 @@ if workflowVal=='4':
 
 for i in range(n) :
  # print("STARTING CONFIGURATIONS")
-  print("Fig article ID is",FigshareArticleID[i])
+  print("Working on the Figshare article ID: ",FigshareArticleID[i])
  # quit()
   print(os.getcwd())
   x=configurations(FigshareArticleID[i],PubVerNum[i])
-
+  #Bagging Ingest/in review content:
   if DwnldContnt=='Ing': 
     from IngFolder_Download_TransferBagAPTrust_batch import DownloadIngest
     DwnldIngOrPubx=DownloadIngest(workflowVal)
-    
+  #Bagging published content:
   if DwnldContnt=='Pub': 
-    print("Fig article ID is",FigshareArticleID[i])
+    print("Working on the Figshare article ID: ",FigshareArticleID[i])
     #quit()
     DwnldIngOrPubx=DownloadPub()
     DwnldIngOrPubxTransfer=DownloadPubTrnsfr(workflowVal)

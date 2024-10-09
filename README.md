@@ -1,8 +1,22 @@
-The codes here show the workflow set up by Virginia Tech Data Repository (https://data.lib.vt.edu/) to download and deposit bags to aptrust via DART (https://aptrust.github.io/dart-docs/users/workflows/). Virginia Tech Data Services uses  a simple client for the figshare API in python from Cognoma: https://github.com/cognoma/figshare, parts of LD-Cool-P from University of Arizona workflow: https://github.com/padmacarstens/LD-Cool-P to download files and retrieve files from the Virginia Tech Data Repository: VTDR (https://data.lib.vt.edu). VTDR runs on the figshare for institutions platform.
-The codes are run to create folders to save the downloaded private files (to ingest bags)/ published files (to publication bags) to the local computer/remote storage, create an Archival Package readme file for archival purposes in addition to an automated README file in rtf format created from the filled in figshare metadata fields.
-Lastly, the codes deposit these bags to APTrust via their DART platform (https://aptrust.github.io/dart-docs/users/workflows/) and/or Virginia Tech Libraries storage 
+The codes here show the workflow set up by [Virginia Tech Data Repository](https://data.lib.vt.edu/) to download and deposit bags to aptrust via [DART](https://aptrust.github.io/dart-docs/users/workflows/). Virginia Tech Data Services uses a simple client for the figshare API in python from [Cognoma](https://github.com/cognoma/figshare), parts of [LD-Cool-P from University of Arizona workflow]( https://github.com/padmacarstens/LD-Cool-P), and [Scripting with DART](https://aptrust.github.io/dart-docs/users/scripting/). VTDR runs on the figshare for institutions platform.
+The workflow creates folders for [VTDR](https://data.lib.vt.edu) articles in-review(ingest content: before curator-client interactions) and after review(published content: after curator-client interactions). The content is then bagged in tarred format. Part of the bagging for published content involves creation of ArchivalReadme.rtf file, README.rtf file, and addition of emails, ProvenanceLog.rtf by the curator. The bagged content is then transferred to APTrust via their [DART](https://aptrust.github.io/dart-docs/users/workflows/) and/or Virginia Tech Libraries storage. [APTrust registry](https://aptrust.org/documentation-page/registry/) checks are made to avoid overwriting existing bags.
 
-Documentation on how to set up a Windows environment to use these codes is available at CuratorWorkflowDiagramWithScriptExecution_v1_20231108.docx
+Detailed documentation on how to set up a Windows/Mac environment to use these codes is available at:
+ScriptsSetupAndExecution_CurationWorkflow_Windows.docx
+ScriptsSetupAndExecution_CurationWorkflow_Mac.docs
+
+Workflow diagram with description of each block is available at:
+CuratorWorkflowDiagramWithScriptExecution_v1_20231108.docx
+
+# RUNNING CODES FOR BAGGING IN REVIEW/PUBLISHED ARTICLES AND TRANSFERRING TO APTRUST:
+```
+git clone https://github.com/VTUL/VTDR_RepositoryServices.git
+```
+Open generate_config_example.py and save it as generate_config.py and fill in the credentials (see the running scripts document for more information)
+Open generate_config.py, enter the figshare article id to be bagged. -Run the 'IngFolder_Download_TransferBagAPTrust.py' for bagging before-review/ingest content. 
+Or
+-Run PubFolder_Download.py for downloading published figshare article. Open VTCurationServicesActions folder, add non disseminated content(emails, provenance logs etc.) and then run PubBagDART_TransferAPTrust.py to bag and transfer content to aptrust.
+
 
 # RUNNING BATCH CODES
   Open a new folder in your curation directory, name it 'batchcodes'. In VScode, File->OpenFolder->batchcodes, click 'Select Folder'
@@ -30,7 +44,6 @@ FigshareArticleID=["212121","5453543","32232"]
 ```
 Add more ids or replace with the article ids for the ingest/publication content. 
 Run downloadFigshareContent_batch.py
-(For the error bs4 not found, please do "pip3 install BeautifulSoup4")
 Pick 1 for Ingest, 2 for Pub
 Pick 1 for demo, 4 for repo
 
