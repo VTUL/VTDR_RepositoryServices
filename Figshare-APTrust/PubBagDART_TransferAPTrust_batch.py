@@ -38,6 +38,7 @@ import aptCmd
 from aptCmd import registryCheck
 #from rtfInsert import rtfStrInsert
 import os
+import glob
 import AutomatedProvenanceLog_batch
 from AutomatedProvenanceLog_batch import create_provlog
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
@@ -74,8 +75,6 @@ def DownloadPubTrnsfr(workflowVal):
   aptrustBagName_tar=f"{aptrustBagName}.tar"
 #Source folder is where the publication folder is downloaded, this folder will be bagged by DART
   PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
-  import os
-  import glob
   PubFolder=os.path.join(PubFolderPath,aptrustBagName)
   print("Pub Folder Path ",PubFolder)
   #-------------------------------------------------------------------------

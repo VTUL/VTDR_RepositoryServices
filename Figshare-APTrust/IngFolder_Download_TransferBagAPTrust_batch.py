@@ -16,7 +16,6 @@ Batch downloads for each article in review and uploads to aptrust:
 import os
 from os.path import exists
 import sys
-
 import shutil
 from figshare import Figshare
 import requests

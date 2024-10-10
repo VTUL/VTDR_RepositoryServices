@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 25 10:55:10 2021
-
-@author: padma carstens
+#!/usr/bin/env python
+'''
+AutomatedREADMErtf_batch.py
+Created on   2024/10/09 14:32:07
+@author  :   padma carstens 
 @co-author: jonathan petters
-"""
-#Following script creates README rtf file using information from Figshare article in review, works for both in review and published articles as long as all the fields are the same (currently this script accomodates metadata fields in the "Libraries" group on figshare which is modified and different from metadata fields in other groups). 
-import os
-from os.path import exists
-import sys
-sys.path.append('figshare')
-#sys.path.append('LD-Cool-P')
-
+@license :   MIT License
+'''
 import os
 from tkinter.messagebox import NO
 import figshare
@@ -26,38 +20,15 @@ import bs4
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-#Get the parameters from configurations.ini to retrieve information from an article on Figshare
-import configparser 
-config=configparser.ConfigParser()
-config.read('configurations.ini')
-
-#Get the ArticleID
-ArticleID=config['FigshareSettings']['FigshareArticleID']
-#Get the Published Version number 
-PublishedVersionNumber=config['FigshareSettings']['PublishedVersionNumber']
-#Remove "0" from the published version number 
-intPublishedVersionNumber=int(PublishedVersionNumber[1])
-
-#Get the Ingest Version number 
-IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
-#Remove "0" from Ingest version number
-intIngestVersionNumber=int(IngestVersionNumber[1])
-#Get your figshare token 
-token=config['FigshareSettings']['token']
-#Get curator name 
-CuratorName=config['FigshareSettings']['CuratorName']
-#Get the directory in which to store README file
-README_Dir=config['AutomatedREADMEPathSettings']['README_Dir']
-#Get information from Ingest Sheet, access google spreadsheet 20211214_VTDR_PublishedDatasets_Log_V7 and get information about the article using article ID and version number.
-ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
-
-def create_readme(ArticleID,token):
+def create_readme_batch(ArticleID,token,readmePath):
   """
   Purpose:
     Retrieve figshare metadata with token and article id.  Create README.rtf and write the fields retrieved from figshare metadata and Ingest sheet into this file. Create a new README directory to save the README file
 
   :param Article ID: Figshare article id under "Cite" button for an article in review
-  :param token: Figshare token: click circle on data.lib.vt.edu, then click "Applications" then click "Create Personal Token"
+  :param token: Figshare token: click circle on data.lib.vt.edu, then click 
+  "Applications" then click "Create Personal Token"
+  :readmePath: taken from configurations, current date is appended to this folder to avoid overwriting README.rtf file that is created
   """
   #If creating this AFTER the article is published then change "private" to "False" below, this will create README file using the published metadata
   fs=Figshare(token=token,private=True)
@@ -190,13 +161,14 @@ def create_readme(ArticleID,token):
   #Create README.rtf and write the figshare fields to the file using rtf coding syntax     
   out_file_prefix = f"README.rtf"
   root_directory=os.getcwd()
-  #Get the directory path from configurations.ini and make a directory with a timestamp and author name so it will not be overwritten if running this more than once for the same article id  
-  readmefolder=datetime.now().strftime(README_Dir+'_%H_%M_%d_%m_%Y_'+str(authr[0]))
-  readme_path=os.path.join(root_directory, readmefolder)  
-  #os.mkdir(readme_path)
+  #readme_path=PubFolderPayloadPath
+  #README_Dir=config['AutomatedREADMEPathSettings']['README_Dir']
+  currentReadmeFldr=datetime.now().strftime(readmePath+'_%Y_%m_%d_%I_%M%p'+str(authr[0]))
+  readme_path=os.path.join(root_directory, currentReadmeFldr)
   if not os.path.exists(readme_path):
     os.makedirs(readme_path)
-  print("The new directory "+readmefolder+" is created")
+  print("The new directory "+readme_path+" is created") 
+  #  print("The new directory "+readmefolder+" is created")
   out_file_prefix1 = f"{readme_path}/{out_file_prefix}"
   f = open(out_file_prefix1,'w',encoding="utf-8")
   f.write("{\\rtf1\\ansi {\\b Title of Dataset:} "+str(title)+"\\line\n"+
@@ -219,7 +191,14 @@ def create_readme(ArticleID,token):
         "}")
   f.close()
 
-  return 
+  return out_file_prefix1
 
-#Call this function to create README.rtf for the article id and token from configurations.ini  
-readme_auto=create_readme(ArticleID,token)
+##test:
+#import configparser
+#config=configparser.ConfigParser()
+#config.read('configurations-batch.ini')
+ # #Get your figshare token 
+#token=config['FigshareSettings']['token']
+#READMEPath="C:/Users/padma/anaconda3/envs/curation/README_FILES"
+#readmefile=create_readme_batch("24328498",token,READMEPath)
+#print(readmefile)
