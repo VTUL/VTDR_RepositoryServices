@@ -54,3 +54,7 @@ Pick 1 for Ingest 2 for Pub
 Pick 1 for demo 4 for repo
 
 Make sure "curation" environment is activated. Ctrl+Shift+P, Select Python Interpreter, pick 'curation'.
+
+Note: 
+1. README file is created in the path provided in the configurations, with a date stamp addition in order to avoid overwriting
+2. README file is uploaded to the client's account after the ingest record is created and transferred to aptrust
