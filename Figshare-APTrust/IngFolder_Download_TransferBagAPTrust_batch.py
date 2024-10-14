@@ -32,6 +32,8 @@ import job
 from job import Job
 from redata.commons.logger import log_stdout
 import configparser
+import aptCmd
+from aptCmd import registryCheck
 
 def DownloadIngest(workflowVal):
   config=configparser.ConfigParser()
