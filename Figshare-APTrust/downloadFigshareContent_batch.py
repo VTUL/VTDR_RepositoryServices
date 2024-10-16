@@ -37,7 +37,7 @@ n=len(FigshareArticleID)
 PubVerNum=["01" for x in range(n)] 
 #Comment out above and uncomment below if PubVerNum is not "01" for that particular Figshare Article ID. Number of elements in figshare article ids must match the number of elements in PubVerNums, and the elements correspond to each other, for eg for ID 54545 if version number is 2, it should look like this: FigshareArticleID=["34343","54545"], PubVerNum=["01","02"]
 
-#PubVerNum=["01","02","01"]
+#PubVerNum=["01","02","01","03"]
 
 #---------------------
 import sys
