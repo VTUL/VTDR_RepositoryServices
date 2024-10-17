@@ -19,14 +19,6 @@ Or
 
 
 # RUNNING BATCH CODES
-  Open a new folder in your curation directory, name it 'batchcodes'. In VScode, File->OpenFolder->batchcodes, click 'Select Folder'
-Open a python terminal:
-```
-conda activate curation
-cd curation/batchcodes
-git clone https://github.com/VTUL/VTDR_RepositoryServices.git
-cd ..
-```
 
 From the Explorer on the left side in VSCode, open generate_config_batch_example.py and save it as generate_config_batch.py. Fill in only the values of the credentials from generate_config.py. Please note that copying lines from generate_config.py to generate_config_batch.py changes formatting, and causes errors. In order to avoid this, copy paste only the values. For Eg: for figshare token, copy the token value only, and paste it in generate_config_batch.py.
 The only new addition will be the path to the curation services actions folder where emails are to be saved:
@@ -58,3 +50,23 @@ Make sure "curation" environment is activated. Ctrl+Shift+P, Select Python Inter
 Note: 
 1. README file is created in the path provided in the configurations, with a date stamp addition in order to avoid overwriting
 2. README file is uploaded to the client's account after the ingest record is created and transferred to aptrust
+
+## git rebase for accomodating changes made locally, and main being ahead of local:
+
+- Commit local changes:
+cd VTDR_RepositoryServices
+git status
+git add --all
+git commit -m 'localchanges'
+
+- Checkout remote repositor:
+See if remote is named 'origin' or get the name for the remote branch:
+git remote -v 
+git checkout origin
+
+- Rebase local changes with the ones in the remote: 
+git rebase main
+
+-Checkout local and merge with remote:
+git checkout main
+git merge origin
