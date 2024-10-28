@@ -1,5 +1,3 @@
-[[_TOC_]]
-
 # Overview of Curation workflow for Data Management and Curation Services
 
 The codes here show the workflow set up by [Virginia Tech Data Repository](https://data.lib.vt.edu/) to download and deposit bags to aptrust via [DART](https://aptrust.github.io/dart-docs/users/workflows/). Virginia Tech Data Services uses a simple client for the figshare API in python from [Cognoma](https://github.com/cognoma/figshare), parts of [LD-Cool-P from University of Arizona workflow]( https://github.com/padmacarstens/LD-Cool-P), and [Scripting with DART](https://aptrust.github.io/dart-docs/users/scripting/). VTDR runs on the figshare for institutions platform.
@@ -45,29 +43,41 @@ Following is an overview of the workflow with the workflow diagram:
 Above is the curation workflow diagram by Jonathan Petters. Following is the overview of the steps:
 
 **Step 1** Request to publish dataset received from Client in the email.
+
 **Step 2** ‘Ingest record created’ and **Step 3** ‘Ingest dataset bagged and deposited’:
 * [VTDR](https://data.lib.vt.edu/) figshare 'item in review' metadata i.e. requestor, author, version, date, title, article id and email is entered in VTDR curation spreadsheet. 
 * article id is entered in generate_config.py, run this script to create configurations.ini file.
 * run IngFolder_Download_TransferBagAPTrust.py to create an ingest folder. The ingest folder contains 'in review' article metadata and files downloaded from figshare. These are then deposited to aptrust in tar format using DART app.
+
 **Step 4** Provenance log and client record created: These are done manually by the curator. Provenance log is added to the ingest folder created in step 3 above. Provenance log contains interactions between the client and the curator, along with the date and curator name. This file is in rtf format. Client record is created in [VTUL LibCRM](https://vt.libapps.com/libapps/login.php?site_id=17108&target=/). Details on recording are found [here](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/CuratorWorkflowDiagramWithScriptExecution_v2_20231108.docx)
+
 **Step 5** Dataset metadata on repository platform evaluated for quality/completeness 
 Article is reviewed using the edit item interface in the review page of [VTDR](https://data.lib.vt.edu/). 
+
 **Step 6** Does metadata meet Publishing Requirements? Dataset of sufficient quality to publish?
 In this step, the curator decides either to continue with publication of the dataset or to decline the dataset depending on the [VTDR publishing and depositing guidelines](https://guides.lib.vt.edu/VirginiaTechDataRepository/About)	
+
 **Step 7** Communicate with client to get minimum metadata and suggest other dataset sharing improvements
 Curator exchanges emails with the client for improvements to their research dataset.
+
 **Step 8** Record communications in client record:	
-Client record created in step 4 is updated based on the interactions by the curator. 
+Client record created in step 4 is updated based on the interactions by the curator.
+
 **Step 9** Modify metadata and files in repository platform with agreement of client:	
 Clients record is updated on [VTDR](https://data.lib.vt.edu/) using edit item interface, based on the interactions/suggestions by the curator
+
 **Step 10** Record modifications in Provenance log:	
 Provenance log created in step 4 is updated by the curator
+
 **Step 11** Add metadata to dataset on repository platform and Step(11a): Record metadata changes in provenance log:	
 * Run README.rtf to create a README file. Upload this file to the client's record. 
+
 **Step 12** Publish dataset on repository platform and step (12a) Record dataset publication in provenance log:	
 Item is published on [VTDR](https://data.lib.vt.edu/) 
+
 **Step 13** Inform client dataset is published, send citation and DOI
 Client is updated via email. Email interactions are saved as pdf files
+
 **Step 14** Publication record created	and **Step 15** Publication dataset aggregated bagged, and deposited:	
 Published article metadata is recorded in VTDR spreadsheet. 
 * Run PubFolder_Download.py to download published article metadata and files. 
@@ -78,17 +88,9 @@ Published article metadata is recorded in VTDR spreadsheet.
 
 Workflow is complete.
 
-# BRIEF SUMMARY FOR RUNNING CODES FOR BAGGING IN REVIEW/PUBLISHED ARTICLES AND TRANSFERRING TO APTRUST FOR INDIVIDUAL ARTICLES:
-```
-git clone https://github.com/VTUL/VTDR_RepositoryServices.git
-```
-Open generate_config_example.py and save it as generate_config.py and fill in the credentials (see the running scripts document for more information)
-Open generate_config.py, enter the figshare article id to be bagged. -Run the 'IngFolder_Download_TransferBagAPTrust.py' for bagging before-review/ingest content. 
-Or
--Run PubFolder_Download.py for downloading published figshare article. Open VTCurationServicesActions folder, add non disseminated content(emails, provenance logs etc.) and then run PubBagDART_TransferAPTrust.py to bag and transfer content to aptrust.
 
 
-# RUNNING BATCH CODES
+# Running Batch Codes:
 
 From the Explorer on the left side in VSCode, open generate_config_batch_example.py and save it as generate_config_batch.py. Fill in only the values of the credentials from generate_config.py. Please note that copying lines from generate_config.py to generate_config_batch.py changes formatting, and causes errors. In order to avoid this, copy paste only the values. For Eg: for figshare token, copy the token value only, and paste it in generate_config_batch.py.
 The only new addition will be the path to the curation services actions folder where emails are to be saved:
