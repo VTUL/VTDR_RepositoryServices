@@ -32,15 +32,15 @@ Clone [VTDR Repository](https://github.com/VTUL/VTDR_RepositoryServices) from [V
 
 # Description of the workflow: 
 
-** Note ** : For the curation workflow, only the scripts in **'Fighsare-APTrust'** folder are used.
+**Note** : For the curation workflow, only the scripts in **'Fighsare-APTrust'** folder are used.
 
 Workflow diagram with detailed description of each block is available at:
-CuratorWorkflowDiagramWithScriptExecution_v1_20231108.docx
+[Curator workflow detailed documentation with workflow diagram](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/CuratorWorkflowDiagramWithScriptExecution_v2_20231108.docx)
 
-Following is an overview of the workflow with the workflow diagram: 
+## Overview of the workflow: 
 
 ![alt text](image.png)
-Above is the curation workflow diagram by Jonathan Petters. Following is the overview of the steps:
+Above is the curation workflow diagram by __Jonathan Petters__. Following is the overview of each step of the diagram:
 
 **Step 1** Request to publish dataset received from Client in the email.
 
@@ -126,19 +126,29 @@ Note:
 ## git rebase for accomodating changes made locally, and main being ahead of local:
 
 - Commit local changes:
+
+```
 cd VTDR_RepositoryServices
 git status
 git add --all
 git commit -m 'localchanges'
+```
 
 - Checkout remote repositor:
+
 See if remote is named 'origin' or get the name for the remote branch:
+```
 git remote -v 
 git checkout origin
+```
 
 - Rebase local changes with the ones in the remote: 
+```
 git rebase main
+```
 
 -Checkout local and merge with remote:
+```
 git checkout main
 git merge origin
+```
