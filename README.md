@@ -40,6 +40,7 @@ Workflow diagram with detailed description of each block is available at:
 ## Overview of the workflow: 
 
 ![alt text](image.png)
+
 Above is the curation workflow diagram by __Jonathan Petters__. Following is the overview of each step of the diagram:
 
 **Step 1** Request to publish dataset received from Client in the email.
