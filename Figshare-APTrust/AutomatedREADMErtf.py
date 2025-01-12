@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 25 10:55:10 2021
-
-@author: padma carstens
-@co-author: jonathan petters
-"""
 #Following script creates README rtf file using information from Figshare article in review, works for both in review and published articles as long as all the fields are the same (currently this script accomodates metadata fields in the "Libraries" group on figshare which is modified and different from metadata fields in other groups). 
 import os
 from os.path import exists
@@ -25,6 +18,8 @@ import os
 import bs4
 from bs4 import BeautifulSoup
 from datetime import datetime
+from figshareUploadFile import upload_part,initiate_new_upload,complete_upload,upload_parts
+
 
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import configparser 

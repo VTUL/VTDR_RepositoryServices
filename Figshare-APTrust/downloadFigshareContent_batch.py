@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-'''
-downloadFigshareContent_batch.py
-Created on   2024/10/01 13:34:59
-@author  :   padma carstens 
-@co-author: jonathan petters
-'''
 """
 Purpose:
 downloadFigshareContent_batch.py calls functions defined in the scripts: generate_config_batch.py, IngFolder_Download_TransferBagAPTrust_batch.py, PubBagDART_TransferAPTrust_batch.py and AutomatedProvenanceLog_batch.py

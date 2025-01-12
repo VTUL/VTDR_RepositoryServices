@@ -1,4 +1,3 @@
-
 import requests
 import hashlib
 from requests import HTTPError

@@ -1,13 +1,8 @@
-#!/usr/bin/env python
-'''
-figshare_thumbnail.py
-'''
-
 #from __future__ import print_statement
 import time
 import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
+#from swagger_client.rest import ApiException
+#from pprint import pprint
 from Read_VTDR_Spreadsheet import vtingsheet
 #Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import configparser

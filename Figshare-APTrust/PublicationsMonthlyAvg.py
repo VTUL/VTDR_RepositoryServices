@@ -1,10 +1,4 @@
 """
-Created on Mon Mar 07 09:41:18 2023
-
-@author: padma carstens
-@co-author: jonathan petters
-"""
-"""
 Purpose: 
 
 -Reads the publication dates from 2022 spreadsheet 

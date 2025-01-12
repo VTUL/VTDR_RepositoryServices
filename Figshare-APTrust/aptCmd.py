@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jul 4 12:30:24 2023
-
-@author: padma carstens
-@co-author: jonathan petters
-"""
 """
 Purpose: 
 -Runs the aptrust command-line utility (apt-cmd, partner tools) at https://aptrust.github.io/userguide/partner_tools/ to read registry list on aptrust
