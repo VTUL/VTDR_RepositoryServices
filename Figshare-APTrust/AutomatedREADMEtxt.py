@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 25 10:55:10 2021
-
-@author: padma carstens
-"""
 #Following code creates README text file using information from Figshare article
 
 from tkinter.messagebox import NO

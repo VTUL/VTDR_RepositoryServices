@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  6 12:39:04 2021
-
-@author: padma carstens
-@co-author: jonathan petters
-"""
-
 """
 Purpose: 
 -Opens the publication folder created by PubFolder_Download.py. 

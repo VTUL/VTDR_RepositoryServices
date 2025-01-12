@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-Created on Tue Sep 28 09:41:18 2021
-
-@author: padma carstens
-@co-author: jonathan petters
-"""
-
 """
 Purpose: 
 1. Downloads published article from figshare using article ID and token. This was built off of UAL-RE ldcoolp code to download article information which was built off of figshare Python code to retrieve article information 

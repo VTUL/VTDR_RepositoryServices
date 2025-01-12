@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-'''
-figshareUploadFile.py
-Created on   2024/10/09 3:03:13
-'''
 #Following codes use figshare api and figshare upload service api taken from figshare api documentation: https://docs.figshare.com/old_docs/api/upload_example/ and modified for VTUL figshare upload purposes. 
 # Note: If the same file is uploaded to figshare account twice, it appears twice in the item and is not overwritten
 #Purpose: Upload a file to VTUL figshare
@@ -99,6 +94,26 @@ def upload_part(file_info, stream, part):
     raw_issue_request('PUT', url, data=data, binary=True)
     print ('  Uploaded part {partNo} from {startOffset} to {endOffset}'.format(**part))
 
+#def main():
+  #  # We first create the article
+  # # Note that this part uploads article to figshare account, see figshareUpload.py where this was tested in the Padma's account
+
+  #  list_articles()
+  #  article_id = create_article(TITLE)
+  #  list_articles()
+  #  list_files_of_article(article_id)
+
+ #   # Then we upload the file.
+ #   file_info = initiate_new_upload(article_id, FILE_PATH)
+ #   # Until here we used the figshare API; following lines use the figshare upload service API.
+ #   upload_parts(file_info)
+ #   # We return to the figshare API to complete the file upload process.
+ #   complete_upload(article_id, file_info['id'])
+ #   list_files_of_article(article_id)
+
+
+#if __name__ == '__main__':
+#    main()
 
 ##test:
 #config=configparser.ConfigParser()

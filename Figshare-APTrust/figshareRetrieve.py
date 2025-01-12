@@ -1,4 +1,3 @@
-
 from redata.commons.logger import log_stdout
 import requests
 from requests import HTTPError

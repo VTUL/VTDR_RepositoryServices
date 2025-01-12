@@ -1,10 +1,4 @@
 """
-Created on Thu May  11 5:39:04 2023
-
-@author: padma carstens
-"""
-
-"""
 Purpose: 
 read netcdf .nc files and plot /print arrays shown in comments at the bottom
 """

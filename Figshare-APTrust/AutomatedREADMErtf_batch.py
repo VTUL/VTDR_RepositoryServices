@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-'''
-AutomatedREADMErtf_batch.py
-Created on   2024/10/09 14:32:07
-@author  :   padma carstens 
-@co-author: jonathan petters
-@license :   MIT License
-'''
 import os
 from tkinter.messagebox import NO
 import figshare

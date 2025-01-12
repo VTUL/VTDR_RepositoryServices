@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-'''
-PubBagDART_TransferAPTrust_batch.py
-Created on   2024/10/01 12:53:04
-@author  :   padma carstens 
-@co-author: jonathan petters
-'''
 """
 Purpose: 
 Repeats the following actions for batch upload/transfer of publication bags to aptrust:
