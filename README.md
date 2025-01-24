@@ -1,13 +1,26 @@
+- [Overview of Curation workflow for Data Management and Curation Services](#overview_of_curation_workflow_for_data_management_and_curation_services)
+- [Getting Started](#getting_started)
+- [Description of the workflow](#description_of_the_workflow)
+- [Overview of the workflow with curation diagram](#overview_of_the_workflow_with_curation_diagram)
+- [Running Batch Codes](running_batch_codes)
+
+
+<a id="overview_of_curation_workflow_for_data_management_and_curation_services"></a>
 # Overview of Curation workflow for Data Management and Curation Services
 
-The codes here show the workflow set up by [Virginia Tech Data Repository](https://data.lib.vt.edu/) to download and deposit bags to aptrust via [DART](https://aptrust.github.io/dart-docs/users/workflows/). Virginia Tech Data Services uses a simple client for the figshare API in python from [Cognoma](https://github.com/cognoma/figshare), parts of [LD-Cool-P from University of Arizona workflow]( https://github.com/padmacarstens/LD-Cool-P), and [Scripting with DART](https://aptrust.github.io/dart-docs/users/scripting/). VTDR runs on the figshare for institutions platform.
-The workflow creates folders for [VTDR](https://data.lib.vt.edu) articles in-review(ingest content: before curator-client interactions) and after review(published content: after curator-client interactions). The content is then bagged in tarred format. Part of the bagging for published content involves creation of ArchivalReadme.rtf file, README.rtf file, and addition of emails, ProvenanceLog.rtf by the curator. The bagged content is then transferred to APTrust via their [DART](https://aptrust.github.io/dart-docs/users/workflows/) and/or Virginia Tech Libraries storage. [APTrust registry](https://aptrust.org/documentation-page/registry/) checks are made to avoid overwriting existing bags.
+The scripts in the folder **Figshare-APTrust** show the workflow set up by [Virginia Tech Data Repository](https://data.lib.vt.edu/) to download and deposit bags to aptrust via [DART](https://aptrust.github.io/dart-docs/users/workflows/). Virginia Tech Data Services uses a simple client for the figshare API in python from [Cognoma](https://github.com/cognoma/figshare), parts of [LD-Cool-P from University of Arizona workflow]( https://github.com/padmacarstens/LD-Cool-P), and [Scripting with DART](https://aptrust.github.io/dart-docs/users/scripting/). VTDR runs on the figshare for institutions platform.
+
+The scripts in the folder **APTrustBagTransferAndmd5Verification** show the checksum verifications, bag validations performed on existing figshare bags stored in a previous storage location (not APTrust), and re-bagging scripts used to transfer the existing figshare bags(~2TB) to APTrust.
+
+The workflow scripts in the folder **Figshare-APTrust** creates folders for [VTDR](https://data.lib.vt.edu) articles in-review (ingest content: before curator-client interactions) and after review(published content: after curator-client interactions). The content is then bagged in tarred format using APTrust bagit profile and tag values using DART app([Scripting with DART](https://aptrust.github.io/dart-docs/users/scripting/)). Part of the bagging for published content involves creation of ArchivalReadme.rtf file, README.rtf file, and addition of emails, ProvenanceLog.rtf by the curator. The bagged content is then transferred to APTrust via their [DART](https://aptrust.github.io/dart-docs/users/workflows/) and/or Virginia Tech Libraries storage. [APTrust registry](https://aptrust.org/documentation-page/registry/) checks are made to avoid overwriting existing bags. APTrust performs fixity checks on these bags at regular intervals. 
 
 Detailed documentation on how to set up a Windows/Mac environment to use these codes is available at:
 [ScriptsSetupAndExecution_CurationWorkflow_Windows.docx](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Windows.docx)
 [ScriptsSetupAndExecution_CurationWorkflow_Mac.docx](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Mac.docx)
 
+<a id="getting_started"></a>
 # Getting Started
+
 Detailed instructions for environment setup are at:
 [Setting up environment for Mac](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Mac.docx)
 [Setting up environment for Windows](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Windows.docx)
@@ -17,11 +30,13 @@ Overview of environment setup:
 * Download [Anaconda Distribution for Windows/Mac](https://www.anaconda.com/download/success)
 * Download [Visual Studio Code for Windows/Mac](https://code.visualstudio.com/download)
 * Download [git](https://git-scm.com/downloads)
-* Create a curation environment in conda using python 3.9 version
+* Create a curation environment in conda using python 3.9 version and activate it:
+
 ```
 conda create -n curation python=3.9
 conda activate curation
 ```
+
 Clone [VTDR Repository](https://github.com/VTUL/VTDR_RepositoryServices) from [VTUL github](https://github.com/VTUL)
 * Create a token in [VTDR](https://data.lib.vt.edu/)
 * Open generate_config_example.py from 'Figshare-APTrust' folder, and save it as 'generate_config.py' in the 'curation' folder. Fill in the credentials. Details on filling these credentials are available [here](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Mac.docx) for mac, and [here](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/ScriptsSetupAndExecution_CurationWorkflow_Windows.docx) for windows
@@ -30,6 +45,7 @@ Clone [VTDR Repository](https://github.com/VTUL/VTDR_RepositoryServices) from [V
 * Download [DART tool](https://aptrust.github.io/dart-docs/download/) to deposit content to APTrust. Fill in the credentials in the DART tool following [these instructions](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/DARTSetup_APTrust_VTLibS3Setup_CurationWorkflow.docx)
 
 
+<a id="description_of_the_workflow"></a>
 # Description of the workflow: 
 
 **Note** : For the curation workflow, only the scripts in **'Fighsare-APTrust'** folder are used.
@@ -37,7 +53,8 @@ Clone [VTDR Repository](https://github.com/VTUL/VTDR_RepositoryServices) from [V
 Workflow diagram with detailed description of each block is available at:
 [Curator workflow detailed documentation with workflow diagram](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/CuratorWorkflowDiagramWithScriptExecution_v2_20231108.docx)
 
-## Overview of the workflow: 
+<a id="verview_of_the_workflow_with_curation_diagram"></a>
+# Overview of the workflow with curation diagram: 
 
 ![alt text](image.png)
 
@@ -71,7 +88,7 @@ Clients record is updated on [VTDR](https://data.lib.vt.edu/) using edit item in
 Provenance log created in step 4 is updated by the curator
 
 **Step 11** Add metadata to dataset on repository platform and Step(11a): Record metadata changes in provenance log:	
-* Run README.rtf to create a README file. Upload this file to the client's record. 
+* Run the script CreateUploadReadme.py to create a README file and upload to the client's record. 
 
 **Step 12** Publish dataset on repository platform and step (12a) Record dataset publication in provenance log:	
 Item is published on [VTDR](https://data.lib.vt.edu/) 
@@ -90,7 +107,7 @@ Published article metadata is recorded in VTDR spreadsheet.
 Workflow is complete.
 
 
-
+<a id="running_batch_codes"></a>
 # Running Batch Codes:
 
 From the Explorer on the left side in VSCode, open generate_config_batch_example.py and save it as generate_config_batch.py. Fill in only the values of the credentials from generate_config.py. Please note that copying lines from generate_config.py to generate_config_batch.py changes formatting, and causes errors. In order to avoid this, copy paste only the values. For Eg: for figshare token, copy the token value only, and paste it in generate_config_batch.py.

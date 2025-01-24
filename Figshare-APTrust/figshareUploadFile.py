@@ -19,7 +19,7 @@ CHUNK_SIZE = 1048576
 BASE_URL = 'https://api.figshare.com/v2/{endpoint}'
 config=configparser.ConfigParser()
 config.read('configurations-batch.ini')
-#Get your figshare token 
+#Get your figshare token, only using batch.ini for token, not the article id, so it doesn't matter if its reading this token from configurations.ini or configurations-batch.ini
 TOKEN=config['FigshareSettings']['token']
 
 
