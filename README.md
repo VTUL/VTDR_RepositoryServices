@@ -2,8 +2,8 @@
 - [Getting Started](#getting_started)
 - [Description of the workflow](#description_of_the_workflow)
 - [Overview of the workflow with curation diagram](#overview_of_the_workflow_with_curation_diagram)
-- [Running Batch Codes](running_batch_codes)
-
+- [Running Batch Codes](#running_batch_codes)
+- [git pull tips](#git_pull_tips_for_local_changes)
 
 <a id="overview_of_curation_workflow_for_data_management_and_curation_services"></a>
 # Overview of Curation workflow for Data Management and Curation Services
@@ -53,7 +53,7 @@ Clone [VTDR Repository](https://github.com/VTUL/VTDR_RepositoryServices) from [V
 Workflow diagram with detailed description of each block is available at:
 [Curator workflow detailed documentation with workflow diagram](https://github.com/VTUL/VTDR_RepositoryServices/blob/main/CuratorWorkflowDiagramWithScriptExecution_v2_20231108.docx)
 
-<a id="verview_of_the_workflow_with_curation_diagram"></a>
+<a id="overview_of_the_workflow_with_curation_diagram"></a>
 # Overview of the workflow with curation diagram: 
 
 ![alt text](image.png)
@@ -141,6 +141,7 @@ Note:
 1. README file is created in the path provided in the configurations, with a date stamp addition in order to avoid overwriting
 2. README file is uploaded to the client's account after the ingest record is created and transferred to aptrust
 
+<a id="git_pull_tips_for_local_changes"></a>
 ## git rebase for accomodating changes made locally, and main being ahead of local:
 
 - Commit local changes:
