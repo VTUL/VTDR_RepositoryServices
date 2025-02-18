@@ -43,6 +43,7 @@ if GetPlatform=="Darwin":
   ReadmeDir="/Users/padma/opt/anaconda3/envs/curation/README_FILES"
   platformExt="./"
   SanDiskPath="D:/"
+  UserSharesPath="//lib-nas-pri/UserShares/Curation Services"
   LocalBagPath='C:/Users/padma/Documents/DART'
 if GetPlatform=="Windows":
   CurationDir="C:/Users/padma/anaconda3/envs/curation"
@@ -51,6 +52,7 @@ if GetPlatform=="Windows":
   ReadmeDir="C:/Users/padma/anaconda3/envs/curation/README_FILES"
   platformExt=""
   SanDiskPath="D:/"
+  UserSharesPath="U:/Curation Services"
   LocalBagPath='C:/Users/padma/Documents/DART'
 FileID="38878398"
 #spreadsheetName="20211214_VTDR_PublishedDatasets_Log_V7"
@@ -96,6 +98,7 @@ config_file.set("ArchivalREADMEPathSettings","ArchivalREADME_RootDir", CurationD
 #ADD SECTION for IngestBag_Download_TransferAPTrust script
 config_file.add_section("IngestBag_PathSettings")
 config_file.set("IngestBag_PathSettings","SanDiskDirPath",SanDiskPath)
+config_file.set("IngestBag_PathSettings","UserSharesPath",UserSharesPath)
 config_file.set("IngestBag_PathSettings","IngFolderPath",CurationDir)
 config_file.set("IngestBag_PathSettings","metadatajsonpath",CurationDir)
 config_file.set("IngestBag_PathSettings","LocalPathBag",LocalBagPath)
@@ -105,6 +108,7 @@ config_file.set("IngestBag_PathSettings","LocalPathBag",LocalBagPath)
 config_file.add_section("PubFolder_PathSettings")
 config_file.set("PubFolder_PathSettings","PubFolderPath",CurationDir)
 config_file.set("PubFolder_PathSettings","SanDiskDirPath",SanDiskPath)
+config_file.set("PubFolder_PathSettings","UserSharesPath",UserSharesPath)
 config_file.set("PubFolder_PathSettings","LocalPathBag",LocalBagPath)
 #----------------------------------------------------------------
 
