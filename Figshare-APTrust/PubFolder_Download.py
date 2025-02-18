@@ -66,8 +66,8 @@ Version=vtsheet['gsversnum']
 #get published date in YYYYMMDD format 
 DatePublished= vtsheet['gsdatepub'] 
 #get DOI suffix
-DOIsuffix=vtsheet['DOIsuffix']
-
+DOIsuffix=vtsheet['gsdoisuffix']
+#FigshareArticleID=vtsheet['psheet_articleid']
 
 
 #get the row number of published article

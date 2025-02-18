@@ -58,7 +58,8 @@ pVersion=Pvtsheet['gsversnum']
 #get date published
 pDate=Pvtsheet['gsdatepub']
 #get DOI suffix
-pDOIsuffix=Pvtsheet['DOIsuffix']
+#pDOIsuffix=Pvtsheet['DOIsuffix']
+pDOIsuffix=Pvtsheet['gsdoisuffix']
 #get the bag path for large bags
 sourcedir1=config['PubBagDartAptrust_PathSettings']['LargeBagsPath']
 
@@ -70,23 +71,43 @@ PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
 PubFolder=os.path.join(PubFolderPath,aptrustBagName)
 payload=os.listdir(PubFolder)
 destn_path_sandisk=config['PubFolder_PathSettings']['SanDiskDirPath']
+destn_path_UserShares=config['PubFolder_PathSettings']['UserSharesPath']
 local_dir_path=config["PubFolder_PathSettings"]["LocalPathBag"]
 
-if not os.path.exists(destn_path_sandisk):
-    print("*************SAN DISK PATH IS NOT FOUND*************")
-    SanDiskProceedInput=input("Do you still wish to create the local bag?(yes/no)")
-    if SanDiskProceedInput=='no':
-       print("***QUIT MAKING THE BAG***")
-       quit()
-    if SanDiskProceedInput == 'yes':
-       print("***PROCEEDING MAKING BAG WITHOUT COPYING TO SANDISK***")
-if os.path.exists(destn_path_sandisk):
-   SanDiskProceedInput="yes"
-print("SANDISK INPUT IS ",SanDiskProceedInput)
+storageLocation=input("Do you wish to copy the publication bag to SanDisk or UserShares/CurationServices folder?(1 for sandisk/2 for UserShares/CurationServices): ")
+  
+if storageLocation == "1":
+     destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
+     if not os.path.exists(destn_path_sandisk):
+       print("*************SAN DISK PATH IS NOT FOUND*************")
+       SanDiskProceedInput=input("Do you still wish to create a local copy of the publication bag?(yes/no)")
+       if SanDiskProceedInput=='no':
+         print("***YOU PICKED TO NOT CREATE A LOCAL COPY OF THE PUBLICATION BAG SO QUITTING***")
+         quit()
+       if SanDiskProceedInput == 'yes':
+         print("***PROCEEDING WITH MAKING A LCOAL COPY OF THE PUBLICATION BAG WITHOUT COPYING IT TO SANDISK***")
+         ProceedInput="yes"
+     if os.path.exists(destn_path_sandisk):
+        SanDiskProceedInput="yes"
+        ProceedInput="yes"
+        print("SANDISK INPUT IS ",SanDiskProceedInput)
 
-#checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-#if checkReg == 1 and SanDiskProceedInput=="yes":
-  #-------------------------------------
+if storageLocation == "2":
+     destn_path_bag=os.path.join(destn_path_UserShares,aptrustBagName_tar)
+     if not os.path.exists(destn_path_UserShares):
+       print("*************USER SHARES PATH IS NOT FOUND*************")
+       UserSharesProceedInput=input("Do you still wish to create a local copy of the publication bag?(yes/no)")
+       if UserSharesProceedInput=='no':
+         print("***YOU PICKED TO NOT CREATE A LOCAL COPY OF THE PUBLICATION BAG SO QUITTING***")
+         quit()
+       if UserSharesProceedInput == 'yes':
+         print("***PROCEEDING WITH MAKING A LCOAL COPY OF THE PUBLICATION BAG WITHOUT COPYING IT TO USERSHARES***")
+         ProceedInput="yes"
+     if os.path.exists(destn_path_UserShares):
+        UserSharesProceedInput="yes"
+        ProceedInput="yes"
+        print("Does UserShares exist: ",UserSharesProceedInput)
+
 #************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
 while True:
   workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
@@ -114,7 +135,7 @@ if workflow =='2' or workflow =='4':
    checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
 if workflow =='3': 
    checkReg=1 #bag is only uploaded to s3, so aptrust registry check is skipped by setting it to 1
-if (workflow == "1" and SanDiskProceedInput=="yes") or (checkReg == 1 and SanDiskProceedInput=="yes"):
+if (workflow == "1" and ProceedInput=="yes") or (checkReg == 1 and ProceedInput=="yes"):
   job=Job(jobname,aptrustBagName)
   #Open the publication folder and add all the files to the DART app to bag them
   for f in payload:
@@ -199,14 +220,27 @@ if (workflow == "1" and SanDiskProceedInput=="yes") or (checkReg == 1 and SanDis
                    print("not overwriting existing non disseminated content")
           
 #----------------Copy Publication bag to SanDisk path defined in generate_config.py:-------------------------
-  destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
+  print("**********storage location is: ",storageLocation," ************")
+  #destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
   localPath=os.path.join(local_dir_path,aptrustBagName_tar)
-  if not os.path.exists(destn_path_sandisk):
+  if storageLocation == "1":
+    if not os.path.exists(destn_path_sandisk):
      print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
-  if os.path.exists(destn_path_sandisk):
-    if not os.path.exists(destn_path_bag):
-      shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
-      print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
+    if os.path.exists(destn_path_sandisk):
+      if not os.path.exists(destn_path_bag):
+        shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
+        print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
     else:
       print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
-          
+
+  if storageLocation == "2":
+    if not os.path.exists(destn_path_UserShares):
+     print("*************USER SHARES PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO USERSHARES*************")
+    if os.path.exists(destn_path_UserShares):
+      print("destination path for copying bag to UserShares is: ",destn_path_UserShares)
+      if not os.path.exists(destn_path_bag):
+        shutil.copy(localPath,destn_path_UserShares)#shutil.copy(source,destn)
+        print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_UserShares,"***************")
+    else:
+      print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_UserShares," SO NOT OVERWRITING IT*************")
+
