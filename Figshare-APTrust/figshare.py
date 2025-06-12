@@ -305,18 +305,27 @@ class Figshare:
     #    https://data.lib.vt.edu/articles/dataset/Social_Networks_in_Georgian_Britain/14849748
         
         if version is None:
-            if self.private:
-                url = self.endpoint('/account/articles/{}/files'.
-                                  format(article_id))
-                
+            files = []
+            page = 1
+            per_page = 100  # Adjust as needed or as allowed by the API
+            while True:
+                if self.private:
+                    url = self.endpoint('/account/articles/{}/files'.format(article_id))
                 #url = self.endpoint('/account/institution/review/ '.
-                               #     format(article_id))
-            else:
-                url = self.endpoint('/articles/{}/files'.format(article_id))
-              #  url = self.endpoint('url = self.endpoint('/articles/{}/files'.format(article_id)))
-            headers = self.get_headers(self.token)
-            response = issue_request('GET', url, headers=headers)
-            return response
+                #     format(article_id))
+                else:
+                    url = self.endpoint('/articles/{}/files'.format(article_id))
+                #  url = self.endpoint('url = self.endpoint('/articles/{}/files'.format(article_id)))
+                headers = self.get_headers(self.token)
+                params = {'page': page, 'page_size': per_page}
+                response = issue_request('GET', url, headers=headers, params=params)
+                if not response:
+                    break
+                files.extend(response)
+                if len(response) < per_page:
+                    break
+                page += 1
+            return files
         else:
             request = self.get_article_details(article_id, version)
             return request['files']

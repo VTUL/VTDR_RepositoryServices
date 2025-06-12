@@ -21,6 +21,7 @@ def create_readme_batch(ArticleID,token,readmePath):
   :param token: Figshare token: click circle on data.lib.vt.edu, then click 
   "Applications" then click "Create Personal Token"
   :readmePath: taken from configurations, current date is appended to this folder to avoid overwriting README.rtf file that is created
+  This code is called by CreateUploadReadme.py, this is called as a function and does not create a local copy of readme file unlike AutomatedREADMErtf.py
   """
   #If creating this AFTER the article is published then change "private" to "False" below, this will create README file using the published metadata
   fs=Figshare(token=token,private=True)
