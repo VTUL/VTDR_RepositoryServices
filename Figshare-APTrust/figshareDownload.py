@@ -37,6 +37,7 @@ def download_files(article_id, fversion, fs, root_directory=None, data_directory
     # Retrieve article information
     file_list = fs.list_files(article_id,fversion)
     n_files = len(file_list)
+    print(f"Number of files in article {article_id}: {n_files}")
     if not data_directory:
         dir_path = os.path.join(root_directory, f"figshare_{article_id}/")#, f"figsharemd_{article_id}/")
     else:
