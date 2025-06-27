@@ -187,51 +187,76 @@ if workflow =='2' or workflow =='4':
 if workflow =='3': 
    checkReg=1 #bag is only uploaded to s3, so aptrust registry check is skipped by setting it to 1
 if (workflow == "1" and ProceedInput=="yes") or (checkReg == 1 and ProceedInput=="yes"):
-  job=Job(jobname,aptrustBagName)
-  for f in payload:
-      datapath=os.path.join(data_directory_path,f)
-      job.add_file(datapath)
-    #job.add_file(data_directory_path+"\\"+f)
-      print("Added following file to bag in DART: ",f)
-      bag_group_identifier=f"VTDR_{IngestAccessionNumber}"
-  job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
-  job.add_tag("bag-info.txt","Source-Organization","Virginia Tech")
-  job.add_tag("aptrust-info.txt", "Access", "Institution")
-  job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
-  aptrust_title=aptrustBagName
-  job.add_tag("aptrust-info.txt","Title",aptrust_title)
-  job.add_tag("bagit.txt","BagIt-Version","0.97")
-  job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
-
-  exit_code = job.run()
-  if exit_code == 0:
-      print("Job completed")
-      print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
-
-  else:
-      print("Job failed. Check the DART log for details.")
-      print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
-      quit()
+    total_files = len(payload)
+    if total_files > 200:
+        print(f"Large number of files detected ({total_files}). Processing in batches of 100...")
+        for i in range(0, total_files, 100):
+            batch = payload[i:i+100]
+            batch_bagname = f"{aptrustBagName}_batch_{i//100+1}"
+            batch_job = Job(jobname, batch_bagname)
+            for f in batch:
+                datapath = os.path.join(data_directory_path, f)
+                batch_job.add_file(datapath)
+                print("Added file to batch:", f)
+            # Use the same group identifier for all batches:
+            bag_group_identifier = f"VTDR_{IngestAccessionNumber}"
+            batch_job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
+            batch_job.add_tag("bag-info.txt", "Source-Organization", "Virginia Tech")
+            batch_job.add_tag("aptrust-info.txt", "Access", "Institution")
+            batch_job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
+            batch_job.add_tag("aptrust-info.txt", "Title", batch_bagname)
+            batch_job.add_tag("bagit.txt", "BagIt-Version", "0.97")
+            batch_job.add_tag("bagit.txt", "Tag-File-Character-Encoding", "UTF-8")
+            exit_code = batch_job.run()
+            if exit_code == 0:
+                print(f"Batch {i//100+1} completed successfully.")
+            else:
+                print(f"Batch {i//100+1} failed. Check the DART log for details.")
+                quit()
+    else:
+        # Original single-job logic for small numbers of files
+        job = Job(jobname, aptrustBagName)
+        for f in payload:
+            datapath = os.path.join(data_directory_path, f)
+            job.add_file(datapath)
+            print("Added following file to bag in DART: ", f)
+            bag_group_identifier = f"VTDR_{IngestAccessionNumber}"
+        job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
+        job.add_tag("bag-info.txt", "Source-Organization", "Virginia Tech")
+        job.add_tag("aptrust-info.txt", "Access", "Institution")
+        job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
+        aptrust_title = aptrustBagName
+        job.add_tag("aptrust-info.txt", "Title", aptrust_title)
+        job.add_tag("bagit.txt", "BagIt-Version", "0.97")
+        job.add_tag("bagit.txt", "Tag-File-Character-Encoding", "UTF-8")
+        exit_code = job.run()
+        if exit_code == 0:
+            print("Job completed")
+            print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
+        else:
+            print("Job failed. Check the DART log for details.")
+            print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
+            quit()
 #-----------------------COPY BAG TO SAN DISK LOCATION:
 
 #----------------Copy Publication bag to SanDisk path defined in generate_config.py:-------------------------
 
-  localPath=os.path.join(local_dir_path,aptrustBagName_tar)
-  if storageLocation == "1":
-    destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
+localPath = os.path.join(local_dir_path, aptrustBagName_tar)
+if storageLocation == "1":
+    destn_path_bag = os.path.join(destn_path_sandisk, aptrustBagName_tar)
     if not os.path.exists(destn_path_sandisk):
-      print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
+        print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
     if os.path.exists(destn_path_sandisk):
-      if not os.path.exists(destn_path_bag):
-        shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
-        print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
-      else:
-        print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
+        if not os.path.exists(destn_path_bag):
+            shutil.copy(localPath, destn_path_sandisk)  # shutil.copy(source, destn)
+            print("*************COPIED BAG: ", aptrustBagName_tar, " FROM SOURCE: ", localPath, " TO: ", destn_path_sandisk, "***************")
+        else:
+            print("*************BAG IN TAR FORMAT: ", aptrustBagName_tar, "ALREADY EXISTS IN: ", destn_path_sandisk, " SO NOT OVERWRITING IT*************")
 
-  if storageLocation == "2":
-    destn_path_bag=os.path.join(destn_path_UserShares,aptrustBagName_tar)
+if storageLocation == "2":
+    destn_path_bag = os.path.join(destn_path_UserShares, aptrustBagName_tar)
     if not os.path.exists(destn_path_UserShares):
-      print("*************USER SHARES PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO USER SHARES*************")
+        print("*************USER SHARES PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO USER SHARES*************")
     if os.path.exists(destn_path_UserShares):
-      if not os.path.exists(destn_path_bag):
-        shutil.copy(localPath,destn_path_UserShares)
+        if not os.path.exists(destn_path_bag):
+            shutil.copy(localPath, destn_path_UserShares)
