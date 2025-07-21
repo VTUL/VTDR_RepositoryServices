@@ -5,6 +5,7 @@ Purpose:
 3. Calls and passes tags and ingest folder to DART app through STDIN using a predefined VT workflow. The workflow is created within the DART app. DART creates the ingest bag from the ingest folder in the .dart folder in the local computer. DART also transfers this Ingest bag to APTrust Repo and VT S3 storage, credentials for upload are stored in the DART app. The ingest bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app.
 """
 import os
+import platform 
 from os.path import exists
 import sys
 sys.path.append('figshare')
@@ -189,6 +190,12 @@ if workflow =='3':
 if (workflow == "1" and ProceedInput=="yes") or (checkReg == 1 and ProceedInput=="yes"):
     total_files = len(payload)
     if total_files > 200:
+        batch_user_approval = input("Do you want to process files in batches of 100? (yes/no): ")
+        #batch logic for large number of files for mac only
+    else:
+        batch_user_approval = "no"  # Default for smaller datasets
+    
+    if total_files > 200 and platform.system() == "Darwin" and batch_user_approval.lower() == 'yes':
         print(f"Large number of files detected ({total_files}). Processing in batches of 100...")
         for i in range(0, total_files, 100):
             batch = payload[i:i+100]
