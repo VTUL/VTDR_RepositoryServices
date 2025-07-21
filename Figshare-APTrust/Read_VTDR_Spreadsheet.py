@@ -87,6 +87,11 @@ def vtingsheet(ArticleID, IngestVersionNumber):
             row_vermatch = [i for i, e in enumerate(ingsheet_version) if e == IngestVersionNumber]
             # Find the row in the spreadsheet that corresponds to the given article ID and version number
             rownum = np.intersect1d(row_aidmatch, row_vermatch)
+            if len(rownum) > 1:
+                print("ERROR: Multiple rows found with the same Article ID and Version Number in the Ingest sheet.")
+                print("Rows:", rownum + 1)
+                print("Please resolve duplicate entries before proceeding.")
+                sys.exit(1)
             # the row number on the spreadsheet is rownum+1 due to array indexing from 0
             # convert numpy array to integer
             print("Ingest sheet rownumber: ", rownum + 1)
