@@ -381,5 +381,9 @@ class Figshare:
         os.makedirs(dir0, exist_ok=True) # This might require Python >=3.2
 
         for file_dict in file_list:
-            urlretrieve(file_dict['download_url'], os.path.join(dir0, file_dict['name']))
+            # This will create subfolders if 'name' contains slashes
+            out_path = os.path.join(dir0, file_dict['name'])
+            os.makedirs(os.path.dirname(out_path), exist_ok=True)
+            urlretrieve(file_dict['download_url'], out_path)
+
 
