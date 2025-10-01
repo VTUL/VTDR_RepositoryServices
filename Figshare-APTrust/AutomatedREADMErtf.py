@@ -98,7 +98,7 @@ def create_readme(ArticleID,token):
   #Get the item type 'dataset' or 'code' etc.
   ItemType=details['defined_type_name']#"Dataset"#change
   #Get the list of keywords
-  keywords=s.join(details['tags'])
+  keywords=s.join(details['keywords'])
   #Strip html tags in description
   #In this code we are using BeautifulSoup
   Description=details['description']
