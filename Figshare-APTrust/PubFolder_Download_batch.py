@@ -79,7 +79,7 @@ def DownloadPub():
 #get published date in YYYYMMDD format 
   DatePublished= vtsheet['gsdatepub'] 
 #get DOI suffix
-  DOIsuffix=vtsheet['DOIsuffix']
+  DOIsuffix=vtsheet['gsdoisuffix']
 #get the row number of published article
   PublishedAccessionNumber= vtsheet['gspubnum']
 #get the ingest number corresponding to the published accession number
@@ -99,8 +99,10 @@ def DownloadPub():
   payload_directory1=f"DisseminatedContent"
   PubFolderPayloadPath=os.path.join(PubFolderPath,aptrustBagName, payload_directory1)
   metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
-  fversion=int(PublishedVersionNumber[1])
-
+  
+  #uncomment the following line and comment out None if recreating a bag for a specific published version and not the latest published version
+  #fversion=int(PublishedVersionNumber[1])
+  fversion=None
   fs=Figshare(token=token,private=False,version=fversion)
   FileDownload=figshareDownload.download_files(article_id, fversion, fs, data_directory=PubFolderPayloadPath, metadata_directory=metadata_directory_path)
 
