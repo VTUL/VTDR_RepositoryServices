@@ -35,6 +35,7 @@ def download_files(article_id, fversion, fs, root_directory=None, data_directory
         root_directory = os.getcwd()
 
     # Retrieve article information
+    print(f"****************Retrieving file list for article {article_id} version {fversion}")
     file_list = fs.list_files(article_id,fversion)
     n_files = len(file_list)
     print(f"Number of files in article {article_id}: {n_files}")
