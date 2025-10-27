@@ -89,8 +89,10 @@ aptrustBagName=f"VTDR_{PublishedAccessionNumber}_{IngestAccessionNumber}_DOI_{DO
 payload_directory1=f"DisseminatedContent"
 PubFolderPayloadPath=os.path.join(PubFolderPath,aptrustBagName, payload_directory1)
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
-fversion=int(PublishedVersionNumber[1])
-
+PublishedVersionNumber = config['FigshareSettings']['PublishedVersionNumber']
+fversion=None
+print(f"***************Figshare published version number (None gets the latest published version): {fversion}")
+#quit()
 fs=Figshare(token=token,private=False,version=fversion)
 FileDownload=figshareDownload.download_files(article_id, fversion, fs, data_directory=PubFolderPayloadPath, metadata_directory=metadata_directory_path)
 
@@ -121,6 +123,9 @@ reme=create_archivalreadme(ArticleID,PublishedVersionNumber,IngestVersionNumber,
 VTCurServicesPath=f"VTCurationServicesActions"     
 #data_directory_path2=os.path.join(data_directory1,data_directory2,data_directory4)
 payload_path=os.path.join(PubFolderPath,aptrustBagName,VTCurServicesPath)
-os.mkdir(payload_path)
-print("Directory '% s' created" % payload_path) 
+if not os.path.exists(payload_path):
+    os.mkdir(payload_path)
+    print("Directory '%s' created" % payload_path)
+else:
+    print("Directory '%s' already exists, skipping creation." % payload_path)
 

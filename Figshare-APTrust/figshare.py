@@ -386,4 +386,3 @@ class Figshare:
             os.makedirs(os.path.dirname(out_path), exist_ok=True)
             urlretrieve(file_dict['download_url'], out_path)
 
-
