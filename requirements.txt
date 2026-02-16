@@ -1,0 +1,3 @@
+redata
+gspread
+oauth2client

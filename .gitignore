@@ -85,3 +85,5 @@ docs/_build/
 # Ignore macOS system files
 .DS_Store
 Figshare-APTrust/.DS_Store
+
+client_secret.json
