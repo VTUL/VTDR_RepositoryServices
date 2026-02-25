@@ -6,7 +6,7 @@
 import sys
 import configparser
 #import generate_config_batch
-from generate_config_batch import configurations
+#from generate_config_batch import configurations
 sys.path.append('curation')
 import os
 import requests
