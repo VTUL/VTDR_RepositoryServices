@@ -50,6 +50,8 @@ print("DEBUG ArticleID:", ArticleID, PublishedVersionNumber, IngestVersionNumber
 #Get the row information of the article in review/ingested article from the Ingest sheet using the corresponding ArticleID and Version Number:
 #try:
 ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
+
+
 #Get article id
 article_id=ingsheet['ingarticleid']
 

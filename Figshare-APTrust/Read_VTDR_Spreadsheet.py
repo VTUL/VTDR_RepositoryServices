@@ -87,6 +87,16 @@ def vtingsheet(ArticleID, IngestVersionNumber):
             row_vermatch = [i for i, e in enumerate(ingsheet_version) if e == IngestVersionNumber]
             # Find the row in the spreadsheet that corresponds to the given article ID and version number
             rownum = np.intersect1d(row_aidmatch, row_vermatch)
+
+            print("DEBUG IngestVersionNumber raw:", repr(IngestVersionNumber))
+
+            print("DEBUG sample versions:", [repr(v) for v in ingsheet_version[:20]])
+            print("DEBUG sample article ids:", [repr(a) for a in ingsheet_article[:20]])
+
+            print("DEBUG row_aidmatch count:", len(row_aidmatch), "first:", row_aidmatch[:5])
+            print("DEBUG row_vermatch count:", len(row_vermatch), "first:", row_vermatch[:5])
+            print("DEBUG intersect:", rownum, "size:", getattr(rownum, "size", None))
+
             if len(rownum) > 1:
                 print("ERROR: Multiple rows found with the same Article ID and Version Number in the Ingest sheet.")
                 print("Rows:", rownum + 1)
@@ -96,7 +106,7 @@ def vtingsheet(ArticleID, IngestVersionNumber):
             # convert numpy array to integer
             print("Ingest sheet rownumber: ", rownum + 1)
             try:
-                rownum = int(rownum)
+                rownum = int(rownum[0])
             except TypeError:
                 print("ROW INFORMATION FOR THE PROVIDED ARTICLE ID AND VERSION NUMBER WAS NOT FOUND IN THE INGEST SHEET")
                 print("Please enter the ingest record information in the ingest sheet and try running again if you are creating an ingest record, otherwise please ignore this message")
@@ -122,7 +132,7 @@ def vtingsheet(ArticleID, IngestVersionNumber):
                 'ingrequestr': ing_requestor,
                 'ingversion': ing_version,
                 'ingestdate': ing_date,
-                'ingtitle': ingsheet_title,
+                'ingtitle': ing_title,
                 'ingcemail': ing_cemail,
                 'ingcomment': ing_comment,
                 'ingarticleid': ing_articleid,
