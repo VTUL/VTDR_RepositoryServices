@@ -38,7 +38,7 @@ import configparser
 #import generate_config_batch
 from generate_config_batch import configurations
 #generate config batch with a random test id:
-x=configurations("24328498","01")
+# x=configurations("24328498","01")
 sys.path.append('curation')
 import aptCmd
 from aptCmd import registryCheck
