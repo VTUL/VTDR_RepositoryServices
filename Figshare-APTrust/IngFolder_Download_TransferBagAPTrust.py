@@ -12,7 +12,6 @@ sys.path.append('figshare')
 sys.path.append('curation')
 import shutil
 from figshare import Figshare
-#from figshare.figshare import Figshare
 import requests
 from requests import HTTPError
 import figshareRetrieve
@@ -22,12 +21,9 @@ from Read_VTDR_Spreadsheet import vtingsheet
 from datetime import date
 import filecmp
 from datetime import datetime
-# import job
-# from job import Job
 from redata.commons.logger import log_stdout
 import aptCmd
 from aptCmd import registryCheck
-#Get the parameters from configurations.ini to retrieve information from an article on Figshare
 import subprocess 
 
 import configparser
@@ -163,170 +159,3 @@ if os.path.exists(final_tar_path):
 
 shutil.copy2(scratch_tar_path, final_tar_path)
 print(f"✅ Bag copied to: {final_tar_path}")
-
-
-
-
-
-
-
-
-
-
-# #-----------------STEP 3---------------------------------------------------------------------------
-# #Bag the ingest folder with DART using tar format, transfer the Ingest bag to VT S3/ APTrust demo/ APTrust repo
-
-# payload=os.listdir(data_directory_path)
-# aptrustBagName=IngFolderName
-# aptrustBagName_tar=f"{aptrustBagName}.tar"
-# #------check if sandisk is connected/exists to move a copy to it
-# destn_path_sandisk=config["IngestBag_PathSettings"]["SanDiskDirPath"]
-# local_dir_path=config["IngestBag_PathSettings"]["LocalPathBag"]
-# destn_path_UserShares=config['PubFolder_PathSettings']['UserSharesPath']
-
-# storageLocation=input("Do you wish to copy the publication bag to SanDisk or UserShares/CurationServices folder?(1 for sandisk/2 for UserShares/CurationServices): ")
-  
-# if storageLocation == "1":
-#      destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
-#      if not os.path.exists(destn_path_sandisk):
-#        print("*************SAN DISK PATH IS NOT FOUND*************")
-#        SanDiskProceedInput=input("Do you still wish to create a local copy of the publication bag?(yes/no)")
-#        if SanDiskProceedInput=='no':
-#          print("***YOU PICKED TO NOT CREATE A LOCAL COPY OF THE PUBLICATION BAG SO QUITTING***")
-#          quit()
-#        if SanDiskProceedInput == 'yes':
-#          print("***PROCEEDING WITH MAKING A LCOAL COPY OF THE PUBLICATION BAG WITHOUT COPYING IT TO SANDISK***")
-#          ProceedInput="yes"
-#      if os.path.exists(destn_path_sandisk):
-#         SanDiskProceedInput="yes"
-#         ProceedInput="yes"
-#         print("Does SANDISK exist: ",SanDiskProceedInput)
-
-# if storageLocation == "2":
-#      destn_path_bag=os.path.join(destn_path_UserShares,aptrustBagName_tar)
-#      if not os.path.exists(destn_path_UserShares):
-#        print("*************USER SHARES PATH IS NOT FOUND*************")
-#        UserSharesProceedInput=input("Do you still wish to create a local copy of the publication bag?(yes/no)")
-#        if UserSharesProceedInput=='no':
-#          print("***YOU PICKED TO NOT CREATE A LOCAL COPY OF THE PUBLICATION BAG SO QUITTING***")
-#          quit()
-#        if UserSharesProceedInput == 'yes':
-#          print("***PROCEEDING WITH MAKING A LCOAL COPY OF THE PUBLICATION BAG WITHOUT COPYING IT TO USERSHARES***")
-#          ProceedInput="yes"
-#      if os.path.exists(destn_path_UserShares):
-#         UserSharesProceedInput="yes"
-#         ProceedInput="yes"
-#         print("Does UserShares exist: ",UserSharesProceedInput)
-
-
-# #checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-# #if checkReg == 1 and SanDiskProceedInput=="yes" :
-#   #---------------------------------------------------
-# while True:
-#   #try:
-#     workflow=input("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
-#     try:
-#         workflow=int(workflow)
-#       #break
-#     except ValueError:
-#         print("Oops! That was not a valid number. Try again")
-#         continue
-#     if 1 <= workflow <= 4:
-#         break
-#     else:
-#         print("Please pick a workflow number between 1 and 4")
-# workflow=str(workflow)
-# if workflow == "1":
-#     jobname="Workflow for depositing bag to APTrust-Demo"
-# if workflow =="2":
-#     jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
-# if workflow =="3":
-#     jobname="Workflow for depositing bag to VT library S3 bucket"
-# if workflow =="4":
-#     jobname="Workflow for depositing bag to APTrust-Repo"    
-# #---------------------------------------------------------------------
-
-# if workflow =='2' or workflow =='4':
-#    checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-# if workflow =='3': 
-#    checkReg=1 #bag is only uploaded to s3, so aptrust registry check is skipped by setting it to 1
-# if (workflow == "1" and ProceedInput=="yes") or (checkReg == 1 and ProceedInput=="yes"):
-#     total_files = len(payload)
-#     if total_files > 200:
-#         batch_user_approval = input("Do you want to process files in batches of 100? (yes/no): ")
-#         #batch logic for large number of files for mac only
-#     else:
-#         batch_user_approval = "no"  # Default for smaller datasets
-    
-#     if total_files > 200 and platform.system() == "Darwin" and batch_user_approval.lower() == 'yes':
-#         print(f"Large number of files detected ({total_files}). Processing in batches of 100...")
-#         for i in range(0, total_files, 100):
-#             batch = payload[i:i+100]
-#             batch_bagname = f"{aptrustBagName}_batch_{i//100+1}"
-#             batch_job = Job(jobname, batch_bagname)
-#             for f in batch:
-#                 datapath = os.path.join(data_directory_path, f)
-#                 batch_job.add_file(datapath)
-#                 print("Added file to batch:", f)
-#             # Use the same group identifier for all batches:
-#             bag_group_identifier = f"VTDR_{IngestAccessionNumber}"
-#             batch_job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
-#             batch_job.add_tag("bag-info.txt", "Source-Organization", "Virginia Tech")
-#             batch_job.add_tag("aptrust-info.txt", "Access", "Institution")
-#             batch_job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
-#             batch_job.add_tag("aptrust-info.txt", "Title", batch_bagname)
-#             batch_job.add_tag("bagit.txt", "BagIt-Version", "0.97")
-#             batch_job.add_tag("bagit.txt", "Tag-File-Character-Encoding", "UTF-8")
-#             exit_code = batch_job.run()
-#             if exit_code == 0:
-#                 print(f"Batch {i//100+1} completed successfully.")
-#             else:
-#                 print(f"Batch {i//100+1} failed. Check the DART log for details.")
-#                 quit()
-#     else:
-#         # Original single-job logic for small numbers of files
-#         job = Job(jobname, aptrustBagName)
-#         for f in payload:
-#             datapath = os.path.join(data_directory_path, f)
-#             job.add_file(datapath)
-#             print("Added following file to bag in DART: ", f)
-#             bag_group_identifier = f"VTDR_{IngestAccessionNumber}"
-#         job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
-#         job.add_tag("bag-info.txt", "Source-Organization", "Virginia Tech")
-#         job.add_tag("aptrust-info.txt", "Access", "Institution")
-#         job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
-#         aptrust_title = aptrustBagName
-#         job.add_tag("aptrust-info.txt", "Title", aptrust_title)
-#         job.add_tag("bagit.txt", "BagIt-Version", "0.97")
-#         job.add_tag("bagit.txt", "Tag-File-Character-Encoding", "UTF-8")
-#         exit_code = job.run()
-#         if exit_code == 0:
-#             print("Job completed")
-#             print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
-#         else:
-#             print("Job failed. Check the DART log for details.")
-#             print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
-#             quit()
-# #-----------------------COPY BAG TO SAN DISK LOCATION:
-
-# #----------------Copy Publication bag to SanDisk path defined in generate_config.py:-------------------------
-
-# localPath = os.path.join(local_dir_path, aptrustBagName_tar)
-# if storageLocation == "1":
-#     destn_path_bag = os.path.join(destn_path_sandisk, aptrustBagName_tar)
-#     if not os.path.exists(destn_path_sandisk):
-#         print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
-#     if os.path.exists(destn_path_sandisk):
-#         if not os.path.exists(destn_path_bag):
-#             shutil.copy(localPath, destn_path_sandisk)  # shutil.copy(source, destn)
-#             print("*************COPIED BAG: ", aptrustBagName_tar, " FROM SOURCE: ", localPath, " TO: ", destn_path_sandisk, "***************")
-#         else:
-#             print("*************BAG IN TAR FORMAT: ", aptrustBagName_tar, "ALREADY EXISTS IN: ", destn_path_sandisk, " SO NOT OVERWRITING IT*************")
-
-# if storageLocation == "2":
-#     destn_path_bag = os.path.join(destn_path_UserShares, aptrustBagName_tar)
-#     if not os.path.exists(destn_path_UserShares):
-#         print("*************USER SHARES PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO USER SHARES*************")
-#     if os.path.exists(destn_path_UserShares):
-#         if not os.path.exists(destn_path_bag):
-#             shutil.copy(localPath, destn_path_UserShares)

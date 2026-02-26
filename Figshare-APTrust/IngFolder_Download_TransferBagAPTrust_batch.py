@@ -7,6 +7,7 @@ Batch downloads for each article in review and uploads to aptrust:
 """
 import os
 from os.path import exists
+import subprocess
 import sys
 import shutil
 from figshare import Figshare
@@ -29,42 +30,27 @@ from aptCmd import registryCheck
 
 def DownloadIngest(workflowVal):
   config=configparser.ConfigParser()
-  config.read('configurations-batch.ini')
-#Get the ArticleID from configurations-batch.ini
+  config.read('configurations.ini')
+
   ArticleID=config['FigshareSettings']['FigshareArticleID']
-#Get the Published Version number 
   PublishedVersionNumber=config['FigshareSettings']['PublishedVersionNumber']
-#Get the Ingest Version number 
   IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
-#Get your figshare token 
   token=config['FigshareSettings']['token']
-#Get curator name 
   CuratorName=config['FigshareSettings']['CuratorName']
 
 
-#Get the row information of the article in review/ingested article from the Ingest sheet using the corresponding ArticleID and Version Number:
-#try:
   ingsheet=vtingsheet(ArticleID,IngestVersionNumber)
-#Get article id
   article_id=ingsheet['ingarticleid']
-# get Ingest Accession Number 
   IngestAccessionNumber=ingsheet['ingestno'] 
-#get Requestor name
   Requestor=ingsheet['ingrequestr']
-#get corresponding author name
   CorrespondingAuthor=ingsheet['ingrequestr']
-#Get LastnameFirstnameinitial of requestor and corresponding author:
   Requestorlfi=ingsheet['ingreqlastfirsti']
   CorrespondingAuthorlfi=ingsheet['ingcorlastfirsti']
 
-#get version number
   Version=ingsheet['ingversion']
-#get date ingested in YYYYMMDD format
   DateIngested= ingsheet['ingestdate']  
-#get current date
   today=date.today()
   date_current=today.strftime("%Y%m%d")
-#get current time
   now=datetime.now()
   time_current=now.strftime("%H_%M_%S")
 
@@ -96,72 +82,58 @@ def DownloadIngest(workflowVal):
   else:
       print(f"Ingest metadata file already exists as: {json_out_file}")
 
-#-----------------STEP 3---------------------------------------------------------------------------
-#Bag the ingest folder with DART using tar format, transfer the Ingest bag to VT S3/ APTrust demo/ APTrust repo
+# -----------------STEP 3 (NEW): dart-runner bagit only (no upload) -----------------
+  aptrustBagName = IngFolderName
+  aptrustBagName_tar = f"{aptrustBagName}.tar"
 
-  payload=os.listdir(data_directory_path)
-  aptrustBagName=IngFolderName
-  aptrustBagName_tar=f"{aptrustBagName}.tar"
-#------check if sandisk is connected/exists to move a copy to it
-  destn_path_sandisk=config["IngestBag_PathSettings"]["SanDiskDirPath"]
-  local_dir_path=config["IngestBag_PathSettings"]["LocalPathBag"]
-#-------------------------------------------------------------
-  workflow=workflowVal
-  if workflow == "1":
-      jobname="Workflow for depositing bag to APTrust-Demo"
-  if workflow =="2":
-      jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
-  if workflow =="3":
-      jobname="Workflow for depositing bag to VT library S3 bucket"
-  if workflow =="4":
-      jobname="Workflow for depositing bag to APTrust-Repo"    
-#---------------------------------------------------------------------
+  # dart-runner + workflow (package only)
+  dart_runner = config["dart_runner"]["dart_runner_path"]
+  workflow_json = config["dart_runner"]["workflow_package_only"]
 
-  if workflow =='2' or workflow =='4':
-     checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-  if workflow =='3': 
-     checkReg=1
-  if (workflow == "1") or (checkReg == 1):
-    job=Job(jobname,aptrustBagName)
-    for f in payload:
-        datapath=os.path.join(data_directory_path,f)
-        job.add_file(datapath)
-    #job.add_file(data_directory_path+"\\"+f)
-        print("Added following file to bag in DART: ",f)
-        bag_group_identifier=f"VTDR_{IngestAccessionNumber}"
-    job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
-    job.add_tag("bag-info.txt","Source-Organization","Virginia Tech")
-    job.add_tag("aptrust-info.txt", "Access", "Institution")
-    job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
-    aptrust_title=aptrustBagName
-    job.add_tag("aptrust-info.txt","Title",aptrust_title)
-    job.add_tag("bagit.txt","BagIt-Version","0.97")
-    job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
+  scratch_out = config["IngestBag_PathSettings"]["RunnerOutputDir"]
+  final_out   = config["IngestBag_PathSettings"]["FinalOutputDir"]
 
-    exit_code = job.run()
-    if exit_code == 0:
-        print("Job completed")
-        print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
+  os.makedirs(scratch_out, exist_ok=True)
+  os.makedirs(final_out, exist_ok=True)
 
-    else:
-        print("Job failed. Check the DART log for details.")
-        print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
-        quit()
-#-----------------------COPY BAG TO SAN DISK LOCATION:
+  job_params = {
+      "packageName": aptrustBagName_tar,
+      "files": [data_directory_path],   # ✅ 直接给 ingest folder
+      "tags": [
+          {"tagFile": "bag-info.txt", "tagName": "Bag-Group-Identifier", "value": f"VTDR_{IngestAccessionNumber}"},
+          {"tagFile": "bag-info.txt", "tagName": "Source-Organization", "value": "Virginia Tech"},
+          {"tagFile": "aptrust-info.txt", "tagName": "Access", "value": "Institution"},
+          {"tagFile": "aptrust-info.txt", "tagName": "Storage-Option", "value": "Standard"},
+          {"tagFile": "aptrust-info.txt", "tagName": "Title", "value": aptrustBagName},
+          {"tagFile": "bagit.txt", "tagName": "BagIt-Version", "value": "0.97"},
+          {"tagFile": "bagit.txt", "tagName": "Tag-File-Character-Encoding", "value": "UTF-8"},
+      ]
+  }
 
-#----------------Copy Publication bag to SanDisk path defined in generate_config_batch.py if it exists:-------------------------
+  print("Running dart-runner (package-only, no upload)...")
+  p = subprocess.run(
+      [dart_runner, f"--workflow={workflow_json}", f"--output-dir={scratch_out}", "--delete=false", "--skip-artifacts"],
+      input=json.dumps(job_params),
+      text=True,
+      capture_output=True
+  )
 
-    destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
-    localPath=os.path.join(local_dir_path,aptrustBagName_tar)
-    if not os.path.exists(destn_path_sandisk):
-      print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
-    if os.path.exists(destn_path_sandisk):
-      if not os.path.exists(destn_path_bag):
-        shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
-        print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
-      else:
-        print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
-          
+  # stdout 是 JSON Lines（每个 job 一行 JSON）
+  print("dart-runner stdout:\n", p.stdout)
+  if p.stderr.strip():
+      print("dart-runner stderr:\n", p.stderr, file=sys.stderr)
 
+  if p.returncode != 0:
+      raise RuntimeError(f"dart-runner failed with exit code {p.returncode}")
 
-     
+  # ✅ 把 tar 从 scratch copy 到 final（避免 scratch 清理）
+  scratch_tar_path = os.path.join(scratch_out, aptrustBagName_tar)
+  if not os.path.exists(scratch_tar_path):
+      raise FileNotFoundError(f"Expected tar not found: {scratch_tar_path}")
+
+  final_tar_path = os.path.join(final_out, aptrustBagName_tar)
+  if os.path.exists(final_tar_path):
+      final_tar_path = os.path.join(final_out, f"{aptrustBagName}_{date_current}_{time_current}.tar")
+
+  shutil.copy2(scratch_tar_path, final_tar_path)
+  print(f"✅ Bag created and copied to: {final_tar_path}")
