@@ -1,3 +1,7 @@
 redata
 gspread
 oauth2client
+numpy
+bs4
+requests
+bagit

@@ -1,29 +1,21 @@
 #!/usr/bin/env python3
 """
-VTDR Figshare Ingest -> BagIt (ARC) using dart-runner (package-only workflow)
+VTDR Figshare Ingest -> BagIt / Demo / Repo using dart-runner
 
-Features (no terminal ID input):
-- Use a TXT file to choose what to process.
-- Supports:
-  1) Single ID: put one Figshare ArticleID in the txt file.
-  2) Batch IDs: put multiple ArticleIDs in the txt file.
-  3) Whole dataset:
-      - If content already downloaded into ingest_input, put:
-            @ALL_FOLDERS
-        to scan IngFolderPath for VTDR_* folders and bag them all (no Figshare download).
-      - Or put a long list of all IDs (download+bag).
+Features:
+- User puts only Figshare Article IDs into ids_to_process.txt
+- At runtime, user chooses one of:
+    1) JUST BAGIT
+    2) DEMO
+    3) REPO
+- Script downloads/prepares ingest folder from Figshare
+- Script runs dart-runner with the selected workflow
+- Script copies resulting .tar from RunnerOutputDir to FinalOutputDir
 
-TXT file format:
-- One entry per line
+ids_to_process.txt format:
+- One Article ID per line
 - Blank lines allowed
 - Lines starting with # are comments
-- Special directives:
-    @ALL_FOLDERS              -> bag all VTDR_* folders under IngFolderPath
-    FOLDER:/abs/path/to/folder -> bag a specific existing ingest folder (skip download)
-
-Outputs:
-- dart-runner writes .tar to RunnerOutputDir (scratch_out)
-- script copies .tar to FinalOutputDir
 """
 
 import os
@@ -33,6 +25,7 @@ import shutil
 import subprocess
 import configparser
 from datetime import date, datetime
+from dotenv import load_dotenv
 
 from figshare import Figshare
 import figshareDownload
@@ -66,32 +59,60 @@ def now_stamp():
 
 def read_targets_txt(txt_path: str) -> list[str]:
     """
-    Returns list of target lines (raw tokens) excluding comments/blanks.
+    Returns list of article IDs excluding comments/blanks.
+    Only digits are accepted.
     """
     if not os.path.exists(txt_path):
         die(f"IDs txt file not found: {txt_path}")
+
     targets = []
     with open(txt_path, "r", encoding="utf-8") as f:
         for line in f:
             s = line.strip()
             if not s or s.startswith("#"):
                 continue
+            if not s.isdigit():
+                die(f"Invalid article ID in {txt_path}: {s}")
             targets.append(s)
+
     return targets
 
 
-def list_ingest_folders(ing_folder_path: str) -> list[str]:
-    """
-    Lists all VTDR_* directories under IngFolderPath.
-    """
-    if not os.path.isdir(ing_folder_path):
-        die(f"IngFolderPath is not a directory: {ing_folder_path}")
-    folders = []
-    for name in sorted(os.listdir(ing_folder_path)):
-        p = os.path.join(ing_folder_path, name)
-        if os.path.isdir(p) and name.startswith("VTDR_"):
-            folders.append(p)
-    return folders
+# ----------------------------- Terminal choice -----------------------------
+
+def choose_destination_terminal() -> str:
+    print("\nChoose upload option for this run:")
+    print("  1) JUST BAGIT")
+    print("  2) DEMO")
+    print("  3) REPO")
+
+    while True:
+        choice = input("Enter 1, 2, 3, JUST BAGIT, DEMO, or REPO: ").strip().upper()
+
+        if choice in {"1", "JUST BAGIT", "JUST_BAGIT", "BAGIT"}:
+            return "JUST BAGIT"
+        elif choice in {"2", "DEMO"}:
+            return "DEMO"
+        elif choice in {"3", "REPO"}:
+            return "REPO"
+        else:
+            print("Invalid choice. Please enter 1, 2, 3, JUST BAGIT, DEMO, or REPO.")
+
+
+def choose_workflow_json(
+    destination: str,
+    workflow_package_only: str,
+    workflow_demo: str,
+    workflow_repo: str,
+) -> str:
+    if destination == "JUST BAGIT":
+        return workflow_package_only
+    elif destination == "DEMO":
+        return workflow_demo
+    elif destination == "REPO":
+        return workflow_repo
+    else:
+        die(f"Unknown destination: {destination}")
 
 
 # ----------------------------- Figshare + Ingest folder -----------------------------
@@ -238,9 +259,11 @@ def run_dart_runner_and_copy(
 # ----------------------------- Main logic -----------------------------
 
 def main():
-    # 1) Config paths (edit here once)
+    load_dotenv()
+    # print("DEBUG KEY:", os.environ.get("DEMO_AWS_ACCESS_KEY_ID"))
+
     CONFIG_PATH = "configurations.ini"
-    IDS_TXT_PATH = "ids_to_process.txt"  # user edits this file, no terminal input needed
+    IDS_TXT_PATH = "ids_to_process.txt"
 
     cfg = load_config(CONFIG_PATH)
 
@@ -252,7 +275,9 @@ def main():
     metadata_jsonpath = cfg["IngestBag_PathSettings"]["metadatajsonpath"]
 
     dart_runner = cfg["dart_PathSettings"]["dart_runner_path"]
-    workflow_json = cfg["dart_PathSettings"]["workflow_package_only"]
+    workflow_package_only = cfg["dart_PathSettings"]["workflow_package_only"]
+    workflow_demo = cfg["dart_PathSettings"]["workflow_demo"]
+    workflow_repo = cfg["dart_PathSettings"]["workflow_repo"]
 
     scratch_out = cfg["IngestBag_PathSettings"]["RunnerOutputDir"]
     final_out = cfg["IngestBag_PathSettings"]["FinalOutputDir"]
@@ -260,100 +285,68 @@ def main():
     # Quick sanity checks
     for key_path, label in [
         (dart_runner, "dart_runner_path"),
-        (workflow_json, "workflow_package_only"),
+        (workflow_package_only, "workflow_package_only"),
+        (workflow_demo, "workflow_demo"),
+        (workflow_repo, "workflow_repo"),
     ]:
         if not os.path.exists(key_path):
             die(f"{label} not found: {key_path}")
 
     ensure_dir(ing_folder_path)
+    ensure_dir(metadata_jsonpath)
     ensure_dir(scratch_out)
     ensure_dir(final_out)
 
-    # 2) Read targets from txt
-    targets = read_targets_txt(IDS_TXT_PATH)
-    if not targets:
-        die(f"No targets found in {IDS_TXT_PATH}. Put an ArticleID, FOLDER:/path, or @ALL_FOLDERS.")
+    # Choose workflow in terminal
+    destination = choose_destination_terminal()
+    workflow_json = choose_workflow_json(
+        destination,
+        workflow_package_only,
+        workflow_demo,
+        workflow_repo,
+    )
 
-    # 3) Expand targets to actions
-    # We will build a list of (mode, value) where mode is "ID" or "FOLDER"
-    actions: list[tuple[str, str]] = []
+    print(f"\nSelected option: {destination}")
+    print(f"Workflow file: {workflow_json}")
 
-    for token_line in targets:
-        if token_line == "@ALL_FOLDERS":
-            folders = list_ingest_folders(ing_folder_path)
-            if not folders:
-                die(f"No VTDR_* folders found under {ing_folder_path} for @ALL_FOLDERS.")
-            for f in folders:
-                actions.append(("FOLDER", f))
-            continue
+    # Read article IDs
+    article_ids = read_targets_txt(IDS_TXT_PATH)
+    # article_ids = cfg["FigshareSettings"]["figsharearticleid"]
+    print("article ids from configurations.ini:", article_ids)
+    if not article_ids:
+        die(f"No article IDs found in {IDS_TXT_PATH}.")
 
-        if token_line.startswith("FOLDER:"):
-            folder_path = token_line[len("FOLDER:"):].strip()
-            if not folder_path:
-                die("Invalid FOLDER: line with empty path.")
-            actions.append(("FOLDER", folder_path))
-            continue
+    print(f"\nWill process {len(article_ids)} article ID(s) from {IDS_TXT_PATH}.")
 
-        # Otherwise treat as Figshare ArticleID
-        actions.append(("ID", token_line))
-
-    print(f"Will process {len(actions)} item(s) from {IDS_TXT_PATH}.")
-
-    # 4) Process each
-    for mode, val in actions:
+    # Process each article ID
+    for article_id in article_ids:
         try:
-            if mode == "ID":
-                article_id = val
-                print(f"\n==== [ID] {article_id} ====")
-                info = download_and_prepare_ingest_folder(
-                    token=token,
-                    article_id_from_sheet=article_id,
-                    ingest_version=ingest_version,
-                    ing_folder_path=ing_folder_path,
-                    metadata_jsonpath=metadata_jsonpath,
-                )
+            print(f"\n==== [{destination}] [ID] {article_id} ====")
 
-                ing_folder_name = info["ing_folder_name"]
-                data_dir = info["data_directory_path"]
-                ingest_no = info["ingest_no"]
+            info = download_and_prepare_ingest_folder(
+                token=token,
+                article_id_from_sheet=article_id,
+                ingest_version=ingest_version,
+                ing_folder_path=ing_folder_path,
+                metadata_jsonpath=metadata_jsonpath,
+            )
 
-                job_params = build_job_params(ing_folder_name, data_dir, ingest_no)
-                run_dart_runner_and_copy(
-                    dart_runner=dart_runner,
-                    workflow_json=workflow_json,
-                    scratch_out=scratch_out,
-                    final_out=final_out,
-                    job_params=job_params,
-                )
+            ing_folder_name = info["ing_folder_name"]
+            data_dir = info["data_directory_path"]
+            ingest_no = info["ingest_no"]
 
-            elif mode == "FOLDER":
-                folder_path = val
-                if not os.path.isdir(folder_path):
-                    die(f"Folder not found: {folder_path}")
+            job_params = build_job_params(ing_folder_name, data_dir, ingest_no)
 
-                ing_folder_name = os.path.basename(folder_path.rstrip("/"))
-                # Try to extract ingest_no from folder name "VTDR_<ingestno>_..."
-                ingest_no = "UNKNOWN"
-                parts = ing_folder_name.split("_")
-                if len(parts) >= 2 and parts[0] == "VTDR":
-                    ingest_no = parts[1]
-
-                print(f"\n==== [FOLDER] {folder_path} ====")
-                job_params = build_job_params(ing_folder_name, folder_path, ingest_no)
-                run_dart_runner_and_copy(
-                    dart_runner=dart_runner,
-                    workflow_json=workflow_json,
-                    scratch_out=scratch_out,
-                    final_out=final_out,
-                    job_params=job_params,
-                )
-
-            else:
-                die(f"Unknown mode: {mode}")
+            run_dart_runner_and_copy(
+                dart_runner=dart_runner,
+                workflow_json=workflow_json,
+                scratch_out=scratch_out,
+                final_out=final_out,
+                job_params=job_params,
+            )
 
         except Exception as e:
-            # keep going for batch use; comment out if you prefer fail-fast
-            print(f"❌ Failed item ({mode}={val}): {e}", file=sys.stderr)
+            print(f"❌ Failed article ID {article_id}: {e}", file=sys.stderr)
             continue
 
     print("\nAll done.")

@@ -14,3 +14,4 @@ ls /scratch
 ls /scratch/jiren -> null -> mkdir -p /scratch/jiren/bags 
 replace with your $(whoami)
 
+move the configurations under the Figshare-API trust

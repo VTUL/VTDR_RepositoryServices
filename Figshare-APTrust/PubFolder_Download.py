@@ -33,26 +33,18 @@ from job import Job
 from redata.commons.logger import log_stdout
 import hashlib
 from logging import Logger
-#import figshare
-#from figshare.figshare import Figshare
-
-#Get the parameters from configurations.ini to retrieve information from an article on Figshare
 
 import configparser
 config=configparser.ConfigParser()
 config.read('configurations.ini')
 
-#Get the ArticleID
-ArticleID=config['FigshareSettings']['FigshareArticleID']
-#Get the Published Version number 
+ArticleID=config['FigshareSettings']['FigshareArticleID'] 
 PublishedVersionNumber=config['FigshareSettings']['PublishedVersionNumber']
-#Get the Ingest Version number 
 IngestVersionNumber=config['FigshareSettings']['IngestVersionNumber']
-#Get your figshare token 
 token=config['FigshareSettings']['token']
-#Get curator name 
 CuratorName=config['FigshareSettings']['CuratorName']
 
+print("Figshare Article ID:", ArticleID, "Version number: ", PublishedVersionNumber)
 #Get the row information of the published article from the Published sheet using the corresponding ArticleID and Version Number:
 vtsheet=vtpubsheet(ArticleID,PublishedVersionNumber)
 #Get article id 

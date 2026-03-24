@@ -235,7 +235,7 @@ def vtpubsheet(ArticleID, PublishedVersionNumber):
 
         if ArticleID is not None:
             # Find the row in the spreadsheet that corresponds to the given articleid:
-            row_aidmatch = [i for i, e in enumerate(doisuffix) if e == ArticleID]
+            row_aidmatch = [i for i, e in enumerate(figshare_articleid) if e == ArticleID]
             # Find the row in the spreadsheet that corresponds to the given version number:
             row_vermatch = [i for i, e in enumerate(version) if e == PublishedVersionNumber]
             # Find the row in the spreadsheet that corresponds to the given articleid and version number
@@ -245,7 +245,7 @@ def vtpubsheet(ArticleID, PublishedVersionNumber):
             # The row number on the spreadsheet is rownum+1 due to array indexing from 0
             # Convert numpy array to integer
             try:
-                rownum = int(rownum)
+                rownum = int(rownum[0])
             except TypeError:
                 print("ROW INFORMATION FOR THE PROVIDED ARTICLE ID AND VERSION NUMBER WAS NOT FOUND IN THE PUBLISHED SHEET")
                 print("Please enter the publication record information in the published sheet and try running again")
