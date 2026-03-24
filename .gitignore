@@ -87,3 +87,6 @@ docs/_build/
 Figshare-APTrust/.DS_Store
 
 client_secret.json
+
+Demo_workflow.json
+Repo_workflow.json
