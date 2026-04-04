@@ -1,246 +1,243 @@
-"""
-Purpose: 
--Opens the publication folder created by PubFolder_Download.py. 
--Opens the DART app, adds publication folder items and tag values to DART.
--Runs DART, creates a publication bag at .dart folder
--Uploads the publication bag to the storage services picked in the DART workflow to repo/demo/VT S3 
--Copies non disseminted content to the non disseminated content folder under BAGS folder on google drive
-Notes:
-Part of this script is built off of "Scripting with DART" code available on APTrust github page. In the scripting with DART code a new job called job.py is created and executed based on a pre-defined DART workflow. 
-The publicaiton bag created by DART can also be uploaded to APTrust using APTrust partner tools without using DART app. Documentation for this is also availabla on APTrust github page
-"""
+#!/usr/bin/env python3
+
 import os
-from os.path import exists
 import sys
-sys.path.append('figshare')
-sys.path.append('LD-Cool-P')
-import aptCmd
-
-from turtle import begin_fill
-#from ldcoolp.curation import retrieve
-from Read_VTDR_Spreadsheet import vtingsheet
-from Read_VTDR_Spreadsheet import vtpubsheet
+import json
 import shutil
-from tarfile import TarFile
-import job
-from job import Job
-from cmath import log
-import logging
-from datetime import datetime
-#from xlrd import open_workbook
-#from xlwt import Workbook
-#from xlutils.copy import copy
-import bagit
-import aptCmd
-from aptCmd import registryCheck
-#Get the parameters from configurations.ini to retrieve information from an article on Figshare
-
+import subprocess
 import configparser
-config=configparser.ConfigParser()
-config.read('configurations.ini')
+from datetime import date, datetime
+
+from Read_VTDR_Spreadsheet import vtpubsheet
 
 
-# get the ArticleID from configurations 
-ArticleID=config['FigshareSettings']['FigshareArticleID']
-# get Published Version number from configurations
-PublishedVersionNumber=config['FigshareSettings']['PublishedVersionNumber']
-#Get the row information from VTDR spreadsheet for the given article id and version number: 
-Pvtsheet=vtpubsheet(ArticleID=ArticleID,PublishedVersionNumber=PublishedVersionNumber)
-#get published accession number
-pPubAccessionNumber= Pvtsheet['gspubnum']
-#get ingest accession number
-pIngAccessionNumber=Pvtsheet['gsingestno']
-#get the requestor and corresponding author last name first name initial
-pRequestorLFI=Pvtsheet['gsreqlastfi']
-pCorrespondingAuthorLFI=Pvtsheet['gscorrlastfi']
-#get version number
-pVersion=Pvtsheet['gsversnum']
-#get date published
-pDate=Pvtsheet['gsdatepub']
-#get DOI suffix
-#pDOIsuffix=Pvtsheet['DOIsuffix']
-pDOIsuffix=Pvtsheet['gsdoisuffix']
-#get the bag path for large bags
-sourcedir1=config['PubBagDartAptrust_PathSettings']['LargeBagsPath']
+def die(msg: str, code: int = 2):
+    print(f"ERROR: {msg}", file=sys.stderr)
+    raise SystemExit(code)
 
-#Get the publication folder created by PubFolder_Download.py
-aptrustBagName=f"VTDR_{pPubAccessionNumber}_{pIngAccessionNumber}_DOI_{pDOIsuffix}_{pCorrespondingAuthorLFI}_v{pVersion}_{pDate}"
-aptrustBagName_tar=f"{aptrustBagName}.tar"
-#Source folder is where the publication folder is downloaded, this folder will be bagged by DART
-PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath']
-PubFolder=os.path.join(PubFolderPath,aptrustBagName)
-payload=os.listdir(PubFolder)
-destn_path_sandisk=config['PubFolder_PathSettings']['SanDiskDirPath']
-destn_path_UserShares=config['PubFolder_PathSettings']['UserSharesPath']
-local_dir_path=config["PubFolder_PathSettings"]["LocalPathBag"]
 
-storageLocation=input("Do you wish to copy the publication bag to SanDisk or UserShares/CurationServices folder?(1 for sandisk/2 for UserShares/CurationServices): ")
-  
-if storageLocation == "1":
-     destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
-     if not os.path.exists(destn_path_sandisk):
-       print("*************SAN DISK PATH IS NOT FOUND*************")
-       SanDiskProceedInput=input("Do you still wish to create a local copy of the publication bag?(yes/no)")
-       if SanDiskProceedInput=='no':
-         print("***YOU PICKED TO NOT CREATE A LOCAL COPY OF THE PUBLICATION BAG SO QUITTING***")
-         quit()
-       if SanDiskProceedInput == 'yes':
-         print("***PROCEEDING WITH MAKING A LCOAL COPY OF THE PUBLICATION BAG WITHOUT COPYING IT TO SANDISK***")
-         ProceedInput="yes"
-     if os.path.exists(destn_path_sandisk):
-        SanDiskProceedInput="yes"
-        ProceedInput="yes"
-        print("SANDISK INPUT IS ",SanDiskProceedInput)
+def ensure_dir(path: str):
+    os.makedirs(path, exist_ok=True)
 
-if storageLocation == "2":
-     destn_path_bag=os.path.join(destn_path_UserShares,aptrustBagName_tar)
-     if not os.path.exists(destn_path_UserShares):
-       print("*************USER SHARES PATH IS NOT FOUND*************")
-       UserSharesProceedInput=input("Do you still wish to create a local copy of the publication bag?(yes/no)")
-       if UserSharesProceedInput=='no':
-         print("***YOU PICKED TO NOT CREATE A LOCAL COPY OF THE PUBLICATION BAG SO QUITTING***")
-         quit()
-       if UserSharesProceedInput == 'yes':
-         print("***PROCEEDING WITH MAKING A LCOAL COPY OF THE PUBLICATION BAG WITHOUT COPYING IT TO USERSHARES***")
-         ProceedInput="yes"
-     if os.path.exists(destn_path_UserShares):
-        UserSharesProceedInput="yes"
-        ProceedInput="yes"
-        print("Does UserShares exist: ",UserSharesProceedInput)
 
-#************CHANGE THIS TO PICK Demo/Repo for uploading the publication bag created above***************************
-while True:
-  workflow=input ("Please enter '1' for deposit to APTrust Demo only, '2' for deposit to APTrust-Repo and VT libraries S3 bucket, '3' for deposit to VT libraries S3 bucket only, '4' for deposit to APTrust-Repo only:  ")
-  try: 
-     workflow=int(workflow)
-  except ValueError:
-        print("Oops! That was not a valid number. Try again")
-        continue
-  if 1 <= workflow <= 4:
-        break
-  else:      
-        print("Please pick a workflow number between 1 and 4")
-workflow=str(workflow) 
-if workflow == "1":
-  jobname="Workflow for depositing bag to APTrust-Demo"
-if workflow == "2":
-  jobname="Workflow for depositing bag to APTrust-Repo and VT library S3 bucket"
-if workflow =="3":
-  jobname="Workflow for depositing bag to VT library S3 bucket"
-if workflow =="4":
-  jobname="Workflow for depositing bag to APTrust-Repo" 
-#---------------------------------------   
+def load_config(path: str) -> configparser.ConfigParser:
+    cfg = configparser.ConfigParser()
+    if not os.path.exists(path):
+        die(f"Config file not found: {path}")
+    cfg.read(path)
+    return cfg
 
-if workflow =='2' or workflow =='4':
-   checkReg=registryCheck(aptrustBagName)#check aptrust registry return 1 for upload , 0 for terminate upload
-if workflow =='3': 
-   checkReg=1 #bag is only uploaded to s3, so aptrust registry check is skipped by setting it to 1
-if (workflow == "1" and ProceedInput=="yes") or (checkReg == 1 and ProceedInput=="yes"):
-  job=Job(jobname,aptrustBagName)
-  #Open the publication folder and add all the files to the DART app to bag them
-  for f in payload:
-    payloadfilepath=os.path.join(aptrustBagName,f)
-    job.add_file(payloadfilepath)
-    #job.add_file(aptrustBagName+"\\"+f)
-    print("Added following file to bag in DART: ",f)
-    logging.info("Added following file to bag in DART: %s " % f)
-  
-  bag_group_identifier=f"VTDR_{pPubAccessionNumber}"
-  job.add_tag("bag-info.txt", "Bag-Group-Identifier", bag_group_identifier)
-  job.add_tag("bag-info.txt","Source-Organization","Virginia Tech")
-  job.add_tag("aptrust-info.txt", "Access", "Institution")
-  job.add_tag("aptrust-info.txt", "Storage-Option", "Standard")
-  aptrust_title=aptrustBagName
-  job.add_tag("aptrust-info.txt","Title",aptrust_title)
-  job.add_tag("bagit.txt","BagIt-Version","0.97")
-  job.add_tag("bagit.txt","Tag-File-Character-Encoding","UTF-8")
 
-  exit_code = job.run()
-  print("EXIT CODE IS ",exit_code)
-  if exit_code == 0:
-    print("JOB COMPLETED")
-    print("**************************BAG MIGRATED SUCCESSFULLY TO APTRUST/VT S3****************")
-  else:
-    print("JOB FAILED. Check the DART log for details.")
-    print("**************************BAG MIGRATION TO APTRUST/VT S3 FAILED****************")
-    quit()
+def now_stamp():
+    today = date.today().strftime("%Y%m%d")
+    t = datetime.now().strftime("%H_%M_%S")
+    return today, t
 
-#----------------Copy non disseminated content to a NonDisseminatedContent folder:-------------------------
 
-  destn_path=config['PubBagDartAptrust_PathSettings']['NonDisseminatedContentPath']
-  data_directory=f"NonDisseminatedContent_VTDR_{pPubAccessionNumber}_DOI_{pDOIsuffix}_{pCorrespondingAuthorLFI}_v{pVersion}_{pDate}"
-  destndir=os.path.join(destn_path,data_directory)
-  count=0
+def choose_workflow_terminal() -> str:
+    print("\nChoose upload option for this run:")
+    print("  1) JUST BAGIT")
+    print("  2) DEMO")
+    print("  3) REPO")
 
-  for root, dirs, files in os.walk(PubFolder):
-    print("Root folder is: ",root)
-    print("Directories in the root folder are: ", dirs)
-    print("\n \n")
-    print("Non-Disseminated files in the root folder are", files)
-    random_names=os.listdir(PubFolder)
-    inner_dirs = [
-    os.path.join(PubFolder, name)
-    for name in random_names
-    if name[:2] == "Dis" or name[:3] =="Diss" or name[0] =="D" or name[0] == "i" or name[0] == "I"
+    while True:
+        choice = input("Enter 1, 2, 3, JUST BAGIT, DEMO, or REPO: ").strip().upper()
+
+        if choice in {"1", "JUST BAGIT", "JUST_BAGIT", "BAGIT"}:
+            return "JUST BAGIT"
+        elif choice in {"2", "DEMO"}:
+            return "DEMO"
+        elif choice in {"3", "REPO"}:
+            return "REPO"
+        else:
+            print("Invalid choice. Please enter 1, 2, 3, JUST BAGIT, DEMO, or REPO.")
+
+
+def choose_workflow_json(destination: str, workflow_package_only: str, workflow_demo: str, workflow_repo: str) -> str:
+    if destination == "JUST BAGIT":
+        return workflow_package_only
+    elif destination == "DEMO":
+        return workflow_demo
+    elif destination == "REPO":
+        return workflow_repo
+    else:
+        die(f"Unknown destination: {destination}")
+
+
+def build_publication_bag_name(pvtsheet: dict) -> str:
+    pPubAccessionNumber = pvtsheet["gspubnum"]
+    pIngAccessionNumber = pvtsheet["gsingestno"]
+    pCorrespondingAuthorLFI = pvtsheet["gscorrlastfi"]
+    pVersion = pvtsheet["gsversnum"]
+    pDate = pvtsheet["gsdatepub"]
+    pDOIsuffix = pvtsheet["gsdoisuffix"]
+
+    return f"VTDR_{pPubAccessionNumber}_{pIngAccessionNumber}_DOI_{pDOIsuffix}_{pCorrespondingAuthorLFI}_v{pVersion}_{pDate}"
+
+
+def build_job_params(aptrust_bag_name: str, pub_folder: str, pvtsheet: dict) -> dict:
+    pPubAccessionNumber = pvtsheet["gspubnum"]
+
+    return {
+        "packageName": f"{aptrust_bag_name}.tar",
+        "files": [pub_folder],
+        "tags": [
+            {"tagFile": "bag-info.txt", "tagName": "Bag-Group-Identifier", "value": f"VTDR_{pPubAccessionNumber}"},
+            {"tagFile": "bag-info.txt", "tagName": "Source-Organization", "value": "Virginia Tech"},
+            {"tagFile": "aptrust-info.txt", "tagName": "Access", "value": "Institution"},
+            {"tagFile": "aptrust-info.txt", "tagName": "Storage-Option", "value": "Standard"},
+            {"tagFile": "aptrust-info.txt", "tagName": "Title", "value": aptrust_bag_name},
+            {"tagFile": "bagit.txt", "tagName": "BagIt-Version", "value": "0.97"},
+            {"tagFile": "bagit.txt", "tagName": "Tag-File-Character-Encoding", "value": "UTF-8"},
         ]
-          
-    inner_dirs=" ".join(inner_dirs)
-   # print("\n\n")
-   # print("Inner Dissemination Directory starting with D or Diss or Dis or i or I is ", inner_dirs,"\n")
-    if root==inner_dirs: 
-        print("*********************SKIPPING COPYING CONTENTS OF THE DISSEMINATED FOLDER******************************** ")
-    else:
-        for filename in files:
-            print("***************************STARTING COPYING CONTENTS FOR FOLLOWING PATHS*************************")
-            print("Current root folder is: ",root)
-            print("Directories in this root are: ", dirs)
-            #print("files are", files)
-            print("COPYING FILE: ",filename)
-            print("absolute path of the file is: ",os.path.abspath(root))
-            print("copied file to the destination path: ", os.path.join(destndir,filename))
-            oldpath=os.path.join(os.path.abspath(root),filename)
-            newpath=os.path.join(destndir,filename)
-            if not os.path.exists(destndir):
-                print("\n \n")
-                print("Non Disseminated Content folder does not exist on GoogleDrive. So creating it and copying non-disseminated content to the folder: ",destndir)
-                os.mkdir(destndir)
-                shutil.copy(oldpath,newpath)
-            elif not os.path.exists(newpath):
-                print("Non Disseminated directory: ", destndir, " already exists. But content is missing in it so copying content ")
-                shutil.copy(oldpath,newpath)
-            else:
-               # print("Non Disseminated directory: ",destndir, " already exists on Google Drive with content in it. ")
-                print("FILENAME IS: ",filename)
-                overWriteNonDiss=input("Do you want to overwrite this content in non disseminated folder on google drive?(yes/no)")
-                if overWriteNonDiss == 'yes' :
-                   print("You picked to overwrite existing non-disseminated content ")
-                   print("Now overwriting file: ",filename)
-                   shutil.copy(oldpath,newpath)
-                else: 
-                   print("not overwriting existing non disseminated content")
-          
-#----------------Copy Publication bag to SanDisk path defined in generate_config.py:-------------------------
-  print("**********storage location is: ",storageLocation," ************")
-  #destn_path_bag=os.path.join(destn_path_sandisk,aptrustBagName_tar)
-  localPath=os.path.join(local_dir_path,aptrustBagName_tar)
-  if storageLocation == "1":
-    if not os.path.exists(destn_path_sandisk):
-     print("*************SAN DISK PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO SANDISK*************")
-    if os.path.exists(destn_path_sandisk):
-      if not os.path.exists(destn_path_bag):
-        shutil.copy(localPath,destn_path_sandisk)#shutil.copy(source,destn)
-        print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_sandisk,"***************")
-    else:
-      print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_sandisk," SO NOT OVERWRITING IT*************")
+    }
 
-  if storageLocation == "2":
-    if not os.path.exists(destn_path_UserShares):
-     print("*************USER SHARES PATH IS NOT FOUND, SO BAG CREATED IS NOT COPIED TO USERSHARES*************")
-    if os.path.exists(destn_path_UserShares):
-      print("destination path for copying bag to UserShares is: ",destn_path_UserShares)
-      if not os.path.exists(destn_path_bag):
-        shutil.copy(localPath,destn_path_UserShares)#shutil.copy(source,destn)
-        print("*************COPIED BAG: ",aptrustBagName_tar, " FROM SOURCE: ",localPath," TO: ",destn_path_UserShares,"***************")
-    else:
-      print("*************BAG IN TAR FORMAT: ",aptrustBagName_tar, "ALREADY EXISTS IN: ",destn_path_UserShares," SO NOT OVERWRITING IT*************")
 
+def run_dart_runner_and_copy(
+    dart_runner: str,
+    workflow_json: str,
+    scratch_out: str,
+    final_out: str,
+    job_params: dict,
+):
+    ensure_dir(scratch_out)
+    ensure_dir(final_out)
+
+    bag_tar = job_params["packageName"]
+    today, t = now_stamp()
+
+    cmd = [
+        dart_runner,
+        f"--workflow={workflow_json}",
+        f"--output-dir={scratch_out}",
+        "--delete=false",
+        "--skip-artifacts",
+    ]
+
+    print(f"\nRunning dart-runner for {bag_tar} ...")
+    p = subprocess.run(
+        cmd,
+        input=json.dumps(job_params),
+        text=True,
+        capture_output=True,
+        env=os.environ.copy(),
+    )
+
+    if p.stdout.strip():
+        print("dart-runner stdout:\n", p.stdout)
+    if p.stderr.strip():
+        print("dart-runner stderr:\n", p.stderr, file=sys.stderr)
+
+    if p.returncode != 0:
+        die(f"dart-runner failed for {bag_tar}, exit={p.returncode}")
+
+    job_result = None
+    stdout_lines = [line.strip() for line in p.stdout.splitlines() if line.strip()]
+    if stdout_lines:
+        try:
+            job_result = json.loads(stdout_lines[-1])
+        except json.JSONDecodeError:
+            die("Could not parse dart-runner JSON stdout.")
+
+    if job_result is None:
+        die("No JSON result returned from dart-runner.")
+
+    if not job_result.get("succeeded", False):
+        upload_results = job_result.get("uploadResults", [])
+        error_messages = []
+
+        for upload in upload_results:
+            errs = upload.get("errors", {})
+            for _, msg in errs.items():
+                error_messages.append(msg)
+
+        if error_messages:
+            die("dart-runner job failed during upload:\n" + "\n".join(error_messages))
+        else:
+            die("dart-runner reported succeeded=false.")
+
+    scratch_tar_path = os.path.join(scratch_out, bag_tar)
+    if not os.path.exists(scratch_tar_path):
+        die(f"Expected tar not found: {scratch_tar_path}")
+
+    final_tar_path = os.path.join(final_out, bag_tar)
+    if os.path.exists(final_tar_path):
+        base = bag_tar.replace(".tar", "")
+        final_tar_path = os.path.join(final_out, f"{base}_{today}_{t}.tar")
+
+    shutil.copy2(scratch_tar_path, final_tar_path)
+    print(f"✅ Final tar copied to: {final_tar_path}")
+
+    return final_tar_path
+
+
+def main():
+    CONFIG_PATH = "configurations.ini"
+    cfg = load_config(CONFIG_PATH)
+
+    ArticleID = cfg["FigshareSettings"]["FigshareArticleID"]
+    PublishedVersionNumber = cfg["FigshareSettings"]["PublishedVersionNumber"]
+
+    PubFolderPath = cfg["PubFolder_PathSettings"]["PubFolderPath"]
+
+    dart_runner = cfg["dart_PathSettings"]["dart_runner_path"]
+    workflow_package_only = cfg["dart_PathSettings"]["workflow_package_only"]
+    workflow_demo = cfg["dart_PathSettings"]["workflow_demo"]
+    workflow_repo = cfg["dart_PathSettings"]["workflow_repo"]
+
+    scratch_out = cfg["PubBagDartAptrust_PathSettings"]["RunnerOutputDir"]
+    final_out = cfg["PubBagDartAptrust_PathSettings"]["FinalOutputDir"]
+
+    for key_path, label in [
+        (dart_runner, "dart_runner_path"),
+        (workflow_package_only, "workflow_package_only"),
+        (workflow_demo, "workflow_demo"),
+        (workflow_repo, "workflow_repo"),
+    ]:
+        if not os.path.exists(key_path):
+            die(f"{label} not found: {key_path}")
+
+    ensure_dir(PubFolderPath)
+    ensure_dir(scratch_out)
+    ensure_dir(final_out)
+
+    Pvtsheet = vtpubsheet(ArticleID=ArticleID, PublishedVersionNumber=PublishedVersionNumber)
+
+    aptrust_bag_name = build_publication_bag_name(Pvtsheet)
+    pub_folder = os.path.join(PubFolderPath, aptrust_bag_name)
+
+    if not os.path.isdir(pub_folder):
+        die(f"Publication folder not found: {pub_folder}")
+
+    print(f"\nPublication folder found: {pub_folder}")
+    print(f"Bag name: {aptrust_bag_name}")
+
+    destination = choose_workflow_terminal()
+    workflow_json = choose_workflow_json(
+        destination,
+        workflow_package_only,
+        workflow_demo,
+        workflow_repo,
+    )
+
+    print(f"\nSelected upload option: {destination}")
+    print(f"Workflow file: {workflow_json}")
+    print(f"Runner output folder: {scratch_out}")
+    print(f"Final output folder: {final_out}")
+
+    job_params = build_job_params(aptrust_bag_name, pub_folder, Pvtsheet)
+
+    final_tar_path = run_dart_runner_and_copy(
+        dart_runner=dart_runner,
+        workflow_json=workflow_json,
+        scratch_out=scratch_out,
+        final_out=final_out,
+        job_params=job_params,
+    )
+
+    print("\nAll done.")
+    print(f"Final tar location: {final_tar_path}")
+
+
+if __name__ == "__main__":
+    main()

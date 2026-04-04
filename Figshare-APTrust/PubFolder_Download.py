@@ -9,6 +9,7 @@ Purpose:
 import os
 from os.path import exists
 import sys
+from pathlib import Path
 sys.path.append('figshare')
 
 #from figshare.figshare import Figshare
@@ -70,6 +71,30 @@ IngestAccessionNumber=vtsheet['gsingestno']
 RequestorLFI=vtsheet['gsreqlastfi']
 CorrespondingAuthorLFI=vtsheet['gscorrlastfi']
 
+#=============copy function===================
+def copy_arc_folder_as_payload(source_dir, destination_dir, overwrite=True):
+    source_path = Path(source_dir)
+    destination_path = Path(destination_dir)
+
+    if not source_path.exists():
+        raise FileNotFoundError(f"ARC source directory does not exist: {source_path}")
+
+    if not source_path.is_dir():
+        raise NotADirectoryError(f"ARC source path is not a directory: {source_path}")
+
+    if destination_path.exists():
+        if overwrite:
+            shutil.rmtree(destination_path)
+            print(f"Removed existing DisseminatedContent: {destination_path}")
+        else:
+            raise FileExistsError(f"{destination_path} already exists and overwrite=False")
+
+    shutil.copytree(source_path, destination_path)
+
+    print(f"Copied ARC folder as full payload:")
+    print(f"  FROM: {source_path}")
+    print(f"  TO:   {destination_path}")
+    
 #-----------------------------------------------------
 #Create Publication folder and download the figshare published article
 
@@ -123,3 +148,32 @@ if not os.path.exists(payload_path):
 else:
     print("Directory '%s' already exists, skipping creation." % payload_path)
 
+
+
+
+arc_template = config['ARC_PathSettings'].get('ARCResourceTemplate', '').strip()
+arc_resource_path = config['ARC_PathSettings'].get('ARCResourcePath', '').strip()
+
+if arc_template:
+    ARCSourcePath = arc_template.format(
+        ArticleID=ArticleID,
+        PublishedAccessionNumber=PublishedAccessionNumber,
+        IngestAccessionNumber=IngestAccessionNumber,
+        Version=Version
+    )
+elif arc_resource_path:
+    ARCSourcePath = arc_resource_path
+else:
+    raise ValueError(
+        "No ARC source path configured. Please set ARCResourcePath or ARCResourceTemplate "
+        "under [ARC_PathSettings] in configurations.ini"
+    )
+
+print(f"ARC source directory: {ARCSourcePath}")
+print(f"Copying ARC content into DisseminatedContent: {PubFolderPayloadPath}")
+
+copy_arc_folder_as_payload(
+    ARCSourcePath,
+    PubFolderPayloadPath,
+    overwrite=True
+)
