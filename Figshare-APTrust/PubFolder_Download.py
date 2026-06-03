@@ -46,35 +46,30 @@ token=config['FigshareSettings']['token']
 CuratorName=config['FigshareSettings']['CuratorName']
 
 print("Figshare Article ID:", ArticleID, "Version number: ", PublishedVersionNumber)
-#Get the row information of the published article from the Published sheet using the corresponding ArticleID and Version Number:
 vtsheet=vtpubsheet(ArticleID,PublishedVersionNumber)
-#Get article id 
+
 article_id=vtsheet['gsarticleid']
-#get requestor name
 Requestor=vtsheet['gsrequestr']
-#get corresponding author name
 CorrespondingAuthor=vtsheet['gscorsauth']
-#get version
 Version=vtsheet['gsversnum']
-#get published date in YYYYMMDD format 
 DatePublished= vtsheet['gsdatepub'] 
-#get DOI suffix
 DOIsuffix=vtsheet['gsdoisuffix']
-#FigshareArticleID=vtsheet['psheet_articleid']
 
 
-#get the row number of published article
+
 PublishedAccessionNumber= vtsheet['gspubnum']
-#get the ingest number corresponding to the published accession number
 IngestAccessionNumber=vtsheet['gsingestno']
-#Get LastnameFirstnameinitial of requestor and corresponding author:
 RequestorLFI=vtsheet['gsreqlastfi']
 CorrespondingAuthorLFI=vtsheet['gscorrlastfi']
 
 #=============copy function===================
 def copy_arc_folder_as_payload(source_dir, destination_dir, overwrite=True):
     source_path = Path(source_dir)
-    destination_path = Path(destination_dir)
+    # destination_path = Path(destination_dir)
+    destination_path = os.path.join(
+        PubFolderPayloadPath,
+        os.path.basename(ARCSourcePath)
+    )
 
     if not source_path.exists():
         raise FileNotFoundError(f"ARC source directory does not exist: {source_path}")
@@ -82,14 +77,14 @@ def copy_arc_folder_as_payload(source_dir, destination_dir, overwrite=True):
     if not source_path.is_dir():
         raise NotADirectoryError(f"ARC source path is not a directory: {source_path}")
 
-    if destination_path.exists():
-        if overwrite:
-            shutil.rmtree(destination_path)
-            print(f"Removed existing DisseminatedContent: {destination_path}")
-        else:
-            raise FileExistsError(f"{destination_path} already exists and overwrite=False")
+    # if destination_path.exists():
+    #     if overwrite:
+    #         shutil.rmtree(destination_path)
+    #         print(f"Removed existing DisseminatedContent: {destination_path}")
+    #     else:
+    #         raise FileExistsError(f"{destination_path} already exists and overwrite=False")
 
-    shutil.copytree(source_path, destination_path)
+    shutil.copytree(source_path, destination_path, dirs_exist_ok=True)
 
     print(f"Copied ARC folder as full payload:")
     print(f"  FROM: {source_path}")
@@ -102,13 +97,20 @@ def copy_arc_folder_as_payload(source_dir, destination_dir, overwrite=True):
 #directory_path=os.getcwd() 
 PubFolderPath=config['PubFolder_PathSettings']['PubFolderPath'] 
 
+# article_id = ArticleID
+# PublishedAccessionNumber = "TESTPUB"
+# IngestAccessionNumber = "TESTINGEST"
+# DOIsuffix = "TESTDOI"
+# CorrespondingAuthorLFI = "TESTAUTHOR"
+# Version = "1"
+# DatePublished = "20260312"
+
+
 aptrustBagName=f"VTDR_{PublishedAccessionNumber}_{IngestAccessionNumber}_DOI_{DOIsuffix}_{CorrespondingAuthorLFI}_v{Version}_{DatePublished}"
 payload_directory1=f"DisseminatedContent"
 PubFolderPayloadPath=os.path.join(PubFolderPath,aptrustBagName, payload_directory1)
 metadata_directory_path=f"{PublishedAccessionNumber}_DownloadedFileMetadata_v{Version}"
 PublishedVersionNumber = config['FigshareSettings']['PublishedVersionNumber']
-#uncomment the following line and comment out None if recreating a bag for a specific published version and not the latest published version
-#fversion=int(PublishedVersionNumber[1])
 fversion=None
 print(f"***************Figshare published version number (None gets the latest published version): {fversion}")
 #quit()
@@ -175,5 +177,5 @@ print(f"Copying ARC content into DisseminatedContent: {PubFolderPayloadPath}")
 copy_arc_folder_as_payload(
     ARCSourcePath,
     PubFolderPayloadPath,
-    overwrite=True
+    overwrite=False
 )

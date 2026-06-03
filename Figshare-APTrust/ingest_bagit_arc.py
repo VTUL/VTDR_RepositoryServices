@@ -57,25 +57,25 @@ def now_stamp():
     return today, t
 
 
-def read_targets_txt(txt_path: str) -> list[str]:
-    """
-    Returns list of article IDs excluding comments/blanks.
-    Only digits are accepted.
-    """
-    if not os.path.exists(txt_path):
-        die(f"IDs txt file not found: {txt_path}")
+# def read_targets_txt(txt_path: str) -> list[str]:
+#     """
+#     Returns list of article IDs excluding comments/blanks.
+#     Only digits are accepted.
+#     """
+#     if not os.path.exists(txt_path):
+#         die(f"IDs txt file not found: {txt_path}")
 
-    targets = []
-    with open(txt_path, "r", encoding="utf-8") as f:
-        for line in f:
-            s = line.strip()
-            if not s or s.startswith("#"):
-                continue
-            if not s.isdigit():
-                die(f"Invalid article ID in {txt_path}: {s}")
-            targets.append(s)
+#     targets = []
+#     with open(txt_path, "r", encoding="utf-8") as f:
+#         for line in f:
+#             s = line.strip()
+#             if not s or s.startswith("#"):
+#                 continue
+#             if not s.isdigit():
+#                 die(f"Invalid article ID in {txt_path}: {s}")
+#             targets.append(s)
 
-    return targets
+#     return targets
 
 
 # ----------------------------- Terminal choice -----------------------------
@@ -203,29 +203,26 @@ def build_job_params(ing_folder_name: str, data_directory_path: str, ingest_no: 
 def run_dart_runner_and_copy(
     dart_runner: str,
     workflow_json: str,
-    scratch_out: str,
     final_out: str,
     job_params: dict,
 ):
     """
-    Runs dart-runner (single job via stdin job params),
-    then copies the resulting .tar from scratch_out to final_out.
+    Run dart-runner and write tar directly to FinalOutputDir.
     """
-    ensure_dir(scratch_out)
     ensure_dir(final_out)
 
     bag_tar = job_params["packageName"]
-    today, t = now_stamp()
 
     cmd = [
         dart_runner,
         f"--workflow={workflow_json}",
-        f"--output-dir={scratch_out}",
+        f"--output-dir={final_out}",
         "--delete=false",
         "--skip-artifacts",
     ]
 
     print(f"\nRunning dart-runner for {bag_tar} ...")
+
     p = subprocess.run(
         cmd,
         input=json.dumps(job_params),
@@ -233,27 +230,23 @@ def run_dart_runner_and_copy(
         capture_output=True
     )
 
-    # stdout is JSON Lines, usually 1 line for single job
     if p.stdout.strip():
         print("dart-runner stdout:\n", p.stdout)
+
     if p.stderr.strip():
         print("dart-runner stderr:\n", p.stderr, file=sys.stderr)
 
     if p.returncode != 0:
         die(f"dart-runner failed for {bag_tar}, exit={p.returncode}")
 
-    scratch_tar_path = os.path.join(scratch_out, bag_tar)
-    if not os.path.exists(scratch_tar_path):
-        die(f"Expected tar not found: {scratch_tar_path}")
+    tar_path = os.path.join(final_out, bag_tar)
 
-    final_tar_path = os.path.join(final_out, bag_tar)
-    if os.path.exists(final_tar_path):
-        # avoid overwrite
-        base = bag_tar.replace(".tar", "")
-        final_tar_path = os.path.join(final_out, f"{base}_{today}_{t}.tar")
+    if not os.path.exists(tar_path):
+        die(f"Expected tar not found: {tar_path}")
 
-    shutil.copy2(scratch_tar_path, final_tar_path)
-    print(f"✅ Bag copied to: {final_tar_path}")
+    print(f"✅ Bag created at: {tar_path}")
+
+    return tar_path
 
 
 # ----------------------------- Main logic -----------------------------
@@ -279,7 +272,7 @@ def main():
     workflow_demo = cfg["dart_PathSettings"]["workflow_demo"]
     workflow_repo = cfg["dart_PathSettings"]["workflow_repo"]
 
-    scratch_out = cfg["IngestBag_PathSettings"]["RunnerOutputDir"]
+    # scratch_out = cfg["IngestBag_PathSettings"]["RunnerOutputDir"]
     final_out = cfg["IngestBag_PathSettings"]["FinalOutputDir"]
 
     # Quick sanity checks
@@ -294,11 +287,11 @@ def main():
 
     ensure_dir(ing_folder_path)
     ensure_dir(metadata_jsonpath)
-    ensure_dir(scratch_out)
     ensure_dir(final_out)
 
     # Choose workflow in terminal
-    destination = choose_destination_terminal()
+    destination = "JUST BAGIT"
+    # destination = choose_destination_terminal()
     workflow_json = choose_workflow_json(
         destination,
         workflow_package_only,
@@ -310,13 +303,12 @@ def main():
     print(f"Workflow file: {workflow_json}")
 
     # Read article IDs
-    article_ids = read_targets_txt(IDS_TXT_PATH)
-    # article_ids = cfg["FigshareSettings"]["figsharearticleid"]
+    # article_ids = read_targets_txt(IDS_TXT_PATH)
+    article_id = cfg["FigshareSettings"]["FigshareArticleID"].strip()
+    article_ids = [article_id]
     print("article ids from configurations.ini:", article_ids)
     if not article_ids:
         die(f"No article IDs found in {IDS_TXT_PATH}.")
-
-    print(f"\nWill process {len(article_ids)} article ID(s) from {IDS_TXT_PATH}.")
 
     # Process each article ID
     for article_id in article_ids:
@@ -340,7 +332,6 @@ def main():
             run_dart_runner_and_copy(
                 dart_runner=dart_runner,
                 workflow_json=workflow_json,
-                scratch_out=scratch_out,
                 final_out=final_out,
                 job_params=job_params,
             )
