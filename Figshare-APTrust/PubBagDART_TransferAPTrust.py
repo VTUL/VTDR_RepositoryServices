@@ -96,25 +96,23 @@ def build_job_params(aptrust_bag_name: str, pub_folder: str, pvtsheet: dict) -> 
 def run_dart_runner_and_copy(
     dart_runner: str,
     workflow_json: str,
-    scratch_out: str,
     final_out: str,
     job_params: dict,
 ):
-    ensure_dir(scratch_out)
     ensure_dir(final_out)
 
     bag_tar = job_params["packageName"]
-    today, t = now_stamp()
 
     cmd = [
         dart_runner,
         f"--workflow={workflow_json}",
-        f"--output-dir={scratch_out}",
+        f"--output-dir={final_out}",
         "--delete=false",
         "--skip-artifacts",
     ]
 
     print(f"\nRunning dart-runner for {bag_tar} ...")
+
     p = subprocess.run(
         cmd,
         input=json.dumps(job_params),
@@ -125,50 +123,21 @@ def run_dart_runner_and_copy(
 
     if p.stdout.strip():
         print("dart-runner stdout:\n", p.stdout)
+
     if p.stderr.strip():
         print("dart-runner stderr:\n", p.stderr, file=sys.stderr)
 
     if p.returncode != 0:
         die(f"dart-runner failed for {bag_tar}, exit={p.returncode}")
 
-    job_result = None
-    stdout_lines = [line.strip() for line in p.stdout.splitlines() if line.strip()]
-    if stdout_lines:
-        try:
-            job_result = json.loads(stdout_lines[-1])
-        except json.JSONDecodeError:
-            die("Could not parse dart-runner JSON stdout.")
+    tar_path = os.path.join(final_out, bag_tar)
 
-    if job_result is None:
-        die("No JSON result returned from dart-runner.")
+    if not os.path.exists(tar_path):
+        die(f"Expected tar not found: {tar_path}")
 
-    if not job_result.get("succeeded", False):
-        upload_results = job_result.get("uploadResults", [])
-        error_messages = []
+    print(f"✅ Final tar created at: {tar_path}")
 
-        for upload in upload_results:
-            errs = upload.get("errors", {})
-            for _, msg in errs.items():
-                error_messages.append(msg)
-
-        if error_messages:
-            die("dart-runner job failed during upload:\n" + "\n".join(error_messages))
-        else:
-            die("dart-runner reported succeeded=false.")
-
-    scratch_tar_path = os.path.join(scratch_out, bag_tar)
-    if not os.path.exists(scratch_tar_path):
-        die(f"Expected tar not found: {scratch_tar_path}")
-
-    final_tar_path = os.path.join(final_out, bag_tar)
-    if os.path.exists(final_tar_path):
-        base = bag_tar.replace(".tar", "")
-        final_tar_path = os.path.join(final_out, f"{base}_{today}_{t}.tar")
-
-    shutil.copy2(scratch_tar_path, final_tar_path)
-    print(f"✅ Final tar copied to: {final_tar_path}")
-
-    return final_tar_path
+    return tar_path
 
 
 def main():
@@ -185,7 +154,7 @@ def main():
     workflow_demo = cfg["dart_PathSettings"]["workflow_demo"]
     workflow_repo = cfg["dart_PathSettings"]["workflow_repo"]
 
-    scratch_out = cfg["PubBagDartAptrust_PathSettings"]["RunnerOutputDir"]
+    # scratch_out = cfg["PubBagDartAptrust_PathSettings"]["RunnerOutputDir"]
     final_out = cfg["PubBagDartAptrust_PathSettings"]["FinalOutputDir"]
 
     for key_path, label in [
@@ -198,7 +167,7 @@ def main():
             die(f"{label} not found: {key_path}")
 
     ensure_dir(PubFolderPath)
-    ensure_dir(scratch_out)
+    # ensure_dir(scratch_out)
     ensure_dir(final_out)
 
     Pvtsheet = vtpubsheet(ArticleID=ArticleID, PublishedVersionNumber=PublishedVersionNumber)
@@ -223,7 +192,7 @@ def main():
 
     print(f"\nSelected upload option: {destination}")
     print(f"Workflow file: {workflow_json}")
-    print(f"Runner output folder: {scratch_out}")
+    # print(f"Runner output folder: {scratch_out}")
     print(f"Final output folder: {final_out}")
 
     job_params = build_job_params(aptrust_bag_name, pub_folder, Pvtsheet)
@@ -231,7 +200,7 @@ def main():
     final_tar_path = run_dart_runner_and_copy(
         dart_runner=dart_runner,
         workflow_json=workflow_json,
-        scratch_out=scratch_out,
+        # scratch_out=scratch_out,
         final_out=final_out,
         job_params=job_params,
     )

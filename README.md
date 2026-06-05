@@ -27,6 +27,10 @@ dissenminated / file / DisseminatedContent as the data source
 slurm globus node doesn't have the slurm 
 
 nohup
+make sure you change the "ARCResourcePath=/projects/lib-data-share/31448899_Borgoltz_2026_Stability_V1" in the configurations.ini correctly 
+bash run_vtdr_workflow.json -> can show the results in the terminal 
+
+
 ###start the nohup
 nohup bash run_vtdr_workflow.sh > workflow.log 2>&1 &
 
@@ -35,6 +39,11 @@ tail -f workflow.log
 
 ###exit the log
 Ctrl + C
+
+make sure if it still runs 
+ps -fu $USER | grep run_vtdr
+check which script it is using now
+ps -fu $USER | grep python 
 
 change the "destination = choose_destination_terminal()" to "destination = "JUST BAGIT" "
 (1) and (3)
