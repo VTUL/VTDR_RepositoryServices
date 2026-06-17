@@ -290,7 +290,7 @@ def main():
     ensure_dir(final_out)
 
     # Choose workflow in terminal
-    destination = "JUST BAGIT"
+    destination = "DEMO"
     # destination = choose_destination_terminal()
     workflow_json = choose_workflow_json(
         destination,

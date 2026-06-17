@@ -1,7 +1,7 @@
 {
   "id": "c277c92e-ee4e-4625-840c-334275e9d62d",
   "bagItProfile": {
-    "id": "043f1c22-c9ff-4112-86f8-8f8f1e6a2dca",
+    "id": "67bb029d-28d4-41f8-8149-328a5b687a8c",
     "acceptBagItVersion": [
       "0.97",
       "1.0"
@@ -19,26 +19,27 @@
       "sourceOrganization": "aptrust.org",
       "version": "2.2"
     },
-    "baseProfileId": "",
-    "description": "APTrust 2.2 default BagIt profile.",
-    "isBuiltIn": true,
+    "baseProfileId": "043f1c22-c9ff-4112-86f8-8f8f1e6a2dca",
+    "description": "Customized version of APTrust for Virginia Tech",
+    "isBuiltIn": false,
     "manifestsAllowed": [
-      "md5",
-      "sha256"
+      "sha256",
+      "md5"
     ],
     "manifestsRequired": [
       "md5"
     ],
-    "name": "APTrust",
-    "serialization": "required",
+    "name": "APTrust with default values for Virginia Tech",
+    "serialization": "optional",
     "tagFilesAllowed": [
-      "*",
+      "*"
+    ],
+    "tagFilesRequired": [
       ""
     ],
-    "tagFilesRequired": null,
     "tagManifestsAllowed": [
-      "md5",
-      "sha256"
+      "sha256",
+      "md5"
     ],
     "tagManifestsRequired": [],
     "tags": [
@@ -145,7 +146,7 @@
         "isBuiltIn": true,
         "isUserAddedFile": false,
         "isUserAddedTag": false,
-        "required": false,
+        "required": true,
         "tagFile": "bag-info.txt",
         "tagName": "Bag-Group-Identifier",
         "userValue": "",
@@ -247,7 +248,7 @@
         "wasAddedForJob": false
       },
       {
-        "defaultValue": "Standard",
+        "defaultValue": "Glacier-OH",
         "emptyOK": false,
         "help": "How do you want this bag to be stored in APTrust? Standard = S3/Virginia + Glacier/Oregon. Glacier-OH = Glacier-only storage in Ohio. Glacier-OR = Glacier-only storage in Oregon. Glacier-VA = Glacier-only storage in Virginia. Standard storage includes regular 90-day fixity checks. Glacier-only storage is less expensive but excludes fixity checks. File in Glacier-only storage may take up to 24 hours longer to restore and excessive Glacier retrieval may incur additional fees.",
         "id": "53075007-e6cf-4a18-9b34-caa605ed593f",
@@ -272,7 +273,7 @@
         "wasAddedForJob": false
       }
     ],
-    "tarDirMustMatchName": true
+    "tarDirMustMatchName": false
   },
   "description": "ARC package only",
   "name": "Package Only workflow",
