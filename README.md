@@ -33,6 +33,7 @@ bash run_vtdr_workflow.json -> can show the results in the terminal
 
 ###start the nohup
 nohup bash run_vtdr_workflow.sh > workflow.log 2>&1 &
+nohup python PubFolder_Download.py > pubdownload.log 2>&1 &
 
 ###check the log
 tail -f workflow.log
@@ -42,8 +43,15 @@ Ctrl + C
 
 make sure if it still runs 
 ps -fu $USER | grep run_vtdr
+ps -fu $USER | grep PubFolder_Download
 check which script it is using now
 ps -fu $USER | grep python 
+
+run this to see what it is doing:
+ps -p 1981610 -o pid,etime,pcpu,pmem,stat,cmd
+Output:
+PID     ELAPSED %CPU %MEM STAT CMD
+1981610       13:36 47.0  0.0 R    python PubFolder_
 
 change the "destination = choose_destination_terminal()" to "destination = "JUST BAGIT" "
 (1) and (3)
