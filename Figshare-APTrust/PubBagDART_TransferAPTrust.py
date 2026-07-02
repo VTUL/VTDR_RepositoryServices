@@ -181,7 +181,7 @@ def main():
     print(f"\nPublication folder found: {pub_folder}")
     print(f"Bag name: {aptrust_bag_name}")
 
-    destination = "JUST BAGIT"
+    destination = "REPO"
     # destination = choose_workflow_terminal()
     workflow_json = choose_workflow_json(
         destination,
