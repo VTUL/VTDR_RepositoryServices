@@ -189,13 +189,13 @@ if workflow =='3':
    checkReg=1 #bag is only uploaded to s3, so aptrust registry check is skipped by setting it to 1
 if (workflow == "1" and ProceedInput=="yes") or (checkReg == 1 and ProceedInput=="yes"):
     total_files = len(payload)
-    if total_files > 200:
+    if total_files > 150:
         batch_user_approval = input("Do you want to process files in batches of 100? (yes/no): ")
         #batch logic for large number of files for mac only
     else:
         batch_user_approval = "no"  # Default for smaller datasets
     
-    if total_files > 200 and platform.system() == "Darwin" and batch_user_approval.lower() == 'yes':
+    if total_files > 150 and platform.system() == "Darwin" and batch_user_approval.lower() == 'yes':
         print(f"Large number of files detected ({total_files}). Processing in batches of 100...")
         for i in range(0, total_files, 100):
             batch = payload[i:i+100]
