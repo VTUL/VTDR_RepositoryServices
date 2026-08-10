@@ -6,6 +6,9 @@ from os.path import exists
 from redata.commons.logger import log_stdout
 import figshareRetrieve
 #import calculateChecksum
+from collections import defaultdict
+
+
 N_TRIES_MD5 = 3 # Number of attempts for checksum
 def download_files(article_id, fversion, fs, root_directory=None, data_directory=None,   metadata_directory=None, log=None, metadata_only=False):
     """
@@ -39,6 +42,52 @@ def download_files(article_id, fversion, fs, root_directory=None, data_directory
     file_list = fs.list_files(article_id,fversion)
     n_files = len(file_list)
     print(f"Number of files in article {article_id}: {n_files}")
+
+# --------------------------------------------------
+# Check for duplicated file names
+# --------------------------------------------------
+
+    filename_groups = defaultdict(list)
+
+    for file_dict in file_list:
+        filename_groups[file_dict["name"]].append(file_dict)
+
+    duplicate_filename_groups = {
+        filename: files
+        for filename, files in filename_groups.items()
+        if len(files) > 1
+    }
+
+    if duplicate_filename_groups:
+        print("\n")
+        print("=" * 80)
+        print("DUPLICATE FILE NAME CHECK")
+        print("=" * 80)
+        print(
+            "Files with duplicated file names were found. "
+            "Please review whether their contents are duplicated."
+        )
+
+        for group_number, (filename, files) in enumerate(
+            duplicate_filename_groups.items(),
+            start=1
+        ):
+            print(f"\nDuplicate Filename Group {group_number}")
+            print(f"Filename: {filename}")
+
+            for file_dict in files:
+                print(f"    Figshare file ID: {file_dict.get('id')}")
+                print(f"    Size: {file_dict.get('size')}")
+                print(f"    URL: {file_dict.get('download_url')}")
+
+    else:
+        print("\n")
+        print("=" * 80)
+        print("DUPLICATE FILE NAME CHECK")
+        print("=" * 80)
+        print("No duplicated file names were detected.")
+
+
     if not data_directory:
         dir_path = os.path.join(root_directory, f"figshare_{article_id}/")#, f"figsharemd_{article_id}/")
     else:
@@ -114,5 +163,10 @@ def download_files(article_id, fversion, fs, root_directory=None, data_directory
                                     f"Aborted after {N_TRIES_MD5} tries")
             else:
                 log.info("File exists! Not overwriting!")
+    return {
+    "file_list": file_list,
+    "expected_file_count": n_files,
+    "duplicate_filename_groups": duplicate_filename_groups
+    }
 
 

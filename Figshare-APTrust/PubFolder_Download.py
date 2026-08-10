@@ -98,6 +98,85 @@ print(f"***************Figshare published version number (None gets the latest p
 fs=Figshare(token=token,private=False,version=fversion)
 FileDownload=figshareDownload.download_files(article_id, fversion, fs, data_directory=PubFolderPayloadPath, metadata_directory=metadata_directory_path)
 
+#============ file count check==============
+#==========================================
+expected_file_count = FileDownload["expected_file_count"]
+
+local_files = []
+
+for root, dirs, files in os.walk(PubFolderPayloadPath):
+    for filename in files:
+        local_files.append(
+            os.path.join(root, filename)
+        )
+
+local_file_count = len(local_files)
+
+print("\n")
+print("=" * 80)
+print("FIGSHARE FILE COUNT CHECK")
+print("=" * 80)
+
+print(f"Expected Figshare file count: {expected_file_count}")
+print(f"Downloaded local file count:  {local_file_count}")
+
+# ============================================================
+# DUPLICATE FILE NAME VALIDATION
+# ============================================================
+
+duplicate_filename_groups = FileDownload["duplicate_filename_groups"]
+
+print("\n")
+print("=" * 80)
+print("DUPLICATE FILE NAME CHECK")
+print("=" * 80)
+
+if duplicate_filename_groups:
+
+    print(
+        "Files with duplicated file names were found.\n"
+        "Please review whether their contents are actually duplicated."
+    )
+
+    for group_number, (filename, files) in enumerate(
+        duplicate_filename_groups.items(),
+        start=1
+    ):
+
+        print(f"\nDuplicate Filename Group {group_number}")
+        print(f"Filename: {filename}")
+
+        for file_dict in files:
+            print(f"    Figshare file ID: {file_dict.get('id')}")
+            print(f"    Size: {file_dict.get('size')}")
+            print(f"    URL: {file_dict.get('download_url')}")
+
+    while True:
+
+        response = input(
+            "\nWould you like to proceed? (yes/no): "
+        ).strip().lower()
+
+        print(f"Curator response: {response}")
+
+        if response == "yes":
+            print("Proceeding with the workflow.")
+            break
+
+        elif response == "no":
+            print(
+                "Workflow stopped so the curator can review or revise "
+                "the possible duplicated files."
+            )
+            sys.exit(0)
+
+        else:
+            print("Please enter 'yes' or 'no'.")
+
+else:
+    print("No duplicated file names were detected.")
+
+
 #----------------Download figshare metadata for the published article and write it into a json file
 
 json_out_file1=f"{PubFolderPayloadPath}/{PublishedAccessionNumber}_DisseminatedMetadata.json"
