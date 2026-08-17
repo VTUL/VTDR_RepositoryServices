@@ -132,41 +132,41 @@ print("=" * 80)
 print(f"Expected Figshare file count: {expected_file_count}")
 print(f"Downloaded local file count:  {local_file_count}")
 
-# ============ MD5 CHECK ==============
+# # ============ MD5 CHECK ==============
 
-expected_files = FileDownload["file_list"]
+# expected_files = FileDownload["file_list"]
 
-duplicate_md5_groups = check_duplicate_md5(
-    expected_files
-)
+# duplicate_md5_groups = check_duplicate_md5(
+#     expected_files
+# )
 
-#============duplicate  check==============
-#==========================================
-duplicate_filename_groups = FileDownload["duplicate_filename_groups"]
+# #============duplicate  check==============
+# #==========================================
+# duplicate_filename_groups = FileDownload["duplicate_filename_groups"]
 
-if duplicate_filename_groups:
-    while True:
-        response = input(
-            "\nFiles with duplicated file names were detected.\n"
-            "Please review whether their contents are actually duplicated.\n"
-            "Would you like to proceed? (yes/no): "
-        ).strip().lower()
+# if duplicate_filename_groups:
+#     while True:
+#         response = input(
+#             "\nFiles with duplicated file names were detected.\n"
+#             "Please review whether their contents are actually duplicated.\n"
+#             "Would you like to proceed? (yes/no): "
+#         ).strip().lower()
 
-        print(f"Curator response: {response}")
+#         print(f"Curator response: {response}")
 
-        if response == "yes":
-            print("Proceeding with the workflow.")
-            break
+#         if response == "yes":
+#             print("Proceeding with the workflow.")
+#             break
 
-        elif response == "no":
-            print(
-                "Workflow stopped so the curator can review or revise "
-                "the duplicated filenames."
-            )
-            sys.exit(0)
+#         elif response == "no":
+#             print(
+#                 "Workflow stopped so the curator can review or revise "
+#                 "the duplicated filenames."
+#             )
+#             sys.exit(0)
 
-        else:
-            print("Please enter 'yes' or 'no'.")
+#         else:
+#             print("Please enter 'yes' or 'no'.")
 
 #-----------------------------------------------------------------------------------------------
 #FileDownload=retrieve.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
