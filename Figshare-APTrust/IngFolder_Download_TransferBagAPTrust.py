@@ -29,9 +29,7 @@ import aptCmd
 from aptCmd import registryCheck
 # === new import 0810===
 from workflow_logging import start_logging
-# from download_validation import (
-#     verify_file_count,
-# )
+from download_validation import check_duplicate_md5
 
 
 import configparser
@@ -134,6 +132,13 @@ print("=" * 80)
 print(f"Expected Figshare file count: {expected_file_count}")
 print(f"Downloaded local file count:  {local_file_count}")
 
+# ============ MD5 CHECK ==============
+
+expected_files = FileDownload["file_list"]
+
+duplicate_md5_groups = check_duplicate_md5(
+    expected_files
+)
 
 #============duplicate  check==============
 #==========================================
