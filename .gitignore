@@ -85,3 +85,12 @@ docs/_build/
 # Ignore macOS system files
 .DS_Store
 Figshare-APTrust/.DS_Store
+
+# packages in environment
+requirements.txt
+
+#logs
+VTDR_logs/
+
+/Figshare-APTrust/client_secret.json
+/Figshare-APTrust/20230721_VTDR_PublishedDatasets_Log_V8.xlsx

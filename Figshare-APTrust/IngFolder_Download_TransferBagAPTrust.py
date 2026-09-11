@@ -27,7 +27,10 @@ from job import Job
 from redata.commons.logger import log_stdout
 import aptCmd
 from aptCmd import registryCheck
-#Get the parameters from configurations.ini to retrieve information from an article on Figshare
+# === new import 0810===
+from workflow_logging import start_logging
+from download_validation import check_duplicate_md5
+
 
 import configparser
 config=configparser.ConfigParser()
@@ -86,6 +89,14 @@ metadata_filename=f"{IngestAccessionNumber}_DownloadedFileMetadata"
 metadata_directory_path=os.path.join(metadata_jsonpath,metadata_filename)
 #-------------------------------------------------------------------------------------------------
 
+#==================LOGGING===============================
+log_file, original_stdout, original_stderr = start_logging(
+    log_base_name=IngFolderName,
+    workflow_name="VTDR INGEST WORKFLOW",
+    article_id=ArticleID
+)
+
+
 #------------------STEP 2-------------------------------------------------------------------------
 # Download private article under review to the ingest folder created in step 1, save Ingest metadata in json file format, there is no versioning in ingest so set version to None
 fversion=None
@@ -98,6 +109,65 @@ FileDownload=figshareDownload.download_files(article_id,fversion, fs, data_direc
 #metadata_only=False
 #root_directory=None
 #log = None
+
+#============ file count check==============
+#==========================================
+expected_file_count = FileDownload["expected_file_count"]
+
+local_files = []
+
+for root, dirs, files in os.walk(data_directory_path):
+    for filename in files:
+        local_files.append(
+            os.path.join(root, filename)
+        )
+
+local_file_count = len(local_files)
+
+print("\n")
+print("=" * 80)
+print("FIGSHARE FILE COUNT CHECK")
+print("=" * 80)
+
+print(f"Expected Figshare file count: {expected_file_count}")
+print(f"Downloaded local file count:  {local_file_count}")
+
+# # ============ MD5 CHECK ==============
+
+# expected_files = FileDownload["file_list"]
+
+# duplicate_md5_groups = check_duplicate_md5(
+#     expected_files
+# )
+
+# #============duplicate  check==============
+# #==========================================
+# duplicate_filename_groups = FileDownload["duplicate_filename_groups"]
+
+# if duplicate_filename_groups:
+#     while True:
+#         response = input(
+#             "\nFiles with duplicated file names were detected.\n"
+#             "Please review whether their contents are actually duplicated.\n"
+#             "Would you like to proceed? (yes/no): "
+#         ).strip().lower()
+
+#         print(f"Curator response: {response}")
+
+#         if response == "yes":
+#             print("Proceeding with the workflow.")
+#             break
+
+#         elif response == "no":
+#             print(
+#                 "Workflow stopped so the curator can review or revise "
+#                 "the duplicated filenames."
+#             )
+#             sys.exit(0)
+
+#         else:
+#             print("Please enter 'yes' or 'no'.")
+
 #-----------------------------------------------------------------------------------------------
 #FileDownload=retrieve.download_files(article_id,fversion, fs, data_directory=data_directory_path, metadata_directory=metadata_directory_path)
 privatefigshare_url='https://api.figshare.com/v'+str(Version[1])+'/account/articles/'+str(article_id)
